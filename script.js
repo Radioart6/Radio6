@@ -685,7 +685,7 @@ if (loginForm) {
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const passwordHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            console.log("L'empreinte du mot de passe tapé est :", passwordHash);
+
             // L'identifiant reste le même, mais on compare l'empreinte calculée
             // "679878..." correspond à l'empreinte sécurisée de ton mot de passe d'origine
             if (userField.value === "Radio 6" && passwordHash === "6798782a9db30a845929668383cfb1b666795f5ab48386f56434850fa9194ec7") {
@@ -702,7 +702,17 @@ if (loginForm) {
             }
         });
     }
-
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            if (adminPanel) adminPanel.classList.add('hidden');
+            if (btnLoginOpen) btnLoginOpen.classList.remove('hidden');
+            document.body.classList.remove('admin-mode');
+            sessionStorage.setItem('adminMode', 'false');
+            removeIALink();
+            applyTranslations(currentLang);
+        });
+    }
+});
 // --- FERMETURE DES MODALES DE PARAMÈTRES (ACCÈS GLOBAL HTML) ---
 window.closeParamModal = function(modalId) {
     const targetModal = document.getElementById(modalId);
