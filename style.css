@@ -711,3 +711,51 @@ body.font-dyslexic h3 {
     background-color: rgba(239, 68, 68, 0.1);
     color: #ef4444;
 }
+/* --- ADAPTATION POUR MOBILES ET TABLETTES --- */
+@media screen and (max-width: 768px) {
+    
+    /* 1. On passe les grilles (les dossiers de podcasts) sur 1 seule colonne */
+    .podcast-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    /* 2. On ajuste la taille des cartes de podcast pour qu'elles prennent toute la largeur */
+    .podcast-card {
+        width: 100% !important;
+        box-sizing: border-box;
+        flex-direction: column; /* Aligne le texte et les boutons verticalement si besoin */
+        gap: 10px;
+        text-align: center;
+    }
+
+    /* 3. On adapte la barre audio personnalisée en bas de l'écran */
+    .audio-player-container {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .progress-bar-container {
+        width: 100%; /* La barre de progression prend toute la largeur sur mobile */
+    }
+
+    /* 4. On réduit un peu les gros titres pour qu'ils ne prennent pas tout l'écran */
+    h1 {
+        font-size: 2rem !important;
+    }
+    
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    /* 5. Si tu as un menu de navigation horizontal, on l'aligne verticalement */
+    nav {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}
