@@ -577,20 +577,12 @@ body.font-large { font-size: 20px !important; }
 /* --- 2. GESTION DU TYPE DE POLICE (ACCESSIBILITÉ) --- */
 @import url('https://fonts.googleapis.com/css2?family=Open+Dyslexic&display=swap');
 
+/* --- STYLE POUR L'ACCESSIBILITÉ DYSLEXIQUE --- */
 body.font-dyslexic {
     font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
-}
-
-/* Espacement amélioré spécifique pour le mode dyslexique */
-body.font-dyslexic p, 
-body.font-dyslexic span, 
-body.font-dyslexic label, 
-body.font-dyslexic a, 
-body.font-dyslexic h1, 
-body.font-dyslexic h2, 
-body.font-dyslexic h3 {
-    letter-spacing: 0.05em !important;
-    word-spacing: 0.1em !important;
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.25em !important;
+    line-height: 1.6 !important;
 }
 .folder-container {
     display: flex;
