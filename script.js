@@ -669,8 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modalTravaux) modalTravaux.classList.add('hidden');
         if (e.target === modalMenuParam) modalMenuParam.classList.add('hidden');
     });
-
-    // --- LOGIQUE DE CONNEXION AVEC EMPREINTE NUMÉRIQUE SECURISÉE ---
+// --- LOGIQUE DE CONNEXION AVEC EMPREINTE NUMÉRIQUE SECURISÉE ---
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -679,18 +678,19 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!userField || !passField) return;
 
-            // Fonction pour générer l'empreinte SHA-256 du mot de passe saisi
+            // .trim() supprime automatiquement les espaces accidentels au début et à la fin
+            const usernameInput = userField.value.trim();
+            const passwordInput = passField.value.trim();
+
+            // Fonction pour générer l'empreinte SHA-256
             const encoder = new TextEncoder();
-            const data = encoder.encode(passField.value);
+            const data = encoder.encode(passwordInput);
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const passwordHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-            // 🚨 BOÎTE DE SECOURS VISUELLE : Tu pourras supprimer cette ligne alert() une fois connecté !
-            //alert("Identifiant : [" + userField.value + "]\nEmpreinte générée : " + passwordHash);
-
-            // "d42f50..." correspond exactement à l'empreinte de "ArcisseCaumont14"
-                if (userField.value === "Radio 6" && passwordHash === "987804915f7a36e81ea33983df6a650243705fa2a740b748e83ad7ac9f32ad51") {
+            // Comparaison stricte avec la casse exacte et la bonne empreinte
+            if (usernameInput === "Radio 6" && passwordHash === "987804915f7a36e81ea33983df6a650243705fa2a740b748e83ad7ac9f32ad51") {
                 if (loginModal) loginModal.classList.add('hidden');
                 if (adminPanel) adminPanel.classList.remove('hidden');
                 if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
