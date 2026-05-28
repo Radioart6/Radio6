@@ -687,10 +687,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const passwordHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
             // 🚨 BOÎTE DE SECOURS VISUELLE : Tu pourras supprimer cette ligne alert() une fois connecté !
-            alert("Identifiant : [" + userField.value + "]\nEmpreinte générée : " + passwordHash);
+            //alert("Identifiant : [" + userField.value + "]\nEmpreinte générée : " + passwordHash);
 
             // "d42f50..." correspond exactement à l'empreinte de "ArcisseCaumont14"
-            if (userField.value === "Radio 6" && passwordHash === "d42f50bfda51909f19ef669389be8411bc4c8034a74288ff3f837943d04fc487") {
+                if (userField.value === "Radio 6" && passwordHash === "987804915f7a36e81ea33983df6a650243705fa2a740b748e83ad7ac9f32ad51") {
                 if (loginModal) loginModal.classList.add('hidden');
                 if (adminPanel) adminPanel.classList.remove('hidden');
                 if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
