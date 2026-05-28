@@ -705,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LOGOUT ---
+// --- LOGOUT ---
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
             if (adminPanel) adminPanel.classList.add('hidden');
@@ -716,7 +716,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyTranslations(currentLang);
         });
     }
-});
+}); // <-- C'est cette accolade + parenthèse qui ferme le document.addEventListener du tout début !
 
 // --- FERMETURE DES MODALES DE PARAMÈTRES (ACCÈS GLOBAL HTML) ---
 window.closeParamModal = function(modalId) {
