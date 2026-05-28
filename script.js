@@ -671,13 +671,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modalMenuParam) modalMenuParam.classList.add('hidden');
     });
 
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const userField = document.getElementById('username');
             const passField = document.getElementById('password');
             
-            if (userField && passField && userField.value === "Radio 6" && passField.value === "ArcisseCaumont14") {
+            if (!userField || !passField) return;
+
+            // Fonction pour générer l'empreinte SHA-256 du mot de passe saisi
+            const encoder = new TextEncoder();
+            const data = encoder.encode(passField.value);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const passwordHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            // L'identifiant reste le même, mais on compare l'empreinte calculée
+            // "679878..." correspond à l'empreinte sécurisée de ton mot de passe d'origine
+            if (userField.value === "Radio 6" && passwordHash === "6798782a9db30a845929668383cfb1b666795f5ab48386f56434850fa9194ec7") {
                 if (loginModal) loginModal.classList.add('hidden');
                 if (adminPanel) adminPanel.classList.remove('hidden');
                 if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
@@ -691,7 +702,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
             if (adminPanel) adminPanel.classList.add('hidden');
