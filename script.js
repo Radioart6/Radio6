@@ -1,8 +1,7 @@
-// --- CONFIGURATION SUPABASE CENTRALISÉE ---
-const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co"; 
+// CONFIGURATION SUPABASE
+const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
 const SUPABASE_KEY = "sb_publishable_x1H1tQwiq82osTYEZSJwDg_qd0QhE29";
 
-// REGARDE BIEN : "Supabase" prend un "S" MAJUSCULE après le signe égal !
 const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 document.addEventListener('DOMContentLoaded', () => {
     // --- ÉLÉMENTS UI GLOBAUX ---
