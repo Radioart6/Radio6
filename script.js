@@ -1,6 +1,9 @@
-const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
+// --- CONFIGURATION SUPABASE CENTRALISÉE ---
+const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co"; 
 const SUPABASE_KEY = "sb_publishable_x1H1tQwiq82osTYEZSJwDg_qd0QhE29";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// On utilise un nom unique (SupabaseClient) pour éviter le conflit "already been declared"
+const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- ÉLÉMENTS UI GLOBAUX ---
@@ -38,8 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentTitle = document.getElementById('current-title');
     const playerStatus = document.getElementById('player-status');
 
-    let db;
-    let currentObjectUrl = null;
     const categoriesList = ['loisir-sport', 'touristique', 'actualites-infos', 'culture', 'autres'];
 
     // --- DICTIONNAIRE DE TRADUCTION ---
@@ -64,14 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
             lblInfo: "Date ou détails :",
             lblFile: "Sélectionner le fichier MP3 :",
             btnSubmit: "Ajouter le podcast",
-            uploadStatus: "Traitement du fichier audio en cours...",
+            uploadStatus: "Envoi du fichier sur le serveur mondial en cours...",
             btnLogout: "Se déconnecter",
-            travauxTitle: "Zone en travaux",
-            travauxNotice: "Cette section est actuellement en cours de développement.",
-            travauxRecent: "Ajout récent :",
-            travauxRecentTxt: "• Configuration globale.",
-            travauxFuture: "Évolution prévue :",
-            travauxFutureTxt: "• Nouvelles options.",
             settingsTitle: "Réglages Généraux",
             settingsLang: "Langue :",
             settingsMedia: "Thème Visuel :",
@@ -81,15 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsFontSm: "Petite",
             settingsFontMd: "Normale",
             settingsFontLg: "Grande",
-            settingsSave: "Enregistrer les réglages",
-            lastUpdateTitle: "✅ Dernière mise à jour",
-            lastUpdate1: "Le bouton paramètres est accessible à tous le monde.",
-            lastUpdate2: "Le site est maintenant accessible à tous le monde (adapté aux mobiles).",
-            lastUpdate3: "Mode connecté : Menu de réglages opérationnel avec modification de la taille de la police.",
-            nextUpdateTitle: "🚀 Prochaine mise à jour",
-            nextUpdate1: "Ajout imminent de l'émission du 12 mai.",
-            nextUpdate2: "Rajout possible d'une IA pour mieux vous aider sur le site.",
-            nextUpdate3: "Plus d'options de personnalisation visuelle."
+            settingsSave: "Enregistrer les réglages"
         },
         en: {
             splashBtn: "Enter the replay area",
@@ -111,14 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
             lblInfo: "Date or details:",
             lblFile: "Select MP3 file:",
             btnSubmit: "Add podcast",
-            uploadStatus: "Processing audio file...",
+            uploadStatus: "Uploading to global server...",
             btnLogout: "Log out",
-            travauxTitle: "Under Construction",
-            travauxNotice: "This section is currently under development.",
-            travauxRecent: "Recent update:",
-            travauxRecentTxt: "• Global configuration.",
-            travauxFuture: "Planned evolution:",
-            travauxFutureTxt: "• New options.",
             settingsTitle: "General Settings",
             settingsLang: "Language:",
             settingsMedia: "Visual Theme:",
@@ -128,15 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsFontSm: "Small",
             settingsFontMd: "Normal",
             settingsFontLg: "Large",
-            settingsSave: "Save settings",
-            lastUpdateTitle: "✅ Last update",
-            lastUpdate1: "The settings button is accessible to everyone.",
-            lastUpdate2: "The website is now accessible to everyone (mobile friendly).",
-            lastUpdate3: "Connected mode: Operational settings menu with font size adjustment.",
-            nextUpdateTitle: "🚀 Next update",
-            nextUpdate1: "Imminent addition of the May 12th show.",
-            nextUpdate2: "Possible addition of an AI to better assist you on the site.",
-            nextUpdate3: "More visual customization options."
+            settingsSave: "Save settings"
         },
         es: {
             splashBtn: "Entrar en el espacio de retransmisión",
@@ -158,15 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
             lblInfo: "Fecha o détails:",
             lblFile: "Seleccionar archivo MP3:",
             btnSubmit: "Añadir podcast",
-            uploadStatus: "Procesando archivo de audio...",
+            uploadStatus: "Subiendo al servidor global...",
             btnLogout: "Cerrar sesión",
-            travauxTitle: "Zona en obras",
-            travauxNotice: "Esta sección está actualmente en desarrollo.",
-            travauxRecent: "Añadido reciente:",
-            travauxRecentTxt: "• Configuración global.",
-            travauxFuture: "Evolución prevista:",
-            travauxFutureTxt: "• Nuevas opciones.",
-            settingsTitle: "Ajustes Generales",
+            settingsTitle: "Ajustes Génales",
             settingsLang: "Idioma:",
             settingsMedia: "Tema Visual:",
             settingsMediaDft: "Modo Oscuro (Por defecto)",
@@ -175,15 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsFontSm: "Pequeña",
             settingsFontMd: "Normal",
             settingsFontLg: "Grande",
-            settingsSave: "Guardar ajustes",
-            lastUpdateTitle: "✅ Última actualización",
-            lastUpdate1: "El botón de configuración es accesible para todos.",
-            lastUpdate2: "El sitio ahora es accesible para todos (adaptado a móviles).",
-            lastUpdate3: "Modo conectado: Menú de ajustes operativo con modificación del tamaño de la fuente.",
-            nextUpdateTitle: "🚀 Próxima actualización",
-            nextUpdate1: "Adición inminente del programa del 12 de mayo.",
-            nextUpdate2: "Posible adición de una IA para ayudarte mejor en el sitio.",
-            nextUpdate3: "Más opciones de personalización visual."
+            settingsSave: "Guardar ajustes"
         }
     };
 
@@ -200,24 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedFont = localStorage.getItem('siteFont') || 'normal';
     if (savedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
 
-    // --- INITIALISATION INDEXEDDB ---
-    const dbRequest = indexedDB.open("Radio6_Database", 1);
-
-    dbRequest.onupgradeneeded = (e) => {
-        db = e.target.result;
-        if (!db.objectStoreNames.contains("podcasts")) {
-            db.createObjectStore("podcasts", { keyPath: "id" });
-        }
-    };
-
-    dbRequest.onsuccess = (e) => {
-        db = e.target.result;
-        loadPodcastsFromDB();
-    };
-
-    dbRequest.onerror = () => {
-        console.error("Impossible d'initialiser le stockage lourd IndexedDB.");
-    };
+    // CHARGEMENT DIRECT DEPUIS SUPABASE AU CHARGEMENT DE LA PAGE
+    loadPodcastsFromSupabase();
 
     // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
     document.querySelectorAll('.folder-box h3').forEach(header => {
@@ -230,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- PARAMÈTRES INTERFACE ---
     if (paramBtn) {
         paramBtn.addEventListener('click', () => {
-            // Désormais, tout le monde accède directement au vrai menu de réglages !
             if (modalMenuParam) modalMenuParam.classList.remove('hidden');
         });
     }
@@ -265,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLang = e.target.value;
             localStorage.setItem('siteLang', currentLang);
             applyTranslations(currentLang);
-            loadPodcastsFromDB(); 
+            loadPodcastsFromSupabase(); 
         });
     }
 
@@ -352,30 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
             selectPolice.options[1].text = t.settingsFontMd;
             selectPolice.options[2].text = t.settingsFontLg;
         }
-
-        const updateLast = document.querySelector('.update-box.last');
-        if (updateLast) {
-            const h4 = updateLast.querySelector('h4');
-            if (h4) h4.innerText = t.lastUpdateTitle;
-            const lis = updateLast.querySelectorAll('ul li');
-            if (lis.length >= 3) {
-                lis[0].innerText = t.lastUpdate1;
-                lis[1].innerText = t.lastUpdate2;
-                lis[2].innerText = t.lastUpdate3;
-            }
-        }
-        
-        const updateNext = document.querySelector('.update-box.next');
-        if (updateNext) {
-            const h4 = updateNext.querySelector('h4');
-            if (h4) h4.innerText = t.nextUpdateTitle;
-            const lis = updateNext.querySelectorAll('ul li');
-            if (lis.length >= 3) {
-                lis[0].innerHTML = t.nextUpdate1;
-                lis[1].innerHTML = t.nextUpdate2;
-                lis[2].innerHTML = t.nextUpdate3;
-            }
-        }
     }
 
     // --- BARRE AUDIO PERSONNALISÉE ---
@@ -414,10 +332,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (playerStatus) playerStatus.innerText = translations[currentLang].ready;
             if (progressBarFill) progressBarFill.style.width = "0%";
             if (currentTimeDisplay) currentTimeDisplay.innerText = "00:00";
-            if (currentObjectUrl) {
-                URL.revokeObjectURL(currentObjectUrl);
-                currentObjectUrl = null;
-            }
         });
     }
 
@@ -431,12 +345,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ENREGISTRER UN PODCAST DANS LA BASE INDEXEDDB ---
+    // --- ENREGISTRER UN PODCAST DANS SUPABASE ---
     if (addPodcastForm) {
-        addPodcastForm.addEventListener('submit', (e) => {
+        addPodcastForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const fileInput = document.getElementById('pod-file');
             const categorySelect = document.getElementById('pod-category');
+            const titleInput = document.getElementById('pod-title');
+            const infoInput = document.getElementById('pod-info');
             
             if (!fileInput || !fileInput.files.length) return;
             const file = fileInput.files[0];
@@ -444,129 +360,134 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btnSubmitPodcast) btnSubmitPodcast.disabled = true;
             if (uploadStatus) uploadStatus.classList.remove('hidden');
 
-            const newPodcast = {
-                id: Date.now(),
-                title: document.getElementById('pod-title')?.value || "Sans titre",
-                info: document.getElementById('pod-info')?.value || "",
-                category: categorySelect ? categorySelect.value : "autres", 
-                fileData: file
-            };
+            const title = titleInput ? titleInput.value.trim() : "Sans titre";
+            const info = infoInput ? infoInput.value.trim() : "";
+            const category = categorySelect ? categorySelect.value : "autres";
+            
+            const fileExtension = file.name.split('.').pop();
+            const uniqueId = Date.now();
+            const encodedTitle = encodeURIComponent(title);
+            const encodedInfo = encodeURIComponent(info);
+            const customFileName = `${uniqueId}_[${category}]_[${encodedTitle}]_[${encodedInfo}].${fileExtension}`;
 
-            const transaction = db.transaction(["podcasts"], "readwrite");
-            const store = transaction.objectStore("podcasts");
-            const addRequest = store.add(newPodcast);
+            // Envoi via SupabaseClient
+            const { data, error } = await SupabaseClient.storage
+                .from('podcasts')
+                .upload(customFileName, file);
 
-            addRequest.onsuccess = () => {
+            if (error) {
+                console.error("Erreur lors de l'envoi :", error);
+                alert("Erreur lors de l'envoi du fichier.");
+            } else {
                 addPodcastForm.reset();
-                loadPodcastsFromDB();
-                if (btnSubmitPodcast) btnSubmitPodcast.disabled = false;
-                if (uploadStatus) uploadStatus.classList.add('hidden');
-            };
+                loadPodcastsFromSupabase();
+            }
 
-            addRequest.onerror = (err) => {
-                console.error(err);
-                if (btnSubmitPodcast) btnSubmitPodcast.disabled = false;
-                if (uploadStatus) uploadStatus.classList.add('hidden');
-            };
+            if (btnSubmitPodcast) btnSubmitPodcast.disabled = false;
+            if (uploadStatus) uploadStatus.classList.add('hidden');
         });
     }
 
-    // --- CHARGER LA GRILLE ET LES DOSSIERS DEPUIS INDEXEDDB ---
-    function loadPodcastsFromDB() {
-        if (!db) return;
-        const transaction = db.transaction(["podcasts"], "readonly");
-        const store = transaction.objectStore("podcasts");
-        const getAllRequest = store.getAll();
+    // --- CHARGER LA GRILLE DEPUIS LE STORAGE DE SUPABASE ---
+    async function loadPodcastsFromSupabase() {
+        categoriesList.forEach(cat => {
+            const grid = document.getElementById(`grid-${cat}`);
+            if (grid) grid.innerHTML = "";
+        });
 
-        getAllRequest.onsuccess = () => {
-            const list = getAllRequest.result;
+        // Lecture via SupabaseClient
+        const { data: files, error } = await SupabaseClient.storage
+            .from('podcasts')
+            .list('', { limit: 100, sortBy: { column: 'name', order: 'desc' } });
 
+        if (error || !files || files.length === 0) {
             categoriesList.forEach(cat => {
                 const grid = document.getElementById(`grid-${cat}`);
-                if (grid) grid.innerHTML = "";
+                if (grid) grid.innerHTML = `<p style='color: var(--text-muted); text-align:center; padding:10px;'>${translations[currentLang].noPodcast}</p>`;
             });
-
-            if (list.length === 0) {
-                categoriesList.forEach(cat => {
-                    const grid = document.getElementById(`grid-${cat}`);
-                    if (grid) grid.innerHTML = `<p style='color: var(--text-muted); text-align:center; padding:10px;'>${translations[currentLang].noPodcast}</p>`;
-                });
-                rafraichirCompteurs();
-                return;
-            }
-
-            list.sort((a, b) => b.id - a.id);
-
-            list.forEach(pod => {
-                const podCategory = pod.category || "autres";
-                const targetGrid = document.getElementById(`grid-${podCategory}`);
-
-                if (targetGrid) {
-                    const card = document.createElement('div');
-                    card.className = 'podcast-card';
-                    card.innerHTML = `
-                        <div class="podcast-info">
-                            <h3>${pod.title}</h3>
-                            <p>${pod.info}</p>
-                        </div>
-                        <div class="podcast-actions-wrapper">
-                            <button class="btn-play" data-id="${pod.id}" data-title="${pod.title}">${translations[currentLang].listenBtn}</button>
-                            <button class="btn-delete" data-id="${pod.id}">&times;</button>
-                        </div>
-                    `;
-                    targetGrid.appendChild(card);
-                }
-            });
-
-            document.querySelectorAll('.btn-play').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = parseInt(btn.getAttribute('data-id'));
-                    const title = btn.getAttribute('data-title');
-                    playPodcastFromDB(id, title);
-                });
-            });
-
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = parseInt(btn.getAttribute('data-id'));
-                    deletePodcastFromDB(id);
-                });
-            });
-
             rafraichirCompteurs();
-        };
-    }
+            return;
+        }
 
-    function playPodcastFromDB(id, title) {
-        if (!db || !mainAudioPlayer) return;
-        const transaction = db.transaction(["podcasts"], "readonly");
-        const store = transaction.objectStore("podcasts");
-        const getRequest = store.get(id);
+        let countAdded = 0;
 
-        getRequest.onsuccess = () => {
-            const record = getRequest.result;
-            if (record && record.fileData) {
-                if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
-                currentObjectUrl = URL.createObjectURL(record.fileData);
-                mainAudioPlayer.src = currentObjectUrl;
-                mainAudioPlayer.play().catch(err => console.log(err));
+        files.forEach(file => {
+            if (file.name === '.emptyFolderPlaceholder') return;
 
-                if (customPlayBtn) customPlayBtn.innerText = "⏸";
-                if (currentTitle) currentTitle.innerText = `▶ ${title}`;
-                if (playerStatus) {
-                    playerStatus.innerText = translations[currentLang].playing;
+            const parts = file.name.split('_');
+            let category = "autres";
+            let title = file.name;
+            let info = "";
+
+            if (parts.length >= 4) {
+                category = parts[1].replace('[', '').replace(']', '');
+                title = decodeURIComponent(parts[2].replace('[', '').replace(']', ''));
+                info = decodeURIComponent(parts[3].replace('[', '').replace(']', ''));
+                if (info.includes('.')) {
+                    info = info.substring(0, info.lastIndexOf('.'));
                 }
             }
-        };
-    }
 
-    function deletePodcastFromDB(id) {
-        if (confirm(translations[currentLang].confirmDelete)) {
-            const transaction = db.transaction(["podcasts"], "readwrite");
-            const store = transaction.objectStore("podcasts");
-            const deleteRequest = store.delete(id);
-            deleteRequest.onsuccess = () => loadPodcastsFromDB();
+            const targetGrid = document.getElementById(`grid-${category}`) || document.getElementById('grid-autres');
+
+            if (targetGrid) {
+                const { data: urlData } = SupabaseClient.storage.from('podcasts').getPublicUrl(file.name);
+                const filePublicUrl = urlData.publicUrl;
+
+                const card = document.createElement('div');
+                card.className = 'podcast-card';
+                card.innerHTML = `
+                    <div class="podcast-info">
+                        <h3>${title}</h3>
+                        <p>${info}</p>
+                    </div>
+                    <div class="podcast-actions-wrapper">
+                        <button class="btn-play" data-url="${filePublicUrl}" data-title="${title}">${translations[currentLang].listenBtn}</button>
+                        <button class="btn-delete" data-filename="${file.name}">&times;</button>
+                    </div>
+                `;
+                targetGrid.appendChild(card);
+                countAdded++;
+            }
+        });
+
+        if (countAdded === 0) {
+            categoriesList.forEach(cat => {
+                const grid = document.getElementById(`grid-${cat}`);
+                if (grid) grid.innerHTML = `<p style='color: var(--text-muted); text-align:center; padding:10px;'>${translations[currentLang].noPodcast}</p>`;
+            });
         }
+
+        document.querySelectorAll('.btn-play').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const audioUrl = btn.getAttribute('data-url');
+                const title = btn.getAttribute('data-title');
+                if (mainAudioPlayer) {
+                    mainAudioPlayer.src = audioUrl;
+                    mainAudioPlayer.play().catch(err => console.log(err));
+                    if (customPlayBtn) customPlayBtn.innerText = "⏸";
+                    if (currentTitle) currentTitle.innerText = `▶ ${title}`;
+                    if (playerStatus) playerStatus.innerText = translations[currentLang].playing;
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (confirm(translations[currentLang].confirmDelete)) {
+                    const fileNameToDelete = btn.getAttribute('data-filename');
+                    const { error } = await SupabaseClient.storage.from('podcasts').remove([fileNameToDelete]);
+                    if (error) {
+                        console.error("Erreur de suppression :", error);
+                        alert("Impossible de supprimer le fichier.");
+                    } else {
+                        loadPodcastsFromSupabase();
+                    }
+                }
+            });
+        });
+
+        rafraichirCompteurs();
     }
 
     function rafraichirCompteurs() {
@@ -590,7 +511,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return h > 0 ? `${h}:${mStr}:${sStr}` : `${mStr}:${sStr}`;
     }
 
-    // --- LOGIQUE ONGLETS ET ACCÈS SESSIONS ---
     function injectIALink() {
         if (!mainNav || document.getElementById('nav-ia-admin')) return;
         const iaLink = document.createElement('a');
@@ -650,7 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modalMenuParam) modalMenuParam.classList.add('hidden');
     });
 
-    // --- LOGIQUE DE CONNEXION AVEC EMPREINTE NUMÉRIQUE SECURISÉE ---
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -683,7 +602,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LOGOUT ---
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
             if (adminPanel) adminPanel.classList.add('hidden');
@@ -696,7 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- FERMETURE DES MODALES DE PARAMÈTRES (ACCÈS GLOBAL HTML) ---
 window.closeParamModal = function(modalId) {
     const targetModal = document.getElementById(modalId);
     if (targetModal) {
