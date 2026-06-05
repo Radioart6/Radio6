@@ -1,8 +1,3 @@
-// --- CONFIGURATION SUPABASE CENTRALISÉE ---
-const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
-
-const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 document.addEventListener('DOMContentLoaded', () => {
     // --- ÉLÉMENTS UI GLOBAUX ---
     const splashScreen = document.getElementById('splash-screen');
@@ -58,12 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmDelete: "Voulez-vous vraiment supprimer définitivement cette rediffusion ?",
             sectionTitle: "Liste des Rediffusions",
             adminTitle: "🛠️ Panneau de Gestion (Propriétaire)",
-            adminSubtitle: "Ajouter une nouvelle rediffusion (sans limite de taille) :",
+            adminSubtitle: "Ajouter une nouvelle rediffusion (via lien Internet Archive) :",
             lblTitle: "Titre de l'émission :",
             lblInfo: "Date ou détails :",
-            lblFile: "Sélectionner le fichier MP3 :",
+            lblFile: "Lien direct du MP3 :",
             btnSubmit: "Ajouter le podcast",
-            uploadStatus: "Envoi du fichier sur le serveur mondial en cours...",
+            uploadStatus: "Enregistrement du lien en cours...",
             btnLogout: "Se déconnecter",
             settingsTitle: "Réglages Généraux",
             settingsLang: "Langue :",
@@ -91,12 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmDelete: "Are you sure you want to permanently delete this replay?",
             sectionTitle: "Replay List",
             adminTitle: "🛠️ Management Panel (Owner)",
-            adminSubtitle: "Add a new replay (no size limit):",
+            adminSubtitle: "Add a new replay (via Internet Archive link):",
             lblTitle: "Show title:",
             lblInfo: "Date or details:",
-            lblFile: "Select MP3 file:",
+            lblFile: "Direct MP3 Link:",
             btnSubmit: "Add podcast",
-            uploadStatus: "Uploading to global server...",
+            uploadStatus: "Saving link...",
             btnLogout: "Log out",
             settingsTitle: "General Settings",
             settingsLang: "Language:",
@@ -124,12 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmDelete: "¿Estás seguro de que quieres eliminar permanentemente esta retransmisión?",
             sectionTitle: "Lista de Retransmisiones",
             adminTitle: "🛠️ Panel de Gestión (Propietario)",
-            adminSubtitle: "Añadir una nouvelle retransmisión (sin límite de tamaño):",
+            adminSubtitle: "Añadir una nouvelle retransmisión (vía enlace de Internet Archive):",
             lblTitle: "Título del programa:",
             lblInfo: "Fecha o détails:",
-            lblFile: "Seleccionar archivo MP3:",
+            lblFile: "Enlace directo MP3:",
             btnSubmit: "Añadir podcast",
-            uploadStatus: "Subiendo al servidor global...",
+            uploadStatus: "Guardando enlace...",
             btnLogout: "Cerrar sesión",
             settingsTitle: "Ajustes Génales",
             settingsLang: "Idioma:",
@@ -157,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedFont = localStorage.getItem('siteFont') || 'normal';
     if (savedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
 
-    // CHARGEMENT DIRECT DEPUIS SUPABASE AU CHARGEMENT DE LA PAGE
-    loadPodcastsFromSupabase();
+    // CHARGEMENT DIRECT DEPUIS LE STOCKAGE LOCAL AU CHARGEMENT DE LA PAGE
+    loadPodcastsFromLocal();
 
     // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
     document.querySelectorAll('.folder-box h3').forEach(header => {
@@ -205,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLang = e.target.value;
             localStorage.setItem('siteLang', currentLang);
             applyTranslations(currentLang);
-            loadPodcastsFromSupabase(); 
+            loadPodcastsFromLocal(); 
         });
     }
 
@@ -343,17 +338,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ENREGISTRER UN PODCAST DANS SUPABASE ---
+    // --- ENREGISTRER LE LIEN D'UN PODCAST (INTERNET ARCHIVE) ---
     if (addPodcastForm) {
         addPodcastForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const fileInput = document.getElementById('pod-file');
+            const urlInput = document.getElementById('pod-url'); // Nouvelle entrée de texte URL
             const categorySelect = document.getElementById('pod-category');
             const titleInput = document.getElementById('pod-title');
             const infoInput = document.getElementById('pod-info');
             
-            if (!fileInput || !fileInput.files.length) return;
-            const file = fileInput.files[0];
+            if (!urlInput || !urlInput.value.trim()) {
+                alert("Veuillez entrer le lien MP3 de votre émission.");
+                return;
+            }
+            const audioUrl = urlInput.value.trim();
 
             if (btnSubmitPodcast) btnSubmitPodcast.disabled = true;
             if (uploadStatus) uploadStatus.classList.remove('hidden');
@@ -361,44 +359,46 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = titleInput ? titleInput.value.trim() : "Sans titre";
             const info = infoInput ? infoInput.value.trim() : "";
             const category = categorySelect ? categorySelect.value : "autres";
-            
-            const fileExtension = file.name.split('.').pop();
-            const uniqueId = Date.now();
-            const encodedTitle = encodeURIComponent(title);
-            const encodedInfo = encodeURIComponent(info);
-            const customFileName = `${uniqueId}_[${category}]_[${encodedTitle}]_[${encodedInfo}].${fileExtension}`;
 
-// Envoi via SupabaseClient
-const { data, error } = await SupabaseClient.storage
-    .from('podcasts')
-    .upload(customFileName, file);
+            try {
+                // Modèle de notre objet podcast
+                const newPodcast = {
+                    id: Date.now().toString(),
+                    title: title,
+                    info: info,
+                    category: category,
+                    url: audioUrl
+                };
 
-            if (error) {
-                console.error("Erreur lors de l'envoi :", error);
-                alert("Erreur lors de l'envoi du fichier.");
-            } else {
+                // Sauvegarde locale dans le navigateur
+                let localPodcasts = JSON.parse(localStorage.getItem('radio_podcasts_local')) || [];
+                localPodcasts.push(newPodcast);
+                localStorage.setItem('radio_podcasts_local', JSON.stringify(localPodcasts));
+
                 addPodcastForm.reset();
-                loadPodcastsFromSupabase();
-            }
+                loadPodcastsFromLocal();
 
-            if (btnSubmitPodcast) btnSubmitPodcast.disabled = false;
-            if (uploadStatus) uploadStatus.classList.add('hidden');
+            } catch (error) {
+                console.error("Erreur d'enregistrement :", error);
+                alert("Erreur lors de la sauvegarde du podcast.");
+            } finally {
+                if (btnSubmitPodcast) btnSubmitPodcast.disabled = false;
+                if (uploadStatus) uploadStatus.classList.add('hidden');
+            }
         });
     }
 
-    // --- CHARGER LA GRILLE DEPUIS LE STORAGE DE SUPABASE ---
-    async function loadPodcastsFromSupabase() {
+    // --- CHARGER LA GRILLE DEPUIS LE STOCKAGE LOCAL ---
+    async function loadPodcastsFromLocal() {
         categoriesList.forEach(cat => {
             const grid = document.getElementById(`grid-${cat}`);
             if (grid) grid.innerHTML = "";
         });
 
-        // Lecture via SupabaseClient
-        const { data: files, error } = await SupabaseClient.storage
-            .from('podcasts')
-            .list('', { limit: 100, sortBy: { column: 'name', order: 'desc' } });
+        // Lecture des podcasts stockés localement
+        const podcasts = JSON.parse(localStorage.getItem('radio_podcasts_local')) || [];
 
-        if (error || !files || files.length === 0) {
+        if (podcasts.length === 0) {
             categoriesList.forEach(cat => {
                 const grid = document.getElementById(`grid-${cat}`);
                 if (grid) grid.innerHTML = `<p style='color: var(--text-muted); text-align:center; padding:10px;'>${translations[currentLang].noPodcast}</p>`;
@@ -409,39 +409,20 @@ const { data, error } = await SupabaseClient.storage
 
         let countAdded = 0;
 
-        files.forEach(file => {
-            if (file.name === '.emptyFolderPlaceholder') return;
-
-            const parts = file.name.split('_');
-            let category = "autres";
-            let title = file.name;
-            let info = "";
-
-            if (parts.length >= 4) {
-                category = parts[1].replace('[', '').replace(']', '');
-                title = decodeURIComponent(parts[2].replace('[', '').replace(']', ''));
-                info = decodeURIComponent(parts[3].replace('[', '').replace(']', ''));
-                if (info.includes('.')) {
-                    info = info.substring(0, info.lastIndexOf('.'));
-                }
-            }
-
-            const targetGrid = document.getElementById(`grid-${category}`) || document.getElementById('grid-autres');
+        podcasts.forEach(pod => {
+            const targetGrid = document.getElementById(`grid-${pod.category}`) || document.getElementById('grid-autres');
 
             if (targetGrid) {
-                const { data: urlData } = SupabaseClient.storage.from('podcasts').getPublicUrl(file.name);
-                const filePublicUrl = urlData.publicUrl;
-
                 const card = document.createElement('div');
                 card.className = 'podcast-card';
                 card.innerHTML = `
                     <div class="podcast-info">
-                        <h3>${title}</h3>
-                        <p>${info}</p>
+                        <h3>${pod.title}</h3>
+                        <p>${pod.info}</p>
                     </div>
                     <div class="podcast-actions-wrapper">
-                        <button class="btn-play" data-url="${filePublicUrl}" data-title="${title}">${translations[currentLang].listenBtn}</button>
-                        <button class="btn-delete" data-filename="${file.name}">&times;</button>
+                        <button class="btn-play" data-url="${pod.url}" data-title="${pod.title}">${translations[currentLang].listenBtn}</button>
+                        <button class="btn-delete" data-id="${pod.id}">&times;</button>
                     </div>
                 `;
                 targetGrid.appendChild(card);
@@ -456,6 +437,7 @@ const { data, error } = await SupabaseClient.storage
             });
         }
 
+        // Action bouton Lecture
         document.querySelectorAll('.btn-play').forEach(btn => {
             btn.addEventListener('click', () => {
                 const audioUrl = btn.getAttribute('data-url');
@@ -470,17 +452,15 @@ const { data, error } = await SupabaseClient.storage
             });
         });
 
+        // Action bouton Supprimer
         document.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', async () => {
+            btn.addEventListener('click', () => {
                 if (confirm(translations[currentLang].confirmDelete)) {
-                    const fileNameToDelete = btn.getAttribute('data-filename');
-                    const { error } = await SupabaseClient.storage.from('podcasts').remove([fileNameToDelete]);
-                    if (error) {
-                        console.error("Erreur de suppression :", error);
-                        alert("Impossible de supprimer le fichier.");
-                    } else {
-                        loadPodcastsFromSupabase();
-                    }
+                    const idToDelete = btn.getAttribute('data-id');
+                    let localPodcasts = JSON.parse(localStorage.getItem('radio_podcasts_local')) || [];
+                    localPodcasts = localPodcasts.filter(p => p.id !== idToDelete);
+                    localStorage.setItem('radio_podcasts_local', JSON.stringify(localPodcasts));
+                    loadPodcastsFromLocal(); // Rafraîchissement
                 }
             });
         });
