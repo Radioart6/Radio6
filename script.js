@@ -1,6 +1,6 @@
-// --- CONFIGURATION DE LA RADIO ---
-const URL_RADIO = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
-const KEY_RADIO = "eyJhbciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
+// --- CONFIGURATION SUPABASE CENTRALISÉE ---
+const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
 
 const SupabaseClient = window.supabase.createClient(URL_RADIO, KEY_RADIO);
 document.addEventListener('DOMContentLoaded', () => {
