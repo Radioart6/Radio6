@@ -1,6 +1,6 @@
 // --- CONFIGURATION SUPABASE CENTRALISÉE ---
 const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co"; 
-const SUPABASE_KEY = "sb_publishable_x1H1tQwiq82osTYEZSJwDg_qd0QhE29";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
 
 // On utilise un nom unique (SupabaseClient) pour éviter le conflit "already been declared"
 const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
