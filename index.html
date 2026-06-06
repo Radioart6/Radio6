@@ -191,8 +191,8 @@
                 <div class="update-box last">
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
-                        <li>Le bouton paramètre est accessible à tous le monde.</li>
-                        <li>Le site est maintenant accessible à tous le monde.</li>
+                        <li>Le bouton paramètre est accessible à tout le monde.</li>
+                        <li>Le site est maintenant accessible à tout le monde.</li>
                         <li>Optimisations générales du système.</li>
                     </ul>
                 </div>
@@ -235,7 +235,7 @@
     <div id="modal-menu-param" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeParamModal('modal-menu-param')">&times;</span>
-            <h3 style="color: #2563eb; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-sliders"></i> Réglages Général</h3>
+            <h3 style="color: #2563eb; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-sliders"></i> Réglages Généraux</h3>
             <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0 20px 0;">
             
             <div class="param-row">
@@ -250,7 +250,7 @@
             <div class="param-row">
                 <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
                 <select id="param-media">
-                    <option value="dark">Mode Sombre (Par défaut)</option>
+                    <option value="dark" selected>Mode Sombre (Par défaut)</option>
                     <option value="light">Mode Clair</option>
                 </select>
             </div>
@@ -267,7 +267,7 @@
             <div class="param-row">
                 <label><i class="fa-solid fa-font"></i> Type de police :</label>
                 <select id="param-police">
-                    <option value="normal">Normale (Par défaut)</option>
+                    <option value="normal" selected>Normale (Par défaut)</option>
                     <option value="dyslexic">OpenDyslexic</option>
                 </select>
             </div>
@@ -276,6 +276,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
     
 </body>
