@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedFont = localStorage.getItem('siteFont') || 'normal';
     if (savedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
 
-    // CHARGEMENT DEPUIS SUPABASE (ACCESSIBLE À TOUS LES APPAREILS)
+    // Chargement automatique global depuis Supabase au lancement
     loadPodcastsFromSupabase();
 
     // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const info = infoInput ? infoInput.value.trim() : "";
             const category = categorySelect ? categorySelect.value : "autres";
 
-            // Envoi des données (le lien texte) dans la table Supabase podcasts_ia
+            // Envoi des données du lien dans la table Supabase podcasts_ia
             const { data, error } = await SupabaseClient
                 .from('podcasts_ia')
                 .insert([{ title, info, category, url: audioUrl }]);
@@ -381,14 +381,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CHARGER LA GRILLE DEPUIS LA BASE SUPABASE ---
+    // --- CHARGER LA GRILLE COMMUNE DEPUIS SUPABASE ---
     async function loadPodcastsFromSupabase() {
         categoriesList.forEach(cat => {
             const grid = document.getElementById(`grid-${cat}`);
             if (grid) grid.innerHTML = "";
         });
 
-        // Lecture de la table globale Supabase
+        // Lecture globale pour tous les élèves du lycée
         const { data: podcasts, error } = await SupabaseClient
             .from('podcasts_ia')
             .select('*')
@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Bouton de lecture
+        // Gestion de la lecture
         document.querySelectorAll('.btn-play').forEach(btn => {
             btn.addEventListener('click', () => {
                 const audioUrl = btn.getAttribute('data-url');
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Bouton de suppression global
+        // Suppression de la ligne pour l'admin
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', async () => {
                 if (confirm(translations[currentLang].confirmDelete)) {
@@ -499,6 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (iaLink) iaLink.remove();
     }
 
+    // --- ACCÈS DIRECT ET ÉCRANS SPLASH ---
     if (sessionStorage.getItem('enteredSite') === 'true') {
         if (splashScreen) splashScreen.classList.add('hidden');
         if (mainContent) mainContent.classList.remove('hidden');
@@ -522,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- POPUP DE CONNEXION ---
     if (btnLoginOpen) {
         btnLoginOpen.addEventListener('click', () => {
             if (loginModal) loginModal.classList.remove('hidden');
