@@ -216,11 +216,23 @@
                     <option value="dyslexic">OpenDyslexic</option>
                 </select>
             </div>
+            <button class="btn-submit" style="margin-top: 15px; background: #a855f7; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
         </div>
     </div>
 
     <script src="translate-pages.js"></script>
     <script>
+        // Fonctions d'ouverture et de fermeture des fenêtres de dialogue (Modals) accessible globalement
+        window.openParamModal = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('hidden');
+        };
+
+        window.closeParamModal = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('hidden');
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             // Liste des mois de l'année scolaire de Septembre 2025 à Juin 2026
             const moisScolaires = [
@@ -259,12 +271,12 @@
                 { date: new Date('2025-11-01'), label: 'Toussaint' },
                 { date: new Date('2025-11-11'), label: 'Armistice' },
                 { date: new Date('2025-12-25'), label: 'Noël' },
-                { date: new Date('2026-01-01'), label: 'Jour de l\'an' },
-                { date: new Date('2026-04-06'), label: 'Lundi de Pâques' },
-                { date: new Date('2026-05-01'), label: 'Fête du Travail' },
-                { date: new Date('2026-05-08'), label: 'Victoire 1945' },
+                { date: new Date('2026-01-01'), label: 'Janvier' },
+                { date: new Date('2026-04-06'), label: 'Pâques' },
+                { date: new Date('2026-05-01'), label: 'Travail' },
+                { date: new Date('2026-05-08'), label: 'Victoire' },
                 { date: new Date('2026-05-14'), label: 'Ascension' },
-                { date: new Date('2026-05-25'), label: 'Lundi de Pentecôte' }
+                { date: new Date('2026-05-25'), label: 'Pentecôte' }
             ];
 
             const gridTarget = document.getElementById('calendar-grid-target');
@@ -307,8 +319,6 @@
                     const currentDate = new Date(currentMoisData.year, currentMoisData.index, day);
                     let dayOfWeek = currentDate.getDay();
 
-                    // --- DETECTION DES EVENEMENTS SPECIAUX ET COULEURS ---
-
                     // 1. Exception Orange : 12 Mai 2026
                     if (currentMoisData.year === 2026 && currentMoisData.index === 4 && day === 12) {
                         cell.classList.add('special-orange');
@@ -326,10 +336,8 @@
                         cell.appendChild(status);
                     }
                     else {
-                        // Vérification si c'est un jour férié ou des vacances
                         let raisonJaune = '';
 
-                        // Check jour férié
                         for (let jf of joursFeries) {
                             if (currentDate.getFullYear() === jf.date.getFullYear() &&
                                 currentDate.getMonth() === jf.date.getMonth() &&
@@ -339,7 +347,6 @@
                             }
                         }
 
-                        // Check vacances scolaires
                         if (!raisonJaune) {
                             for (let v of vacances) {
                                 if (currentDate >= v.start && currentDate <= v.end) {
@@ -349,7 +356,6 @@
                             }
                         }
 
-                        // Si c'est férié ou vacances -> Affichage en JAUNNE
                         if (raisonJaune) {
                             cell.classList.add('vacation-or-holiday');
                             const status = document.createElement('span');
@@ -357,7 +363,6 @@
                             status.innerText = raisonJaune;
                             cell.appendChild(status);
                         } 
-                        // Sinon, si c'est un Lundi ou Mardi normal avant la fin d'année -> VERT (Ouvert)
                         else {
                             const limitDate = new Date('2026-06-08');
                             if (currentDate <= limitDate && (dayOfWeek === 1 || dayOfWeek === 2)) {
@@ -396,21 +401,58 @@
 
             renderCurrentMonth();
 
-            if (localStorage.getItem('siteTheme') === 'light') document.body.classList.add('light-mode');
+            // --- CHARGEMENT ET SYNCHRONISATION DES REGLAGES (STYLE ET COULEURS) ---
+            const selectMedia = document.getElementById('param-media');
+            const selectTaille = document.getElementById('param-taille-police');
+            const selectPolice = document.getElementById('param-police');
+
+            // Appliquer les données sauvegardées
+            if (localStorage.getItem('siteTheme') === 'light') {
+                document.body.classList.add('light-mode');
+                if(selectMedia) selectMedia.value = "light";
+            }
             const pSize = localStorage.getItem('siteFontSize') || 'medium';
             document.body.classList.add(`font-${pSize}`);
-            if (localStorage.getItem('siteFont') === 'dyslexic') document.body.classList.add('font-dyslexic');
+            if(selectTaille) selectTaille.value = pSize;
+
+            if (localStorage.getItem('siteFont') === 'dyslexic') {
+                document.body.classList.add('font-dyslexic');
+                if(selectPolice) selectPolice.value = "dyslexic";
+            }
+
+            // Écouteurs pour mettre à jour en direct comme sur index.html
+            if(selectMedia) {
+                selectMedia.addEventListener('change', (e) => {
+                    if(e.target.value === 'light') {
+                        document.body.classList.add('light-mode');
+                        localStorage.setItem('siteTheme', 'light');
+                    } else {
+                        document.body.classList.remove('light-mode');
+                        localStorage.setItem('siteTheme', 'dark');
+                    }
+                });
+            }
+
+            if(selectTaille) {
+                selectTaille.addEventListener('change', (e) => {
+                    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+                    document.body.classList.add(`font-${e.target.value}`);
+                    localStorage.setItem('siteFontSize', e.target.value);
+                });
+            }
+
+            if(selectPolice) {
+                selectPolice.addEventListener('change', (e) => {
+                    if(e.target.value === 'dyslexic') {
+                        document.body.classList.add('font-dyslexic');
+                        localStorage.setItem('siteFont', 'dyslexic');
+                    } else {
+                        document.body.classList.remove('font-dyslexic');
+                        localStorage.setItem('siteFont', 'normal');
+                    }
+                });
+            }
         });
-
-        window.openParamModal = function(id) {
-            const m = document.getElementById(id);
-            if (m) m.classList.remove('hidden');
-        };
-
-        window.closeParamModal = function(id) {
-            const m = document.getElementById(id);
-            if (m) m.classList.add('hidden');
-        };
     </script>
 </body>
 </html>
