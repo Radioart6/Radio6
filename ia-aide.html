@@ -63,8 +63,8 @@
         <a href="index.html">Accueil</a>
         <a href="equipe.html">L'Équipe</a>
         <a href="aide.html">Aide</a>
-        <a href="ia-aide.html" class="active" style="color: #a855f7; font-weight: bold;">Aide 2.0</a>
         <a href="#" id="nav-calendrier" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
+        <a href="ia-aide.html" class="active" style="color: #a855f7; font-weight: bold;">Aide 2.0</a>
         <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
         <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
     </nav>
@@ -752,41 +752,71 @@
 </script>
 <div id="modal-travaux" class="modal hidden">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeParamModal('modal-travaux')">&times;</span>
-        <h3><i class="fa-solid fa-triangle-exclamation"></i> Zone en travaux</h3>
-        <p class="param-notice">Cette section est en cours de développement.</p>
+        <span class="close-modal" onclick="closeParamModal('modal-travaux')">&times;</span>
+        <h3 style="color: #f59e0b; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> Zone en travaux</h3>
+        <p class="param-notice">Cette section est actuellement en cours de développement ou nécessite des privilèges élevés pour être pleinement fonctionnelle.</p>
+        <div class="param-box-update">
+            <h5>Ajout récent :</h5>
+            <p>• Apparition de l'icône de configuration dans le menu principal.</p>
+        </div>
+        <div class="param-box-update future">
+            <h5>Évolution prévue :</h5>
+            <p>• Ce bouton permettra aux visiteurs d'ajuster leurs préférences de lecture.</p>
+        </div>
     </div>
 </div>
 
 <div id="modal-menu-param" class="modal hidden">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeParamModal('modal-menu-param')">&times;</span>
-        <h3><i class="fa-solid fa-sliders"></i> Réglages Général</h3>
+        <span class="close-modal" onclick="closeParamModal('modal-menu-param')">&times;</span>
+        <h3 style="color: #2563eb; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-sliders"></i> Réglages Généraux</h3>
+        <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0 20px 0;">
         
         <div class="param-row">
-            <label>Thème Visuel :</label>
+            <label><i class="fa-solid fa-language"></i> Langue :</label>
+            <select id="param-langue">
+                <option value="fr">Français</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+            </select>
+        </div>
+
+        <div class="param-row">
+            <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
             <select id="param-media">
-                <option value="dark">Mode Sombre</option>
+                <option value="dark">Mode Sombre (Par défaut)</option>
                 <option value="light">Mode Clair</option>
             </select>
         </div>
+
         <div class="param-row">
-            <label>Taille de la police :</label>
+            <label><i class="fa-solid fa-text-height"></i> Taille de la police :</label>
             <select id="param-taille-police">
                 <option value="small">Petite</option>
                 <option value="medium">Normale</option>
                 <option value="large">Grande</option>
             </select>
         </div>
+
         <div class="param-row">
-            <label>Type de police :</label>
+            <label><i class="fa-solid fa-font"></i> Type de police :</label>
             <select id="param-police">
-                <option value="normal">Normale</option>
+                <option value="normal">Normale (Par défaut)</option>
                 <option value="dyslexic">OpenDyslexic</option>
             </select>
         </div>
+        
+        <button class="btn-submit" style="margin-top: 15px;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
     </div>
 </div>
 
+<div id="modal-calendrier" class="modal hidden">
+    <div class="modal-content" style="max-width: 500px;">
+        <span class="close-modal" onclick="closeParamModal('modal-calendrier')">&times;</span>
+        <h3 style="color: #a855f7; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-calendar-days"></i> Calendrier des Émissions</h3>
+        <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
+        <p class="param-notice">Cette section est actuellement en cours de développement.</p>
+    </div>
+</div>
 </body>
 </html>
