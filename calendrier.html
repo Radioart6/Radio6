@@ -81,14 +81,56 @@
         .day-cell.active-day {
             color: #fff;
         }
+        
+        /* --- COULEURS DES ÉVÉNEMENTS --- */
+        /* Vert : Ouvert */
         .day-cell.open-radio {
-            border-color: #a855f7;
-            background-color: rgba(168, 85, 247, 0.15);
-            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+            border-color: #22c55e;
+            background-color: rgba(34, 197, 94, 0.15);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.1);
         }
+        .day-cell.open-radio .status-text {
+            color: #4ade80;
+        }
+        
+        /* Jaune : Vacances et Jours Fériés */
+        .day-cell.vacation-or-holiday {
+            border-color: #eab308;
+            background-color: rgba(234, 179, 8, 0.15);
+            box-shadow: 0 0 10px rgba(234, 179, 8, 0.1);
+        }
+        .day-cell.vacation-or-holiday .status-text {
+            color: #fde047;
+        }
+
+        /* Orange : Émission spéciale toute la journée (12 mai) */
+        .day-cell.special-orange {
+            border-color: #f97316;
+            background-color: rgba(249, 115, 22, 0.2);
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+        }
+        .day-cell.special-orange .status-text {
+            color: #ffedd5;
+            background-color: #f97316;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        /* Rouge : Fermeture spéciale (9 juin) */
+        .day-cell.closed-red {
+            border-color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+        }
+        .day-cell.closed-red .status-text {
+            color: #fee2e2;
+            background-color: #ef4444;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
         .status-text {
             font-size: 0.65rem;
-            color: #c084fc;
             font-weight: bold;
             text-transform: uppercase;
             margin-top: 4px;
@@ -115,7 +157,7 @@
                 <a href="ia-aide.html" style="color: #a855f7; font-weight: bold;">Aide 2.0</a>
                 <a href="calendrier.html" class="active" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
                 <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
-                <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+                <button id="param-btn" class="btn-nav-param" title="Paramètres" onclick="openParamModal('modal-menu-param')"><i class="fa-solid fa-gear"></i></button>
             </nav>
         </header>
 
@@ -199,19 +241,30 @@
             const currentYear = today.getFullYear();
             const currentMonth = today.getMonth();
 
-            // On cherche si le mois actuel fait partie de la liste scolaire
             let currentMonthPointer = moisScolaires.findIndex(m => m.index === currentMonth && m.year === currentYear);
-            
-            // Si on est hors période scolaire (ex: juillet/août), on se remet par défaut sur le premier mois (septembre)
             if (currentMonthPointer === -1) {
                 currentMonthPointer = 0;
             }
 
+            // Liste complète des vacances scolaires 2025-2026
             const vacances = [
-                { start: new Date('2025-10-18'), end: new Date('2025-11-03') },
-                { start: new Date('2025-12-20'), end: new Date('2025-01-05') },
-                { start: new Date('2025-02-07'), end: new Date('2025-02-23') },
-                { start: new Date('2025-04-04'), end: new Date('2025-04-20') }
+                { start: new Date('2025-10-18'), end: new Date('2025-11-03'), label: 'Vacances' },
+                { start: new Date('2025-12-20'), end: new Date('2025-01-05'), label: 'Vacances' },
+                { start: new Date('2025-02-07'), end: new Date('2025-02-23'), label: 'Vacances' },
+                { start: new Date('2025-04-04'), end: new Date('2025-04-20'), label: 'Vacances' }
+            ];
+
+            // Liste des jours fériés fixes/connus sur la période scolaire
+            const joursFeries = [
+                { date: new Date('2025-11-01'), label: 'Toussaint' },
+                { date: new Date('2025-11-11'), label: 'Armistice' },
+                { date: new Date('2025-12-25'), label: 'Noël' },
+                { date: new Date('2026-01-01'), label: 'Jour de l\'an' },
+                { date: new Date('2026-04-06'), label: 'Lundi de Pâques' },
+                { date: new Date('2026-05-01'), label: 'Fête du Travail' },
+                { date: new Date('2026-05-08'), label: 'Victoire 1945' },
+                { date: new Date('2026-05-14'), label: 'Ascension' },
+                { date: new Date('2026-05-25'), label: 'Lundi de Pentecôte' }
             ];
 
             const gridTarget = document.getElementById('calendar-grid-target');
@@ -224,7 +277,6 @@
                 titleTarget.innerText = currentMoisData.name;
                 gridTarget.innerHTML = '';
 
-                // Jours de la semaine commençant par Lundi
                 const joursSemaine = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
                 joursSemaine.forEach(j => {
                     const label = document.createElement('div');
@@ -233,26 +285,20 @@
                     gridTarget.appendChild(label);
                 });
 
-                // Calcul du premier jour du mois
                 let firstDayIndex = new Date(currentMoisData.year, currentMoisData.index, 1).getDay();
-                
-                // Adaptation de l'index pour commencer la semaine le Lundi (0: Lun, 1: Mar, ..., 6: Dim)
-                // getDay() renvoie 0 pour Dimanche, 1 pour Lundi, etc.
                 firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
 
                 const totalDays = new Date(currentMoisData.year, currentMoisData.index + 1, 0).getDate();
 
-                // Cases vides de début de mois
                 for (let i = 0; i < firstDayIndex; i++) {
                     const emptyCell = document.createElement('div');
                     emptyCell.className = 'day-cell empty';
                     gridTarget.appendChild(emptyCell);
                 }
 
-                // Construction des jours du mois
                 for (let day = 1; day <= totalDays; day++) {
                     const cell = document.createElement('div');
-                    cell.className = 'day-cell';
+                    cell.className = 'day-cell active-day';
                     
                     const dayNum = document.createElement('span');
                     dayNum.innerText = day;
@@ -261,34 +307,72 @@
                     const currentDate = new Date(currentMoisData.year, currentMoisData.index, day);
                     let dayOfWeek = currentDate.getDay();
 
-                    const limitDate = new Date('2026-06-08');
+                    // --- DETECTION DES EVENEMENTS SPECIAUX ET COULEURS ---
 
-                    if (currentDate <= limitDate && (dayOfWeek === 1 || dayOfWeek === 2)) {
-                        let enVacances = false;
-                        for (let v of vacances) {
-                            if (currentDate >= v.start && currentDate <= v.end) {
-                                enVacances = true;
+                    // 1. Exception Orange : 12 Mai 2026
+                    if (currentMoisData.year === 2026 && currentMoisData.index === 4 && day === 12) {
+                        cell.classList.add('special-orange');
+                        const status = document.createElement('span');
+                        status.className = 'status-text';
+                        status.innerText = 'Emission toute la journée';
+                        cell.appendChild(status);
+                    }
+                    // 2. Exception Rouge : 9 Juin 2026
+                    else if (currentMoisData.year === 2026 && currentMoisData.index === 5 && day === 9) {
+                        cell.classList.add('closed-red');
+                        const status = document.createElement('span');
+                        status.className = 'status-text';
+                        status.innerText = 'web radio fermé';
+                        cell.appendChild(status);
+                    }
+                    else {
+                        // Vérification si c'est un jour férié ou des vacances
+                        let raisonJaune = '';
+
+                        // Check jour férié
+                        for (let jf of joursFeries) {
+                            if (currentDate.getFullYear() === jf.date.getFullYear() &&
+                                currentDate.getMonth() === jf.date.getMonth() &&
+                                currentDate.getDate() === jf.date.getDate()) {
+                                raisonJaune = jf.label;
                                 break;
                             }
                         }
 
-                        if (!enVacances) {
-                            cell.classList.add('open-radio');
+                        // Check vacances scolaires
+                        if (!raisonJaune) {
+                            for (let v of vacances) {
+                                if (currentDate >= v.start && currentDate <= v.end) {
+                                    raisonJaune = v.label;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // Si c'est férié ou vacances -> Affichage en JAUNNE
+                        if (raisonJaune) {
+                            cell.classList.add('vacation-or-holiday');
                             const status = document.createElement('span');
                             status.className = 'status-text';
-                            status.innerText = 'web radio ouvert';
+                            status.innerText = raisonJaune;
                             cell.appendChild(status);
-                        } else {
-                            cell.classList.add('active-day');
+                        } 
+                        // Sinon, si c'est un Lundi ou Mardi normal avant la fin d'année -> VERT (Ouvert)
+                        else {
+                            const limitDate = new Date('2026-06-08');
+                            if (currentDate <= limitDate && (dayOfWeek === 1 || dayOfWeek === 2)) {
+                                cell.classList.add('open-radio');
+                                const status = document.createElement('span');
+                                status.className = 'status-text';
+                                status.innerText = 'web radio ouvert';
+                                cell.appendChild(status);
+                            }
                         }
-                    } else if (currentDate <= new Date('2026-06-30')) {
-                        cell.classList.add('active-day');
                     }
 
                     gridTarget.appendChild(cell);
                 }
 
-                // Désactivation/Activation des boutons aux extrémités de l'année scolaire
                 btnPrev.style.opacity = currentMonthPointer === 0 ? "0.4" : "1";
                 btnPrev.style.pointerEvents = currentMonthPointer === 0 ? "none" : "auto";
 
@@ -296,7 +380,6 @@
                 btnNext.style.pointerEvents = currentMonthPointer === moisScolaires.length - 1 ? "none" : "auto";
             }
 
-            // Événements boutons de navigation
             btnPrev.addEventListener('click', () => {
                 if (currentMonthPointer > 0) {
                     currentMonthPointer--;
@@ -311,25 +394,22 @@
                 }
             });
 
-            // Initialisation globale
             renderCurrentMonth();
 
-            // Gestionnaires basiques d'interface (Thème et Modals)
             if (localStorage.getItem('siteTheme') === 'light') document.body.classList.add('light-mode');
             const pSize = localStorage.getItem('siteFontSize') || 'medium';
             document.body.classList.add(`font-${pSize}`);
             if (localStorage.getItem('siteFont') === 'dyslexic') document.body.classList.add('font-dyslexic');
-
-            const pBtn = document.getElementById('param-btn');
-            if (pBtn) {
-                pBtn.addEventListener('click', () => {
-                    document.getElementById('modal-menu-param').classList.remove('hidden');
-                });
-            }
         });
 
+        window.openParamModal = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('hidden');
+        };
+
         window.closeParamModal = function(id) {
-            document.getElementById(id).classList.add('hidden');
+            const m = document.getElementById(id);
+            if (m) m.classList.add('hidden');
         };
     </script>
 </body>
