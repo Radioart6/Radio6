@@ -499,100 +499,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (iaLink) iaLink.remove();
     }
 
-    // --- GESTION DU VRAI CALENDRIER DYNAMIQUE (Ajouté) ---
-    let calendarDate = new Date();
-
-    function renderCalendar() {
-        const monthYearDisplay = document.getElementById('cal-month-year');
-        const daysContainer = document.getElementById('calendar-days');
-        if (!monthYearDisplay || !daysContainer) return;
-
-        daysContainer.innerHTML = '';
-
-        const year = calendarDate.getFullYear();
-        const month = calendarDate.getMonth();
-
-        const monthNames = [
-            "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
-            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
-        ];
-        monthYearDisplay.innerText = `${monthNames[month]} ${year}`;
-
-        const firstDayIndex = new Date(year, month, 1).getDay();
-        const lastDay = new Date(year, month + 1, 0).getDate();
-
-        for (let i = 0; i < firstDayIndex; i++) {
-            const emptyDiv = document.createElement('div');
-            daysContainer.appendChild(emptyDiv);
-        }
-
-        const today = new Date();
-        for (let day = 1; day <= lastDay; day++) {
-            const dayDiv = document.createElement('div');
-            dayDiv.innerText = day;
-            dayDiv.style.padding = "8px";
-            dayDiv.style.borderRadius = "6px";
-            dayDiv.style.color = "white";
-            dayDiv.style.fontSize = "0.9rem";
-            dayDiv.style.background = "#334155";
-
-            if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                dayDiv.style.background = "var(--accent)";
-                dayDiv.style.fontWeight = "bold";
-                dayDiv.style.border = "2px solid white";
-            }
-
-            daysContainer.appendChild(dayDiv);
-        }
-    }
-
-    const calPrev = document.getElementById('cal-prev');
-    const calNext = document.getElementById('cal-next');
-    if (calPrev) {
-        calPrev.addEventListener('click', () => {
-            calendarDate.setMonth(calendarDate.getMonth() - 1);
-            renderCalendar();
-        });
-    }
-    if (calNext) {
-        calNext.addEventListener('click', () => {
-            calendarDate.setMonth(calendarDate.getMonth() + 1);
-            renderCalendar();
-        });
-    }
-
-    function injectCalendarLink() {
-        if (!mainNav || document.getElementById('nav-calendrier-admin')) return;
-        const calLink = document.createElement('a');
-        calLink.href = '#';
-        calLink.id = 'nav-calendrier-admin';
-        calLink.style.color = '#a855f7';
-        calLink.style.fontWeight = 'bold';
-        calLink.innerText = '🗓️ Calendrier';
-        
-        calLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (sessionStorage.getItem('adminMode') !== 'true') {
-                if (modalTravaux) modalTravaux.classList.remove('hidden');
+// --- GESTION DU BOUTON CALENDRIER GÉNÉRAL ---
+    const btnCalendrier = document.getElementById('nav-calendrier');
+    if (btnCalendrier) {
+        btnCalendrier.addEventListener('click', (e) => {
+            // Si on est connecté en admin, le bouton nous redirige vers la page calendrier
+            if (sessionStorage.getItem('adminMode') === 'true') {
+                window.location.href = 'calendrier.html';
             } else {
-                const modalCal = document.getElementById('modal-calendrier');
-                if (modalCal) {
-                    modalCal.classList.remove('hidden');
-                    renderCalendar();
-                }
+                // Si on est un simple visiteur, on bloque le clic et on affiche la zone en travaux
+                e.preventDefault();
+                const modalTravaux = document.getElementById('modal-travaux');
+                if (modalTravaux) modalTravaux.classList.remove('hidden');
             }
         });
-
-        const instaLink = mainNav.querySelector('a[href*="instagram.com"]');
-        if (instaLink) mainNav.insertBefore(calLink, instaLink);
-        else mainNav.appendChild(calLink);
     }
-
-    function removeCalendarLink() {
-        const calLink = document.getElementById('nav-calendrier-admin');
-        if (calLink) calLink.remove();
-    }
-
     // --- ACCÈS DIRECT ET ÉCRANS SPLASH ---
     if (sessionStorage.getItem('enteredSite') === 'true') {
         if (splashScreen) splashScreen.classList.add('hidden');
