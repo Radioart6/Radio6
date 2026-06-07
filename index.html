@@ -279,6 +279,28 @@
             <button class="btn-submit" style="margin-top: 15px;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
         </div>
     </div>
+    <div id="modal-calendrier" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" onclick="closeParamModal('modal-calendrier')">&times;</span>
+            <h3 style="color: #a855f7; font-size: 1.4rem; margin-top: 5px;">
+                <i class="fa-solid fa-calendar-days"></i> Calendrier des Émissions
+            </h3>
+            <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
+            
+            <div class="calendar-container" style="background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
+                <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <button id="cal-prev" style="background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">&lt;</button>
+                    <h4 id="cal-month-year" style="margin: 0; color: white;"></h4>
+                    <button id="cal-next" style="background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">&gt;</button>
+                </div>
+                <div class="calendar-weekdays" style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #94a3b8; font-size: 0.85rem; margin-bottom: 10px;">
+                    <div>Dim</div><div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div>
+                </div>
+                <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center;">
+                    </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
