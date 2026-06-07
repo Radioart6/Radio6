@@ -111,19 +111,19 @@
     <script src="translate-pages.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // 1. Vérification du Thème Visuel
+        // 1. Récupération des réglages sauvegardés
         const savedTheme = localStorage.getItem('siteTheme') || 'dark';
         if (savedTheme === 'light') document.body.classList.add('light-mode');
 
-        // 2. Vérification de la TAILLE de la police
         const savedSize = localStorage.getItem('siteFontSize') || 'medium';
         document.body.classList.add(`font-${savedSize}`);
 
-        // 3. Vérification du TYPE de police
         const savedFont = localStorage.getItem('siteFont') || 'normal';
         if (savedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
 
-        // --- CORRECTION : OUVERTURE DU MENU PARAMÈTRES ---
+        const savedLang = localStorage.getItem('siteLang') || 'fr';
+
+        // --- GESTION DU MENU PARAMÈTRES ---
         const paramBtn = document.getElementById('param-btn');
         const modalMenuParam = document.getElementById('modal-menu-param');
         
@@ -133,13 +133,21 @@
             });
         }
 
-        // Changements dynamiques dans la page d'équipe
+        // Éléments des paramètres
         const selectPolice = document.getElementById('param-police');
         const selectTaille = document.getElementById('param-taille-police');
         const selectTheme = document.getElementById('param-media');
+        const selectLangue = document.getElementById('param-langue');
+        const btnSaveParam = document.getElementById('btn-save-param');
 
+        // Initialisation des valeurs dans le menu
+        if (selectPolice) selectPolice.value = savedFont;
+        if (selectTaille) selectTaille.value = savedSize;
+        if (selectTheme) selectTheme.value = savedTheme;
+        if (selectLangue) selectLangue.value = savedLang;
+
+        // Écouteurs de changements
         if (selectPolice) {
-            selectPolice.value = savedFont;
             selectPolice.addEventListener('change', (e) => {
                 const selectedFont = e.target.value;
                 localStorage.setItem('siteFont', selectedFont);
@@ -149,7 +157,6 @@
         }
 
         if (selectTaille) {
-            selectTaille.value = savedSize;
             selectTaille.addEventListener('change', (e) => {
                 const selectedSize = e.target.value;
                 localStorage.setItem('siteFontSize', selectedSize);
@@ -159,12 +166,28 @@
         }
 
         if (selectTheme) {
-            selectTheme.value = savedTheme;
             selectTheme.addEventListener('change', (e) => {
                 const selectedTheme = e.target.value;
                 localStorage.setItem('siteTheme', selectedTheme);
                 if (selectedTheme === 'light') document.body.classList.add('light-mode');
                 else document.body.classList.remove('light-mode');
+            });
+        }
+
+        if (selectLangue) {
+            selectLangue.addEventListener('change', (e) => {
+                const selectedLang = e.target.value;
+                localStorage.setItem('siteLang', selectedLang);
+                if (typeof window.applyTranslations === 'function') {
+                    window.applyTranslations(selectedLang);
+                }
+            });
+        }
+
+        // Le bouton Enregistrer ferme le modal
+        if (btnSaveParam && modalMenuParam) {
+            btnSaveParam.addEventListener('click', () => {
+                modalMenuParam.classList.add('hidden');
             });
         }
     });
@@ -200,14 +223,14 @@
         <h3><i class="fa-solid fa-sliders"></i> Réglages Général</h3>
         
         <div class="param-row">
-            <label>Thème Visuel :</label>
+            <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
             <select id="param-media">
-                <option value="dark">Mode Sombre</option>
+                <option value="dark">Mode Sombre (Par défaut)</option>
                 <option value="light">Mode Clair</option>
             </select>
         </div>
         <div class="param-row">
-            <label>Taille de la police :</label>
+            <label><i class="fa-solid fa-font"></i> Taille de la police :</label>
             <select id="param-taille-police">
                 <option value="small">Petite</option>
                 <option value="medium">Normale</option>
@@ -215,11 +238,24 @@
             </select>
         </div>
         <div class="param-row">
-            <label>Type de police :</label>
+            <label><i class="fa-solid fa-font"></i> Type de police :</label>
             <select id="param-police">
                 <option value="normal">Normale</option>
                 <option value="dyslexic">OpenDyslexic</option>
             </select>
+        </div>
+        <div class="param-row">
+            <label><i class="fa-solid fa-earth-americas"></i> Langue du site :</label>
+            <select id="param-langue">
+                <option value="fr">Français</option>
+                <option value="en">English (Anglais)</option>
+                <option value="es">Español (Espagnol)</option>
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 1.5rem; justify-content: flex-end;">
+            <button onclick="closeParamModal('modal-menu-param')" class="btn-secondary" style="background: #334155; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: bold;">Fermer</button>
+            <button id="btn-save-param" class="btn-submit" style="background: var(--primary); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: bold;">Enregistrer les réglages</button>
         </div>
     </div>
 </div>
