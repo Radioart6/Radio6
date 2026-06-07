@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio 6 - Calendrier</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .calendar-page-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .days-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .day-card {
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .day-date {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .day-status {
+            font-size: 0.9rem;
+            color: #34d399;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-content">
+        <header>
+            <div class="logo-area">
+                <img src="logo.png" alt="Radio 6" class="header-logo">
+                <div>
+                    <strong class="site-title">RADIO 6</strong><br>
+                    <small class="site-subtitle">Lycée Arcisse de Caumont</small>
+                </div>
+            </div>
+            <nav id="main-nav">
+                <a href="index.html">Accueil</a>
+                <a href="equipe.html">L'Équipe</a>
+                <a href="aide.html">Aide</a>
+                <a href="calendrier.html" class="active" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
+                <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
+            </nav>
+        </header>
+
+        <main class="calendar-page-container">
+            <h2 style="color: #a855f7;"><i class="fa-solid fa-calendar-days"></i> Jours d'ouverture de la Web Radio</h2>
+            <p style="color: var(--text-muted);">Liste de tous les lundis et mardis d'activité pour l'année scolaire 2025 - 2026 (hors vacances scolaires).</p>
+            
+            <div id="calendar-list" class="days-list">
+                </div>
+        </main>
+
+        <footer>
+            <p>© 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Vérification de sécurité : si l'admin n'est pas connecté, retour à l'accueil
+        if (sessionStorage.getItem('adminMode') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('calendar-list');
+            
+            // Périodes de vacances scolaires 2025-2026 (Zone B)
+            const vacances = [
+                { start: new Date('2025-10-18'), end: new Date('2025-11-03') }, // Toussaint
+                { start: new Date('2025-12-20'), end: new Date('2025-01-05') }, // Noël
+                { start: new Date('2025-02-07'), end: new Date('2025-02-23') }, // Hiver
+                { start: new Date('2025-04-04'), end: new Date('2025-04-20') }  // Printemps
+            ];
+
+            const startDate = new Date('2025-09-01');
+            const endDate = new Date('2026-06-08'); // S'arrête le lundi 8 juin au soir
+
+            let current = new Date(startDate);
+            
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+
+            while (current <= endDate) {
+                const dayOfWeek = current.getDay(); // 1 = Lundi, 2 = Mardi
+                
+                if (dayOfWeek === 1 || dayOfWeek === 2) {
+                    // Vérifier si le jour tombe pendant les vacances
+                    let estEnVacances = false;
+                    for (let v of vacances) {
+                        if (current >= v.start && current <= v.end) {
+                            estEnVacances = true;
+                            break;
+                        }
+                    }
+
+                    // Si ce n'est pas les vacances, on l'affiche !
+                    if (!estEnVacances) {
+                        const card = document.createElement('div');
+                        card.className = 'day-card';
+                        
+                        // Formater la date en français propre
+                        let dateString = current.toLocaleDateString('fr-FR', options);
+                        // Mettre la première lettre en majuscule
+                        dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+
+                        card.innerHTML = `
+                            <div class="day-date">${dateString}</div>
+                            <div class="day-status"><i class="fa-solid fa-circle-check"></i> web radio ouvert</div>
+                        `;
+                        container.appendChild(card);
+                    }
+                }
+                // Passer au jour suivant
+                current.setDate(current.getDate() + 1);
+            }
+        });
+    </script>
+</body>
+</html>
