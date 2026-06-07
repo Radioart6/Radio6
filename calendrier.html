@@ -8,31 +8,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .calendar-page-container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
-        .months-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 2.5rem;
-            margin-top: 2rem;
-        }
-        .month-section {
+        .calendar-box {
             background-color: var(--card-bg);
             border: 1px solid #334155;
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        .month-title {
-            color: #a855f7;
-            font-size: 1.3rem;
-            margin-top: 0;
-            margin-bottom: 1rem;
-            text-transform: capitalize;
+        .calendar-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
             border-bottom: 1px solid #334155;
-            padding-bottom: 0.5rem;
+            padding-bottom: 1rem;
+        }
+        .calendar-navigation h3 {
+            color: #a855f7;
+            font-size: 1.4rem;
+            margin: 0;
+            text-transform: capitalize;
+        }
+        .nav-cal-btn {
+            background: #a855f7;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .nav-cal-btn:hover {
+            background: #9333ea;
         }
         .calendar-grid {
             display: grid;
@@ -40,48 +55,44 @@
             gap: 8px;
             text-align: center;
         }
-        .weekday-headers {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            text-align: center;
+        .weekday-label {
             font-weight: bold;
             color: #94a3b8;
+            padding-bottom: 5px;
             font-size: 0.9rem;
-            margin-bottom: 0.5rem;
         }
         .day-cell {
-            background: #1e293b;
+            background-color: #1e293b;
             border: 1px solid #334155;
             border-radius: 6px;
-            padding: 10px 5px;
-            min-height: 55px;
+            padding: 0.75rem 0.25rem;
+            min-height: 65px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
-            color: #64748b;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: #cbd5e1;
         }
         .day-cell.empty {
-            background: transparent;
+            background-color: transparent;
             border: none;
         }
         .day-cell.active-day {
-            color: white;
+            color: #fff;
         }
         .day-cell.open-radio {
-            background-color: #065f46;
-            border-color: #34d399;
-            color: white;
-            font-weight: bold;
+            border-color: #a855f7;
+            background-color: rgba(168, 85, 247, 0.15);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
         }
         .status-text {
             font-size: 0.65rem;
-            color: #34d399;
-            margin-top: 4px;
+            color: #c084fc;
+            font-weight: bold;
             text-transform: uppercase;
-            line-height: 1;
+            margin-top: 4px;
+            line-height: 1.1;
         }
     </style>
 </head>
@@ -97,34 +108,95 @@
                 </div>
             </div>
             <nav id="main-nav">
+                <button id="btn-login-open" class="btn-nav-login">Connexion</button>
                 <a href="index.html">Accueil</a>
                 <a href="equipe.html">L'Équipe</a>
                 <a href="aide.html">Aide</a>
+                <a href="ia-aide.html" style="color: #a855f7; font-weight: bold;">Aide 2.0</a>
                 <a href="calendrier.html" class="active" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
                 <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
+                <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
             </nav>
         </header>
 
-        <main class="calendar-page-container">
-            <h2 style="color: #a855f7;"><i class="fa-solid fa-calendar-days"></i> Calendrier de la Web Radio</h2>
-            <p style="color: var(--text-muted);">Vue mensuelle des jours d'ouverture (lundis et mardis) pour l'année scolaire 2025 - 2026.</p>
-            
-            <div id="months-container" class="months-grid"></div>
+        <main>
+            <div class="calendar-page-container">
+                <div class="calendar-box">
+                    <div class="calendar-navigation">
+                        <button class="nav-cal-btn" id="btn-prev"><i class="fa-solid fa-chevron-left"></i> Précédent</button>
+                        <h3 id="calendar-title">Mois Année</h3>
+                        <button class="nav-cal-btn" id="btn-next">Suivant <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendar-grid-target">
+                        </div>
+                </div>
+            </div>
         </main>
 
         <footer>
-            <p>© 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux.</p>
+            <p id="footer-text">© 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux.</p>
         </footer>
     </div>
 
-    <script>
-        if (sessionStorage.getItem('adminMode') !== 'true') {
-            window.location.href = 'index.html';
-        }
+    <div id="modal-travaux" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeParamModal('modal-travaux')">&times;</span>
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> Zone en travaux</h3>
+            <p class="param-notice">Cette section est en cours de développement.</p>
+        </div>
+    </div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('months-container');
+    <div id="modal-menu-param" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeParamModal('modal-menu-param')">&times;</span>
+            <h3><i class="fa-solid fa-sliders"></i> Réglages Général</h3>
             
+            <div class="param-row">
+                <label>Thème Visuel :</label>
+                <select id="param-media">
+                    <option value=\"dark\">Mode Sombre</option>
+                    <option value=\"light\">Mode Clair</option>
+                </select>
+            </div>
+            <div class="param-row">
+                <label>Taille de la police :</label>
+                <select id="param-taille-police">
+                    <option value="small">Petite</option>
+                    <option value="medium">Normale</option>
+                    <option value="large">Grande</option>
+                </select>
+            </div>
+            <div class="param-row">
+                <label>Type de police :</label>
+                <select id="param-police">
+                    <option value="normal">Normale</option>
+                    <option value="dyslexic">OpenDyslexic</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script src="translate-pages.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Liste des mois de l'année scolaire de Septembre 2025 à Juin 2026
+            const moisScolaires = [
+                { name: "septembre 2025", index: 8, year: 2025 },
+                { name: "octobre 2025", index: 9, year: 2025 },
+                { name: "novembre 2025", index: 10, year: 2025 },
+                { name: "décembre 2025", index: 11, year: 2025 },
+                { name: "janvier 2026", index: 0, year: 2026 },
+                { name: "février 2026", index: 1, year: 2026 },
+                { name: "mars 2026", index: 2, year: 2026 },
+                { name: "avril 2026", index: 3, year: 2026 },
+                { name: "mai 2026", index: 4, year: 2026 },
+                { name: "juin 2026", index: 5, year: 2026 }
+            ];
+
+            // On se cale par défaut sur le mois actuel si possible, sinon sur le premier mois (Septembre)
+            let currentMonthPointer = 1; // Index 1 = Octobre 2025 par défaut
+
             const vacances = [
                 { start: new Date('2025-10-18'), end: new Date('2025-11-03') },
                 { start: new Date('2025-12-20'), end: new Date('2025-01-05') },
@@ -132,47 +204,36 @@
                 { start: new Date('2025-04-04'), end: new Date('2025-04-20') }
             ];
 
-            const monthNames = [
-                "Septembre 2025", "Octobre 2025", "Novembre 2025", "Décembre 2025",
-                "Janvier 2026", "Février 2026", "Mars 2026", "Avril 2026", "Mai 2026", "Juin 2026"
-            ];
+            const gridTarget = document.getElementById('calendar-grid-target');
+            const titleTarget = document.getElementById('calendar-title');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
 
-            // On boucle sur chaque mois de l'année scolaire
-            for (let m = 0; m < 10; m++) {
-                let year = m < 4 ? 2025 : 2026;
-                let monthIndex = m < 4 ? (8 + m) : (m - 4); // Commence en Septembre (8) et finit en Juin (5)
+            function renderCurrentMonth() {
+                const currentMoisData = moisScolaires[currentMonthPointer];
+                titleTarget.innerText = currentMoisData.name;
+                gridTarget.innerHTML = '';
 
-                const monthSection = document.createElement('div');
-                monthSection.className = 'month-section';
+                // Jours de la semaine
+                const joursSemaine = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+                joursSemaine.forEach(j => {
+                    const label = document.createElement('div');
+                    label.className = 'weekday-label';
+                    label.innerText = j;
+                    gridTarget.appendChild(label);
+                });
 
-                const title = document.createElement('h3');
-                title.className = 'month-title';
-                title.innerText = monthNames[m];
-                monthSection.appendChild(title);
+                const firstDayIndex = new Date(currentMoisData.year, currentMoisData.index, 1).getDay();
+                const totalDays = new Date(currentMoisData.year, currentMoisData.index + 1, 0).getDate();
 
-                const headers = document.createElement('div');
-                headers.className = 'weekday-headers';
-                headers.innerHTML = '<div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>';
-                monthSection.appendChild(headers);
-
-                const grid = document.createElement('div');
-                grid.className = 'calendar-grid';
-
-                // Déterminer le premier jour du mois (0 = Dimanche, 1 = Lundi...)
-                let firstDay = new Date(year, monthIndex, 1).getDay();
-                // Ajuster pour commencer par le Lundi (1) au lieu du Dimanche (0)
-                let startOffset = firstDay === 0 ? 6 : firstDay - 1;
-
-                // Cases vides du début du mois
-                for (let i = 0; i < startOffset; i++) {
+                // Cases vides de début de mois
+                for (let i = 0; i < firstDayIndex; i++) {
                     const emptyCell = document.createElement('div');
                     emptyCell.className = 'day-cell empty';
-                    grid.appendChild(emptyCell);
+                    gridTarget.appendChild(emptyCell);
                 }
 
-                // Nombre total de jours dans le mois
-                let totalDays = new Date(year, monthIndex + 1, 0).getDate();
-
+                // Construction des jours du mois
                 for (let day = 1; day <= totalDays; day++) {
                     const cell = document.createElement('div');
                     cell.className = 'day-cell';
@@ -181,10 +242,9 @@
                     dayNum.innerText = day;
                     cell.appendChild(dayNum);
 
-                    let currentDate = new Date(year, monthIndex, day);
-                    let dayOfWeek = currentDate.getDay(); // 1 = Lundi, 2 = Mardi
+                    const currentDate = new Date(currentMoisData.year, currentMoisData.index, day);
+                    let dayOfWeek = currentDate.getDay();
 
-                    // Règles restrictives d'affichage (Max 8 Juin 2026, pas le 9 juin)
                     const limitDate = new Date('2026-06-08');
 
                     if (currentDate <= limitDate && (dayOfWeek === 1 || dayOfWeek === 2)) {
@@ -209,13 +269,52 @@
                         cell.classList.add('active-day');
                     }
 
-                    grid.appendChild(cell);
+                    gridTarget.appendChild(cell);
                 }
 
-                monthSection.appendChild(grid);
-                container.appendChild(monthSection);
+                // Désactivation/Activation des boutons aux extrémités de l'année scolaire
+                btnPrev.style.opacity = currentMonthPointer === 0 ? "0.4" : "1";
+                btnPrev.style.pointerEvents = currentMonthPointer === 0 ? "none" : "auto";
+
+                btnNext.style.opacity = currentMonthPointer === moisScolaires.length - 1 ? "0.4" : "1";
+                btnNext.style.pointerEvents = currentMonthPointer === moisScolaires.length - 1 ? "none" : "auto";
+            }
+
+            // Événements boutons de navigation
+            btnPrev.addEventListener('click', () => {
+                if (currentMonthPointer > 0) {
+                    currentMonthPointer--;
+                    renderCurrentMonth();
+                }
+            });
+
+            btnNext.addEventListener('click', () => {
+                if (currentMonthPointer < moisScolaires.length - 1) {
+                    currentMonthPointer++;
+                    renderCurrentMonth();
+                }
+            });
+
+            // Initialisation globale
+            renderCurrentMonth();
+
+            // Gestionnaires basiques d'interface (Thème et Modals)
+            if (localStorage.getItem('siteTheme') === 'light') document.body.classList.add('light-mode');
+            const pSize = localStorage.getItem('siteFontSize') || 'medium';
+            document.body.classList.add(`font-${pSize}`);
+            if (localStorage.getItem('siteFont') === 'dyslexic') document.body.classList.add('font-dyslexic');
+
+            const pBtn = document.getElementById('param-btn');
+            if (pBtn) {
+                pBtn.addEventListener('click', () => {
+                    document.getElementById('modal-menu-param').classList.remove('hidden');
+                });
             }
         });
+
+        window.closeParamModal = function(id) {
+            document.getElementById(id).classList.add('hidden');
+        };
     </script>
 </body>
 </html>
