@@ -124,6 +124,37 @@
 
         const savedLang = localStorage.getItem('siteLang') || 'fr';
 
+        // --- GESTION DU BOUTON CONNEXION ---
+        const btnLoginOpen = document.getElementById('btn-login-open');
+        if (btnLoginOpen) {
+            btnLoginOpen.addEventListener('click', () => {
+                // Redirige vers l'index pour ouvrir le modal de connexion centralisé si besoin, 
+                // ou affiche le modal de connexion s'il est présent sur la page.
+                // Si tu utilises script.js global, il gère déjà cela si l'élément existe.
+                const loginModal = document.getElementById('login-modal');
+                if (loginModal) {
+                    loginModal.classList.remove('hidden');
+                } else {
+                    // Si pas de modal sur cette page, on retourne à l'index avec un repère
+                    window.location.href = 'index.html?action=login';
+                }
+            });
+        }
+
+        // --- GESTION DU BOUTON CALENDRIER ---
+        const btnCalendrier = document.getElementById('nav-calendrier');
+        if (btnCalendrier) {
+            btnCalendrier.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (sessionStorage.getItem('adminMode') === 'true') {
+                    window.location.href = 'calendrier.html';
+                } else {
+                    const modalTravaux = document.getElementById('modal-travaux');
+                    if (modalTravaux) modalTravaux.classList.remove('hidden');
+                }
+            });
+        }
+
         // --- GESTION DU MENU PARAMÈTRES ---
         const paramBtn = document.getElementById('param-btn');
         const modalMenuParam = document.getElementById('modal-menu-param');
