@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L'Équipe - Radio 6</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .equipe-container {
             text-align: center;
@@ -58,7 +59,7 @@
 </head>
 <body>
 
-    <div>
+    <div id="main-content">
         <header>
             <div class="logo-area">
                 <img src="logo.png" alt="Radio 6" class="header-logo">
@@ -68,11 +69,13 @@
                 </div>
             </div>
             <nav id="main-nav">
-    <a href="index.html">Accueil</a>
-    <a href="equipe.html">L'Équipe</a>
-    <a href="aide.html">Aide</a>
-    <a href="https://instagram.com/..." target="_blank">Instagram</a>
-</nav>
+                <button id="btn-login-open" class="btn-nav-login">Connexion</button>
+                <a href="index.html">Accueil</a>
+                <a href="equipe.html" class="active">L'Équipe</a>
+                <a href="aide.html">Aide</a>
+                <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
+                <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+            </nav>
         </header>
 
         <main class="equipe-container">
