@@ -122,9 +122,70 @@
         // 3. Vérification du TYPE de police
         const savedFont = localStorage.getItem('siteFont') || 'normal';
         if (savedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
+
+        // --- CORRECTION : OUVERTURE DU MENU PARAMÈTRES ---
+        const paramBtn = document.getElementById('param-btn');
+        const modalMenuParam = document.getElementById('modal-menu-param');
+        
+        if (paramBtn && modalMenuParam) {
+            paramBtn.addEventListener('click', () => {
+                modalMenuParam.classList.remove('hidden');
+            });
+        }
+
+        // Changements dynamiques dans la page d'équipe
+        const selectPolice = document.getElementById('param-police');
+        const selectTaille = document.getElementById('param-taille-police');
+        const selectTheme = document.getElementById('param-media');
+
+        if (selectPolice) {
+            selectPolice.value = savedFont;
+            selectPolice.addEventListener('change', (e) => {
+                const selectedFont = e.target.value;
+                localStorage.setItem('siteFont', selectedFont);
+                if (selectedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
+                else document.body.classList.remove('font-dyslexic');
+            });
+        }
+
+        if (selectTaille) {
+            selectTaille.value = savedSize;
+            selectTaille.addEventListener('change', (e) => {
+                const selectedSize = e.target.value;
+                localStorage.setItem('siteFontSize', selectedSize);
+                document.body.classList.remove('font-small', 'font-medium', 'font-large');
+                document.body.classList.add(`font-${selectedSize}`);
+            });
+        }
+
+        if (selectTheme) {
+            selectTheme.value = savedTheme;
+            selectTheme.addEventListener('change', (e) => {
+                const selectedTheme = e.target.value;
+                localStorage.setItem('siteTheme', selectedTheme);
+                if (selectedTheme === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            });
+        }
     });
-    
+
+    // --- FONCTION DE FERMETURE DES MODALS ---
+    window.closeParamModal = function(modalId) {
+        const targetModal = document.getElementById(modalId);
+        if (targetModal) {
+            targetModal.classList.add('hidden');
+        }
+    };
+
+    // Fermeture en cliquant à côté du modal
+    window.addEventListener('click', (e) => {
+        const modalMenuParam = document.getElementById('modal-menu-param');
+        const modalTravaux = document.getElementById('modal-travaux');
+        if (e.target === modalMenuParam) modalMenuParam.classList.add('hidden');
+        if (e.target === modalTravaux) modalTravaux.classList.add('hidden');
+    });
 </script>
+
 <div id="modal-travaux" class="modal hidden">
     <div class="modal-content">
         <span class="close-btn" onclick="closeParamModal('modal-travaux')">&times;</span>
