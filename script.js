@@ -503,12 +503,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCalendrier = document.getElementById('nav-calendrier');
     if (btnCalendrier) {
         btnCalendrier.addEventListener('click', (e) => {
-            // Si on est connecté en admin, le bouton nous redirige vers la page calendrier
+            e.preventDefault();
+            // Si l'admin est connecté
             if (sessionStorage.getItem('adminMode') === 'true') {
                 window.location.href = 'calendrier.html';
             } else {
-                // Si on est un simple visiteur, on bloque le clic et on affiche la zone en travaux
-                e.preventDefault();
+                // Si c'est un simple visiteur, on affiche la zone en travaux
                 const modalTravaux = document.getElementById('modal-travaux');
                 if (modalTravaux) modalTravaux.classList.remove('hidden');
             }
