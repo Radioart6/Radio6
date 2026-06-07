@@ -8,38 +8,80 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .calendar-page-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
-        .days-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
+        .months-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            margin-top: 2rem;
         }
-        .day-card {
+        .month-section {
             background-color: var(--card-bg);
             border: 1px solid #334155;
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
+            border-radius: 12px;
+            padding: 1.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        .day-date {
-            font-size: 1.1rem;
+        .month-title {
+            color: #a855f7;
+            font-size: 1.3rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            text-transform: capitalize;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+        .weekday-headers {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
             font-weight: bold;
-            color: white;
+            color: #94a3b8;
+            font-size: 0.9rem;
             margin-bottom: 0.5rem;
         }
-        .day-status {
-            font-size: 0.9rem;
-            color: #34d399;
-            font-weight: bold;
+        .day-cell {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 10px 5px;
+            min-height: 55px;
             display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 6px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        .day-cell.empty {
+            background: transparent;
+            border: none;
+        }
+        .day-cell.active-day {
+            color: white;
+        }
+        .day-cell.open-radio {
+            background-color: #065f46;
+            border-color: #34d399;
+            color: white;
+            font-weight: bold;
+        }
+        .status-text {
+            font-size: 0.65rem;
+            color: #34d399;
+            margin-top: 4px;
+            text-transform: uppercase;
+            line-height: 1;
         }
     </style>
 </head>
@@ -64,11 +106,10 @@
         </header>
 
         <main class="calendar-page-container">
-            <h2 style="color: #a855f7;"><i class="fa-solid fa-calendar-days"></i> Jours d'ouverture de la Web Radio</h2>
-            <p style="color: var(--text-muted);">Liste de tous les lundis et mardis d'activité pour l'année scolaire 2025 - 2026 (hors vacances scolaires).</p>
+            <h2 style="color: #a855f7;"><i class="fa-solid fa-calendar-days"></i> Calendrier de la Web Radio</h2>
+            <p style="color: var(--text-muted);">Vue mensuelle des jours d'ouverture (lundis et mardis) pour l'année scolaire 2025 - 2026.</p>
             
-            <div id="calendar-list" class="days-list">
-                </div>
+            <div id="months-container" class="months-grid"></div>
         </main>
 
         <footer>
@@ -77,61 +118,102 @@
     </div>
 
     <script>
-        // Vérification de sécurité : si l'admin n'est pas connecté, retour à l'accueil
         if (sessionStorage.getItem('adminMode') !== 'true') {
             window.location.href = 'index.html';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('calendar-list');
+            const container = document.getElementById('months-container');
             
-            // Périodes de vacances scolaires 2025-2026 (Zone B)
             const vacances = [
-                { start: new Date('2025-10-18'), end: new Date('2025-11-03') }, // Toussaint
-                { start: new Date('2025-12-20'), end: new Date('2025-01-05') }, // Noël
-                { start: new Date('2025-02-07'), end: new Date('2025-02-23') }, // Hiver
-                { start: new Date('2025-04-04'), end: new Date('2025-04-20') }  // Printemps
+                { start: new Date('2025-10-18'), end: new Date('2025-11-03') },
+                { start: new Date('2025-12-20'), end: new Date('2025-01-05') },
+                { start: new Date('2025-02-07'), end: new Date('2025-02-23') },
+                { start: new Date('2025-04-04'), end: new Date('2025-04-20') }
             ];
 
-            const startDate = new Date('2025-09-01');
-            const endDate = new Date('2026-06-08'); // S'arrête le lundi 8 juin au soir
+            const monthNames = [
+                "Septembre 2025", "Octobre 2025", "Novembre 2025", "Décembre 2025",
+                "Janvier 2026", "Février 2026", "Mars 2026", "Avril 2026", "Mai 2026", "Juin 2026"
+            ];
 
-            let current = new Date(startDate);
-            
-            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            // On boucle sur chaque mois de l'année scolaire
+            for (let m = 0; m < 10; m++) {
+                let year = m < 4 ? 2025 : 2026;
+                let monthIndex = m < 4 ? (8 + m) : (m - 4); // Commence en Septembre (8) et finit en Juin (5)
 
-            while (current <= endDate) {
-                const dayOfWeek = current.getDay(); // 1 = Lundi, 2 = Mardi
-                
-                if (dayOfWeek === 1 || dayOfWeek === 2) {
-                    // Vérifier si le jour tombe pendant les vacances
-                    let estEnVacances = false;
-                    for (let v of vacances) {
-                        if (current >= v.start && current <= v.end) {
-                            estEnVacances = true;
-                            break;
-                        }
-                    }
+                const monthSection = document.createElement('div');
+                monthSection.className = 'month-section';
 
-                    // Si ce n'est pas les vacances, on l'affiche !
-                    if (!estEnVacances) {
-                        const card = document.createElement('div');
-                        card.className = 'day-card';
-                        
-                        // Formater la date en français propre
-                        let dateString = current.toLocaleDateString('fr-FR', options);
-                        // Mettre la première lettre en majuscule
-                        dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+                const title = document.createElement('h3');
+                title.className = 'month-title';
+                title.innerText = monthNames[m];
+                monthSection.appendChild(title);
 
-                        card.innerHTML = `
-                            <div class="day-date">${dateString}</div>
-                            <div class="day-status"><i class="fa-solid fa-circle-check"></i> web radio ouvert</div>
-                        `;
-                        container.appendChild(card);
-                    }
+                const headers = document.createElement('div');
+                headers.className = 'weekday-headers';
+                headers.innerHTML = '<div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>';
+                monthSection.appendChild(headers);
+
+                const grid = document.createElement('div');
+                grid.className = 'calendar-grid';
+
+                // Déterminer le premier jour du mois (0 = Dimanche, 1 = Lundi...)
+                let firstDay = new Date(year, monthIndex, 1).getDay();
+                // Ajuster pour commencer par le Lundi (1) au lieu du Dimanche (0)
+                let startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
+                // Cases vides du début du mois
+                for (let i = 0; i < startOffset; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'day-cell empty';
+                    grid.appendChild(emptyCell);
                 }
-                // Passer au jour suivant
-                current.setDate(current.getDate() + 1);
+
+                // Nombre total de jours dans le mois
+                let totalDays = new Date(year, monthIndex + 1, 0).getDate();
+
+                for (let day = 1; day <= totalDays; day++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    
+                    const dayNum = document.createElement('span');
+                    dayNum.innerText = day;
+                    cell.appendChild(dayNum);
+
+                    let currentDate = new Date(year, monthIndex, day);
+                    let dayOfWeek = currentDate.getDay(); // 1 = Lundi, 2 = Mardi
+
+                    // Règles restrictives d'affichage (Max 8 Juin 2026, pas le 9 juin)
+                    const limitDate = new Date('2026-06-08');
+
+                    if (currentDate <= limitDate && (dayOfWeek === 1 || dayOfWeek === 2)) {
+                        let enVacances = false;
+                        for (let v of vacances) {
+                            if (currentDate >= v.start && currentDate <= v.end) {
+                                enVacances = true;
+                                break;
+                            }
+                        }
+
+                        if (!enVacances) {
+                            cell.classList.add('open-radio');
+                            const status = document.createElement('span');
+                            status.className = 'status-text';
+                            status.innerText = 'web radio ouvert';
+                            cell.appendChild(status);
+                        } else {
+                            cell.classList.add('active-day');
+                        }
+                    } else if (currentDate <= new Date('2026-06-30')) {
+                        cell.classList.add('active-day');
+                    }
+
+                    grid.appendChild(cell);
+                }
+
+                monthSection.appendChild(grid);
+                container.appendChild(monthSection);
             }
         });
     </script>
