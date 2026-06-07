@@ -155,8 +155,8 @@
             <div class="param-row">
                 <label>Thème Visuel :</label>
                 <select id="param-media">
-                    <option value=\"dark\">Mode Sombre</option>
-                    <option value=\"light\">Mode Clair</option>
+                    <option value="dark">Mode Sombre</option>
+                    <option value="light">Mode Clair</option>
                 </select>
             </div>
             <div class="param-row">
@@ -194,8 +194,18 @@
                 { name: "juin 2026", index: 5, year: 2026 }
             ];
 
-            // On se cale par défaut sur le mois actuel si possible, sinon sur le premier mois (Septembre)
-            let currentMonthPointer = 1; // Index 1 = Octobre 2025 par défaut
+            // Détection automatique du mois en cours
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+
+            // On cherche si le mois actuel fait partie de la liste scolaire
+            let currentMonthPointer = moisScolaires.findIndex(m => m.index === currentMonth && m.year === currentYear);
+            
+            // Si on est hors période scolaire (ex: juillet/août), on se remet par défaut sur le premier mois (septembre)
+            if (currentMonthPointer === -1) {
+                currentMonthPointer = 0;
+            }
 
             const vacances = [
                 { start: new Date('2025-10-18'), end: new Date('2025-11-03') },
@@ -214,8 +224,8 @@
                 titleTarget.innerText = currentMoisData.name;
                 gridTarget.innerHTML = '';
 
-                // Jours de la semaine
-                const joursSemaine = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+                // Jours de la semaine commençant par Lundi
+                const joursSemaine = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
                 joursSemaine.forEach(j => {
                     const label = document.createElement('div');
                     label.className = 'weekday-label';
@@ -223,7 +233,13 @@
                     gridTarget.appendChild(label);
                 });
 
-                const firstDayIndex = new Date(currentMoisData.year, currentMoisData.index, 1).getDay();
+                // Calcul du premier jour du mois
+                let firstDayIndex = new Date(currentMoisData.year, currentMoisData.index, 1).getDay();
+                
+                // Adaptation de l'index pour commencer la semaine le Lundi (0: Lun, 1: Mar, ..., 6: Dim)
+                // getDay() renvoie 0 pour Dimanche, 1 pour Lundi, etc.
+                firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
                 const totalDays = new Date(currentMoisData.year, currentMoisData.index + 1, 0).getDate();
 
                 // Cases vides de début de mois
