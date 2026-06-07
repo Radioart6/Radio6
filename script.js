@@ -499,6 +499,100 @@ document.addEventListener('DOMContentLoaded', () => {
         if (iaLink) iaLink.remove();
     }
 
+    // --- GESTION DU VRAI CALENDRIER DYNAMIQUE (Ajouté) ---
+    let calendarDate = new Date();
+
+    function renderCalendar() {
+        const monthYearDisplay = document.getElementById('cal-month-year');
+        const daysContainer = document.getElementById('calendar-days');
+        if (!monthYearDisplay || !daysContainer) return;
+
+        daysContainer.innerHTML = '';
+
+        const year = calendarDate.getFullYear();
+        const month = calendarDate.getMonth();
+
+        const monthNames = [
+            "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+        ];
+        monthYearDisplay.innerText = `${monthNames[month]} ${year}`;
+
+        const firstDayIndex = new Date(year, month, 1).getDay();
+        const lastDay = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < firstDayIndex; i++) {
+            const emptyDiv = document.createElement('div');
+            daysContainer.appendChild(emptyDiv);
+        }
+
+        const today = new Date();
+        for (let day = 1; day <= lastDay; day++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.innerText = day;
+            dayDiv.style.padding = "8px";
+            dayDiv.style.borderRadius = "6px";
+            dayDiv.style.color = "white";
+            dayDiv.style.fontSize = "0.9rem";
+            dayDiv.style.background = "#334155";
+
+            if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                dayDiv.style.background = "var(--accent)";
+                dayDiv.style.fontWeight = "bold";
+                dayDiv.style.border = "2px solid white";
+            }
+
+            daysContainer.appendChild(dayDiv);
+        }
+    }
+
+    const calPrev = document.getElementById('cal-prev');
+    const calNext = document.getElementById('cal-next');
+    if (calPrev) {
+        calPrev.addEventListener('click', () => {
+            calendarDate.setMonth(calendarDate.getMonth() - 1);
+            renderCalendar();
+        });
+    }
+    if (calNext) {
+        calNext.addEventListener('click', () => {
+            calendarDate.setMonth(calendarDate.getMonth() + 1);
+            renderCalendar();
+        });
+    }
+
+    function injectCalendarLink() {
+        if (!mainNav || document.getElementById('nav-calendrier-admin')) return;
+        const calLink = document.createElement('a');
+        calLink.href = '#';
+        calLink.id = 'nav-calendrier-admin';
+        calLink.style.color = '#a855f7';
+        calLink.style.fontWeight = 'bold';
+        calLink.innerText = '🗓️ Calendrier';
+        
+        calLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (sessionStorage.getItem('adminMode') !== 'true') {
+                if (modalTravaux) modalTravaux.classList.remove('hidden');
+            } else {
+                const modalCal = document.getElementById('modal-calendrier');
+                if (modalCal) {
+                    modalCal.classList.remove('hidden');
+                    renderCalendar();
+                }
+            }
+        });
+
+        const instaLink = mainNav.querySelector('a[href*="instagram.com"]');
+        if (instaLink) mainNav.insertBefore(calLink, instaLink);
+        else mainNav.appendChild(calLink);
+    }
+
+    function removeCalendarLink() {
+        const calLink = document.getElementById('nav-calendrier-admin');
+        if (calLink) calLink.remove();
+    }
+
     // --- ACCÈS DIRECT ET ÉCRANS SPLASH ---
     if (sessionStorage.getItem('enteredSite') === 'true') {
         if (splashScreen) splashScreen.classList.add('hidden');
@@ -510,6 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
         document.body.classList.add('admin-mode');
         injectIALink();
+        injectCalendarLink(); // Injected automatically if already connected
     }
 
     if (btnEnter) {
@@ -541,6 +636,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === loginModal) loginModal.classList.add('hidden');
         if (e.target === modalTravaux) modalTravaux.classList.add('hidden');
         if (e.target === modalMenuParam) modalMenuParam.classList.add('hidden');
+        const modalCal = document.getElementById('modal-calendrier');
+        if (e.target === modalCal) modalCal.classList.add('hidden');
     });
 
     if (loginForm) {
@@ -567,6 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.classList.add('admin-mode');
                 sessionStorage.setItem('adminMode', 'true');
                 injectIALink();
+                injectCalendarLink(); // S'affiche immédiatement lors de la connexion
                 loginForm.reset();
                 applyTranslations(currentLang);
             } else {
@@ -582,6 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.remove('admin-mode');
             sessionStorage.setItem('adminMode', 'false');
             removeIALink();
+            removeCalendarLink(); // Se retire immédiatement lors de la déconnexion
             applyTranslations(currentLang);
         });
     }
