@@ -3,7 +3,7 @@
 <head>
     <meta name="google-site-verification" content="A_Gy-KuxqG5xtJsrvlfeNf5eMsySIJwSN_TTtlAdJuI" />
     <meta charset="UTF-8">
-    <meta name="description" content="Espace de rediffusion et podcasts de Radio 6, la radio officielle du Lycée Arcisse de Caumont à Bayeux Ehren.">
+    <meta name="description" content="Espace de rediffusion et podcasts de Radio 6, la radio officielle du Lycée Arcisse de Caumont à Bayeux.">
     <meta name="keywords" content="Radio 6, Lycée Arcisse de Caumont, Bayeux, podcast, rediffusion, radio lycee">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +15,7 @@
         .updates-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            gap: 1.5rem; /* Espace empêchant les blocs de se coller entre eux */
             margin-top: 3rem;
             margin-bottom: 2rem;
         }
@@ -82,51 +82,22 @@
             text-transform: uppercase;
         }
 
-        .tag-new { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
-        .tag-fix { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
-        .tag-info { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-
-        /* Style amélioré pour la barre audio avec bouton de coupure de son */
-        .audio-bar-enhanced {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #1e293b;
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            width: 100%;
-            max-width: 500px;
-            margin: 15px 0;
+        .tag-new {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
         }
 
-        .audio-bar-enhanced audio {
-            flex-grow: 1;
-            height: 32px;
+        .tag-fix {
+            background: rgba(234, 179, 8, 0.15);
+            color: #fde047;
+            border: 1px solid rgba(234, 179, 8, 0.3);
         }
 
-        .btn-mute {
-            background: var(--accent, #a855f7);
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .btn-mute:hover {
-            background: #9333ea;
-            transform: scale(1.05);
-        }
-
-        .btn-mute:active {
-            transform: scale(0.95);
+        .tag-info {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
     </style>
 </head>
@@ -158,12 +129,7 @@
                 <h2>Écoutez Radio 6 en Direct & Rediffusion</h2>
                 <p>Votre média lycéen pour suivre toute l'actualité, les projets et la musique de l'établissement.</p>
 
-                <div class="audio-bar-enhanced">
-                    <audio id="main-audio-player" src="votre-flux-ou-audio.mp3" controls></audio>
-                    <button id="audio-mute-btn" class="btn-mute" title="Couper/Activer le son">
-                        <i id="mute-icon" class="fa-solid fa-volume-high"></i>
-                    </button>
-                </div>
+                <audio src="votre-flux-ou-audio.mp3" controls style="margin: 15px 0; width: 100%; max-width: 400px;"></audio>
 
                 <div class="cta-buttons">
                     <button class="btn-primary" onclick="openParamModal('modal-calendrier')"><i class="fa-solid fa-calendar-days"></i> Voir le Calendrier de diffusion</button>
@@ -288,7 +254,6 @@
 
     <script src="translate-pages.js"></script>
     <script>
-        // Fonctions globales d'ouverture/fermeture des Modals
         window.openParamModal = function(id) {
             const m = document.getElementById(id);
             if (m) m.classList.remove('hidden');
@@ -300,30 +265,18 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // --- GESTION DU BOUTON DE COUPURE DE SON (MUTE) ---
-            const audioPlayer = document.getElementById('main-audio-player');
-            const muteBtn = document.getElementById('audio-mute-btn');
-            const muteIcon = document.getElementById('mute-icon');
-
-            if (muteBtn && audioPlayer && muteIcon) {
-                muteBtn.addEventListener('click', () => {
-                    // Inverse l'état du volume (true -> false / false -> true)
-                    audioPlayer.muted = !audioPlayer.muted;
-
-                    // Met à jour l'icône du haut-parleur en fonction du statut
-                    if (audioPlayer.muted) {
-                        muteIcon.className = 'fa-solid fa-volume-xmark';
-                        muteBtn.style.background = '#ef4444'; // Devient rouge quand c'est coupé
-                        muteBtn.title = "Activer le son";
-                    } else {
-                        muteIcon.className = 'fa-solid fa-volume-high';
-                        muteBtn.style.background = 'var(--accent, #a855f7)'; // Revient violet
-                        muteBtn.title = "Couper le son";
+            // --- LIEN D'ÉCOUTE ET SECURITE SCRIPT MUTE ---
+            const player = document.querySelector('audio');
+            if (player) {
+                // Permet aussi de couper/remettre le son avec la touche "M" du clavier quand on écoute
+                window.addEventListener('keydown', (e) => {
+                    if (e.key.toLowerCase() === 'm') {
+                        player.muted = !player.muted;
                     }
                 });
             }
 
-            // --- REGLAGES & THEMES (COPIÉ DE TON FICHIER ORIGINAL) ---
+            // Gestion du menu de paramètres
             const selectMedia = document.getElementById('param-media');
             const selectTaille = document.getElementById('param-taille-police');
             const selectPolice = document.getElementById('param-police');
@@ -373,7 +326,7 @@
                 });
             }
 
-            // --- SCRIPT MINI CALENDRIER DE L'ACCUEIL ---
+            // Calendrier
             const monthYearEl = document.getElementById('cal-month-year');
             const daysContainer = document.getElementById('calendar-days');
             const prevBtn = document.getElementById('cal-prev');
@@ -433,6 +386,7 @@
                     }
                     renderCalendar();
                 });
+
                 renderCalendar();
             }
         });
