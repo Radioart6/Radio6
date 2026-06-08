@@ -72,6 +72,16 @@
         .player-mute-btn:hover {
             color: #fff;
         }
+        
+        /* Style pour rendre le mini calendrier cliquable */
+        .clickable-calendar {
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .clickable-calendar:hover {
+            transform: scale(1.01);
+            border-color: #a855f7 !important;
+        }
     </style>
 </head>
 <body>
@@ -101,7 +111,7 @@
                 <a href="index.html" class="active">Accueil</a>
                 <a href="equipe.html">L'Équipe</a>
                 <a href="aide.html">Aide</a>
-                <a href="#" id="nav-calendrier" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
+                <a href="calendrier.html" id="nav-calendrier" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
                 <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
                 <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
             </nav>
@@ -227,17 +237,16 @@
                         <li>Le site est maintenant accessible à tout le monde même sur mobile.</li>
                         <li>Optimisations générales du système.</li>
                         <li>Le premier podcast est disponible "Aux racines de l'info".</li>
-                        <li>L'arrivé du bouton calendrier sur le site (mais pas accessible pour le moment.</li>
+                        <li>Le bouton et le grand calendrier sont désormais fonctionnels et accessibles !</li>
                     </ul>
                 </div>
 
                 <div class="update-box next">
                     <h4>🚀 Prochaine mise à jour</h4>
                     <ul>
-                        <li>Plus d'émission vont arrivé.</li>
+                        <li>Plus d'émissions vont arriver.</li>
                         <li>Rajout possible d'une IA pour mieux vous aider sur le site.</li>
-                        <li>Le mode claire va être mieux travaillé.</li>
-                        <li>Le bouton calendrier aura une utilité.</li>
+                        <li>Le mode clair va être mieux travaillé.</li>
                     </ul>
                 </div>
             </div>
@@ -310,6 +319,7 @@
             <button class="btn-submit" style="margin-top: 15px;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
         </div>
     </div>
+
     <div id="modal-calendrier" class="modal hidden">
         <div class="modal-content" style="max-width: 500px;">
             <span class="close-modal" onclick="closeParamModal('modal-calendrier')">&times;</span>
@@ -318,7 +328,7 @@
             </h3>
             <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
              
-            <div class="calendar-container" style="background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
+            <div class="calendar-container clickable-calendar" style="background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155;" onclick="window.location.href='calendrier.html'">
                 <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <button id="cal-prev" style="background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">&lt;</button>
                     <h4 id="cal-month-year" style="margin: 0; color: white;"></h4>
@@ -330,6 +340,7 @@
                 <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center;">
                     </div>
             </div>
+            <p style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: #94a3b8;">Cliquez sur le calendrier pour voir la version complète.</p>
         </div>
     </div>
 
@@ -344,10 +355,8 @@
 
             if (muteBtn && audioPlayer && muteIcon) {
                 muteBtn.addEventListener('click', () => {
-                    // Alterne l'état coupé/activé du son
                     audioPlayer.muted = !audioPlayer.muted;
                     
-                    // Modifie l'icône FontAwesome selon l'état
                     if (audioPlayer.muted) {
                         muteIcon.className = 'fa-solid fa-volume-xmark';
                         muteBtn.title = "Activer le son";
