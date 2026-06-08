@@ -3,9 +3,9 @@
 <head>
     <meta name="google-site-verification" content="A_Gy-KuxqG5xtJsrvlfeNf5eMsySIJwSN_TTtlAdJuI" />
     <meta charset="UTF-8">
-    <meta name="description" content="Espace de rediffusion et podcasts de Radio 6, la radio officielle du Lycée Arcisse de Caumont à Bayeux.">
-<meta name="keywords" content="Radio 6, Lycée Arcisse de Caumont, Bayeux, podcast, rediffusion, radio lycee">
-<meta name="robots" content="index, follow">
+    <meta name="description" content="Espace de rediffusion et podcasts de Radio 6, la radio officielle du Lycée Arcisse de Caumont à Bayeux Ehren.">
+    <meta name="keywords" content="Radio 6, Lycée Arcisse de Caumont, Bayeux, podcast, rediffusion, radio lycee">
+    <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio 6 - La Radio d'Art 6</title>
     <link rel="stylesheet" href="style.css">
@@ -15,61 +15,124 @@
         .updates-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem; /* Espace empêchant les blocs de se coller entre eux */
+            gap: 1.5rem;
             margin-top: 3rem;
             margin-bottom: 2rem;
         }
-        .update-box {
+
+        .update-card {
             background-color: var(--card-bg);
             border: 1px solid #334155;
             border-radius: 12px;
             padding: 1.5rem;
-            text-align: left;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.2s, border-color 0.2s;
         }
-        .update-box h4 {
-            margin-top: 0;
-            margin-bottom: 0.8rem;
+
+        .update-card:hover {
+            transform: translateY(-2px);
+            border-color: #a855f7;
+        }
+
+        .update-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+
+        .update-title {
             font-size: 1.1rem;
+            color: #fff;
+            margin: 0;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .update-box.last h4 { color: #34d399; }
-        .update-box.next h4 { color: var(--accent); }
-        .update-box ul {
-            margin: 0;
-            padding-left: 1.2rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .update-box li { margin-bottom: 0.5rem; }
 
-        /* Style spécial pour l'onglet Aide 2.0 dans la navigation */
-        nav a.ia-link {
-            color: #a855f7;
-            font-weight: bold;
+        .update-date {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            background: #1e293b;
+            padding: 2px 8px;
+            border-radius: 20px;
+            border: 1px solid #334155;
         }
-        nav a.ia-link:hover {
-            color: #c084fc;
+
+        .update-body p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0 0 1rem 0;
+        }
+
+        .update-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .tag-new { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .tag-fix { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .tag-info { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        /* Style amélioré pour la barre audio avec bouton de coupure de son */
+        .audio-bar-enhanced {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #1e293b;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            width: 100%;
+            max-width: 500px;
+            margin: 15px 0;
+        }
+
+        .audio-bar-enhanced audio {
+            flex-grow: 1;
+            height: 32px;
+        }
+
+        .btn-mute {
+            background: var(--accent, #a855f7);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-mute:hover {
+            background: #9333ea;
+            transform: scale(1.05);
+        }
+
+        .btn-mute:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen" class="splash-container">
-        <div class="splash-content">
-            <div class="logo-wrapper">
-                <img src="logo.png" alt="Logo Radio 6" class="splash-logo">
-            </div>
-            <h1>RADIO 6</h1>
-            <p class="splash-subtitle">La Radio d'Art 6 • Lycée Arcisse de Caumont</p>
-            <button id="btn-enter" class="btn-splash">Entrer dans l'espace rediffusion</button>
-        </div>
-    </div>
-
-    <div id="main-content" class="hidden">
+    <div id="main-content">
         <header>
             <div class="logo-area">
                 <img src="logo.png" alt="Radio 6" class="header-logo">
@@ -83,220 +146,32 @@
                 <a href="index.html" class="active">Accueil</a>
                 <a href="equipe.html">L'Équipe</a>
                 <a href="aide.html">Aide</a>
-                <a href="#" id="nav-calendrier" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
+                <a href="ia-aide.html" style="color: #a855f7; font-weight: bold;">Aide 2.0</a>
+                <a href="calendrier.html" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
                 <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
-                <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+                <button id="param-btn" class="btn-nav-param" title="Paramètres" onclick="openParamModal('modal-menu-param')"><i class="fa-solid fa-gear"></i></button>
             </nav>
         </header>
 
-        <div id="login-modal" class="modal hidden">
-            <div class="modal-content">
-                <span id="btn-login-close" class="close-modal">&times;</span>
-                <h3>Connexion Propriétaire</h3>
-                <p class="login-notice">⚠️ Cet espace est strictement réservé à l'équipe de la radio pour la gestion des fichiers.</p>
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="username">Identifiant :</label>
-                        <input type="text" id="username" required autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Mot de passe :</label>
-                        <input type="password" id="password" required>
-                    </div>
-                    <p id="login-error" class="error-msg hidden">Identifiants incorrects.</p>
-                    <button type="submit" class="btn-submit">Se connecter</button>
-                </form>
-            </div>
-        </div>
-
         <main>
-            <section id="admin-panel" class="admin-card hidden">
-                <h3>🛠️ Panneau de Gestion (Propriétaire)</h3>
-                <p>Ajouter une nouvelle rediffusion (sans limite de taille) :</p>
-                <form id="add-podcast-form" class="admin-form">
-                    <div class="form-group">
-                        <label for="pod-title">Titre de l'émission :</label>
-                        <input type="text" id="pod-title" placeholder="Ex: Émission Spéciale - Foyer" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pod-info">Date ou détails :</label>
-                        <input type="text" id="pod-info" placeholder="Ex: Mai 2026 • Durée : 2h45" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pod-url">Lien direct du MP3 (Internet Archive) :</label>
-                        <input type="url" id="pod-url" placeholder="https://archive.org/download/.../fichier.mp3" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pod-category">Catégorie / Dossier :</label>
-                        <select id="pod-category" required>
-                            <option value="loisir-sport">Loisir & Sport</option>
-                            <option value="touristique">Minute Touristique</option>
-                            <option value="actualites-infos">Actualités & Infos</option>
-                            <option value="En classe">En classe</option>
-                            <option value="culture">Culture</option>
-                            <option value="autres" selected>Autres</option>
-                        </select>
-                    </div>
-                    <button type="submit" id="btn-submit-podcast" class="btn-admin-action">Ajouter le podcast</button>
-                </form>
-                <p id="upload-status" style="margin: 1rem 0 0 0; color: var(--accent); font-weight: bold;" class="hidden">Traitement du fichier audio en cours...</p>
-                
-                <button id="btn-logout" class="btn-logout" style="margin-top: 1.5rem;">Se déconnecter</button>
-            </section>
+            <section class="hero">
+                <h2>Écoutez Radio 6 en Direct & Rediffusion</h2>
+                <p>Votre média lycéen pour suivre toute l'actualité, les projets et la musique de l'établissement.</p>
 
-            <section class="player-card">
-                <div class="player-title" id="current-title">🎧 Choisissez une rediffusion ci-dessous</div>
-                <div class="player-status" id="player-status">PRÊT À L'ÉCOUTE</div>
-                <audio id="main-audio-player"></audio>
-                <div class="custom-player-bar">
-                    <button id="custom-play-btn" class="player-btn" disabled>▶</button>
-                    <div class="progress-container">
-                        <span id="current-time" class="time-display">00:00</span>
-                        <div id="progress-bar-bg" class="progress-bar-bg">
-                            <div id="progress-bar-fill" class="progress-bar-fill"></div>
-                        </div>
-                        <span id="total-duration" class="time-display">00:00</span>
-                    </div>
+                <div class="audio-bar-enhanced">
+                    <audio id="main-audio-player" src="votre-flux-ou-audio.mp3" controls></audio>
+                    <button id="audio-mute-btn" class="btn-mute" title="Couper/Activer le son">
+                        <i id="mute-icon" class="fa-solid fa-volume-high"></i>
+                    </button>
+                </div>
+
+                <div class="cta-buttons">
+                    <button class="btn-primary" onclick="openParamModal('modal-calendrier')"><i class="fa-solid fa-calendar-days"></i> Voir le Calendrier de diffusion</button>
+                    <button class="btn-secondary" onclick="openParamModal('modal-travaux')"><i class="fa-solid fa-podcast"></i> Explorer les Émissions</button>
                 </div>
             </section>
 
-            <section class="podcast-section">
-                <h2>Liste des Rediffusions</h2>
-                
-                <div class="folder-container">
-                    
-                    <div class="folder-box" data-category="loisir-sport">
-                        <h3><i class="fa-solid fa-basketball"></i> Loisir & Sport <span class="pod-count" id="count-loisir-sport">(0)</span></h3>
-                        <div class="podcast-grid hidden" id="grid-loisir-sport"></div>
-                    </div>
-
-                    <div class="folder-box" data-category="touristique">
-                        <h3><i class="fa-solid fa-chalkboard-user"></i> En classe <span class="pod-count" id="En classe">(0)</span></h3>
-                        <div class="podcast-grid hidden" id="En classe"></div>
-                    </div>
-
-                    <div class="folder-box" data-category="touristique">
-                        <h3><i class="fa-solid fa-camera-retro"></i> Minute Touristique <span class="pod-count" id="count-touristique">(0)</span></h3>
-                        <div class="podcast-grid hidden" id="grid-touristique"></div>
-                    </div>
-
-                    <div class="folder-box" data-category="actualites-infos">
-                        <h3><i class="fa-solid fa-newspaper"></i> Actualités & Infos <span class="pod-count" id="count-actualites-infos">(0)</span></h3>
-                        <div class="podcast-grid hidden" id="grid-actualites-infos"></div>
-                    </div>
-
-                    <div class="folder-box" data-category="culture">
-                        <h3><i class="fa-solid fa-masks-theater"></i> Culture <span class="pod-count" id="count-culture">(0)</span></h3>
-                        <div class="podcast-grid hidden" id="grid-culture"></div>
-                    </div>
-
-                    <div class="folder-box" data-category="autres">
-                        <h3><i class="fa-solid fa-folder-open"></i> Autres <span class="pod-count" id="count-autres">(0)</span></h3>
-                        <div class="podcast-grid hidden" id="grid-autres"></div>
-                    </div>
-
-                </div>
-            </section>
-
-            <div class="updates-container">
-                <div class="update-box last">
-                    <h4>✅ Dernière mise à jour</h4>
-                    <ul>
-                        <li>Le site est maintenant accessible à tout le monde même sur mobile.</li>
-                        <li>Optimisations générales du système.</li>
-                        <li>Le premier podcast est disponible "Aux racines de l'info".</li>
-                        <li>L'arrivé du bouton calendrier sur le site (mais pas accessible pour le moment.</li>
-                    </ul>
-                </div>
-
-                <div class="update-box next">
-                    <h4>🚀 Prochaine mise à jour</h4>
-                    <ul>
-                        <li>Plus d'émission vont arrivé.</li>
-                        <li>Rajout possible d'une IA pour mieux vous aider sur le site.</li>
-                        <li>Le mode claire va être mieux travaillé.</li>
-                         <li>Le bouton calendrier aura une utilité.</li>
-                    </ul>
-                </div>
-            </div>
-
-        </main>
-
-        <footer>
-            <p>© 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux.</p>
-        </footer>
-    </div>
-
-    <div id="modal-travaux" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeParamModal('modal-travaux')">&times;</span>
-            <h3 style="color: #f59e0b; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> Zone en travaux</h3>
-            <p class="param-notice">Cette section est actuellement en cours de développement ou nécessite des privilèges élevés pour être pleinement fonctionnelle.</p>
-            
-            <div class="param-box-update">
-                <h5>Ajout récent :</h5>
-                <p>• Apparition de l'icône de configuration dans le menu principal.</p>
-            </div>
-            
-            <div class="param-box-update future">
-                <h5>Évolution prévue :</h5>
-                <p>• Ce bouton permettra aux visiteurs d'ajuster leurs préférences de lecture.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-menu-param" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeParamModal('modal-menu-param')">&times;</span>
-            <h3 style="color: #2563eb; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-sliders"></i> Réglages Généraux</h3>
-            <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0 20px 0;">
-            
-            <div class="param-row">
-                <label><i class="fa-solid fa-language"></i> Langue :</label>
-                <select id="param-langue">
-                    <option value="fr" selected>Français</option>
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                </select>
-            </div>
-
-            <div class="param-row">
-                <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
-                <select id="param-media">
-                    <option value="dark" selected>Mode Sombre (Par défaut)</option>
-                    <option value="light">Mode Clair</option>
-                </select>
-            </div>
-
-            <div class="param-row">
-                <label><i class="fa-solid fa-text-height"></i> Taille de la police :</label>
-                <select id="param-taille-police">
-                    <option value="small">Petite</option>
-                    <option value="medium" selected>Normale</option>
-                    <option value="large">Grande</option>
-                </select>
-            </div>
-
-            <div class="param-row">
-                <label><i class="fa-solid fa-font"></i> Type de police :</label>
-                <select id="param-police">
-                    <option value="normal" selected>Normale (Par défaut)</option>
-                    <option value="dyslexic">OpenDyslexic</option>
-                </select>
-            </div>
-            
-            <button class="btn-submit" style="margin-top: 15px;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
-        </div>
-    </div>
-    <div id="modal-calendrier" class="modal hidden">
-        <div class="modal-content" style="max-width: 500px;">
-            <span class="close-modal" onclick="closeParamModal('modal-calendrier')">&times;</span>
-            <h3 style="color: #a855f7; font-size: 1.4rem; margin-top: 5px;">
-                <i class="fa-solid fa-calendar-days"></i> Calendrier des Émissions
-            </h3>
-            <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
-            
-            <div class="calendar-container" style="background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
+            <div class="calendar-container" style="background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; max-width: 400px; margin: 20px 0;">
                 <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <button id="cal-prev" style="background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">&lt;</button>
                     <h4 id="cal-month-year" style="margin: 0; color: white;"></h4>
@@ -305,14 +180,262 @@
                 <div class="calendar-weekdays" style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #94a3b8; font-size: 0.85rem; margin-bottom: 10px;">
                     <div>Dim</div><div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div>
                 </div>
-                <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center;">
+                <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center;"></div>
+            </div>
+
+            <section class="updates-section">
+                <h2 style="color: #a855f7; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; margin-top: 2rem;"><i class="fa-solid fa-bullhorn"></i> Nouveautés & Mises à jour</h2>
+                <div class="updates-container">
+                    
+                    <div class="update-card">
+                        <div class="update-header">
+                            <h3 class="update-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Calendrier 2.0</h3>
+                            <span class="update-date">Juin 2026</span>
+                        </div>
+                        <div class="update-body">
+                            <p>Le calendrier se met maintenant directement sur le mois en cours et commence sa semaine le Lundi pour un meilleur confort !</p>
+                            <div class="updates-tags">
+                                <span class="tag tag-new">Nouveau</span>
+                                <span class="tag tag-info">Interface</span>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="update-card">
+                        <div class="update-header">
+                            <h3 class="update-title"><i class="fa-solid fa-robot"></i> Assistant IA IA-Aide</h3>
+                            <span class="update-date">Mai 2026</span>
+                        </div>
+                        <div class="update-body">
+                            <p>Déploiement de notre nouvelle IA d'aide interactive 2.0 pour répondre instantanément à toutes vos questions d'écoute.</p>
+                            <div class="updates-tags">
+                                <span class="tag tag-new">Nouveau</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="update-card">
+                        <div class="update-header">
+                            <h3 class="update-title"><i class="fa-solid fa-bug"></i> Correctifs Généraux</h3>
+                            <span class="update-date">Avril 2026</span>
+                        </div>
+                        <div class="update-body">
+                            <p>Résolution des bugs d'affichage sur le menu des réglages et stabilisation globale de la sauvegarde du mode clair/sombre.</p>
+                            <div class="updates-tags">
+                                <span class="tag tag-fix">Correctif</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p id="footer-text">© 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux.</p>
+        </footer>
+    </div>
+
+    <div id="modal-travaux" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeParamModal('modal-travaux')">&times;</span>
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> Zone en travaux</h3>
+            <p class="param-notice">Cette section est en cours de développement.</p>
+        </div>
+    </div>
+
+    <div id="modal-menu-param" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeParamModal('modal-menu-param')">&times;</span>
+            <h3><i class="fa-solid fa-sliders"></i> Réglages Général</h3>
+            
+            <div class="param-row">
+                <label><i class="fa-solid fa-circle-half-stroke"></i> Thème Visuel :</label>
+                <select id="param-media">
+                    <option value="dark">Mode Sombre</option>
+                    <option value="light">Mode Clair</option>
+                </select>
+            </div>
+            <div class="param-row">
+                <label><i class="fa-solid fa-text-height"></i> Taille de la police :</label>
+                <select id="param-taille-police">
+                    <option value="small">Petite</option>
+                    <option value="medium">Normale</option>
+                    <option value="large">Grande</option>
+                </select>
+            </div>
+            <div class="param-row">
+                <label><i class="fa-solid fa-font"></i> Type de police :</label>
+                <select id="param-police">
+                    <option value="normal">Normale (Par défaut)</option>
+                    <option value="dyslexic">OpenDyslexic</option>
+                </select>
+            </div>
+            <button class="btn-submit" style="margin-top: 15px;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
+        </div>
+    </div>
+
+    <div id="modal-calendrier" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" onclick="closeParamModal('modal-calendrier')">&times;</span>
+            <h3 style="color: #a855f7; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-calendar-days"></i> Calendrier des Émissions</h3>
+            <p>Retrouvez les diffusions en direct sur le calendrier officiel de l'établissement :</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <a href="calendrier.html" class="btn-primary" style="text-decoration: none; display: inline-block;">Accéder au grand Calendrier 🗓️</a>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js"></script>
-    
+    <script src="translate-pages.js"></script>
+    <script>
+        // Fonctions globales d'ouverture/fermeture des Modals
+        window.openParamModal = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('hidden');
+        };
+
+        window.closeParamModal = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('hidden');
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- GESTION DU BOUTON DE COUPURE DE SON (MUTE) ---
+            const audioPlayer = document.getElementById('main-audio-player');
+            const muteBtn = document.getElementById('audio-mute-btn');
+            const muteIcon = document.getElementById('mute-icon');
+
+            if (muteBtn && audioPlayer && muteIcon) {
+                muteBtn.addEventListener('click', () => {
+                    // Inverse l'état du volume (true -> false / false -> true)
+                    audioPlayer.muted = !audioPlayer.muted;
+
+                    // Met à jour l'icône du haut-parleur en fonction du statut
+                    if (audioPlayer.muted) {
+                        muteIcon.className = 'fa-solid fa-volume-xmark';
+                        muteBtn.style.background = '#ef4444'; // Devient rouge quand c'est coupé
+                        muteBtn.title = "Activer le son";
+                    } else {
+                        muteIcon.className = 'fa-solid fa-volume-high';
+                        muteBtn.style.background = 'var(--accent, #a855f7)'; // Revient violet
+                        muteBtn.title = "Couper le son";
+                    }
+                });
+            }
+
+            // --- REGLAGES & THEMES (COPIÉ DE TON FICHIER ORIGINAL) ---
+            const selectMedia = document.getElementById('param-media');
+            const selectTaille = document.getElementById('param-taille-police');
+            const selectPolice = document.getElementById('param-police');
+
+            if (localStorage.getItem('siteTheme') === 'light') {
+                document.body.classList.add('light-mode');
+                if (selectMedia) selectMedia.value = "light";
+            }
+            const pSize = localStorage.getItem('siteFontSize') || 'medium';
+            document.body.classList.add(`font-${pSize}`);
+            if (selectTaille) selectTaille.value = pSize;
+
+            if (localStorage.getItem('siteFont') === 'dyslexic') {
+                document.body.classList.add('font-dyslexic');
+                if (selectPolice) selectPolice.value = "dyslexic";
+            }
+
+            if (selectMedia) {
+                selectMedia.addEventListener('change', (e) => {
+                    if (e.target.value === 'light') {
+                        document.body.classList.add('light-mode');
+                        localStorage.setItem('siteTheme', 'light');
+                    } else {
+                        document.body.classList.remove('light-mode');
+                        localStorage.setItem('siteTheme', 'dark');
+                    }
+                });
+            }
+
+            if (selectTaille) {
+                selectTaille.addEventListener('change', (e) => {
+                    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+                    document.body.classList.add(`font-${e.target.value}`);
+                    localStorage.setItem('siteFontSize', e.target.value);
+                });
+            }
+
+            if (selectPolice) {
+                selectPolice.addEventListener('change', (e) => {
+                    if (e.target.value === 'dyslexic') {
+                        document.body.classList.add('font-dyslexic');
+                        localStorage.setItem('siteFont', 'dyslexic');
+                    } else {
+                        document.body.classList.remove('font-dyslexic');
+                        localStorage.setItem('siteFont', 'normal');
+                    }
+                });
+            }
+
+            // --- SCRIPT MINI CALENDRIER DE L'ACCUEIL ---
+            const monthYearEl = document.getElementById('cal-month-year');
+            const daysContainer = document.getElementById('calendar-days');
+            const prevBtn = document.getElementById('cal-prev');
+            const nextBtn = document.getElementById('cal-next');
+
+            const months = [
+                "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+                "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+            ];
+
+            let date = new Date();
+            let currentMonth = date.getMonth();
+            let currentYear = date.getFullYear();
+
+            function renderCalendar() {
+                daysContainer.innerHTML = "";
+                monthYearEl.innerText = `${months[currentMonth]} ${currentYear}`;
+
+                let firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+                let lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+                for (let i = 0; i < firstDayIndex; i++) {
+                    const emptyDiv = document.createElement('div');
+                    daysContainer.appendChild(emptyDiv);
+                }
+
+                for (let i = 1; i <= lastDay; i++) {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.innerText = i;
+                    dayDiv.style.padding = "5px";
+                    dayDiv.style.color = "white";
+                    dayDiv.style.borderRadius = "4px";
+
+                    if (i === date.getDate() && currentMonth === date.getMonth() && currentYear === date.getFullYear()) {
+                        dayDiv.style.background = "var(--accent)";
+                        dayDiv.style.fontWeight = "bold";
+                    }
+                    daysContainer.appendChild(dayDiv);
+                }
+            }
+
+            if (prevBtn && nextBtn) {
+                prevBtn.addEventListener('click', () => {
+                    currentMonth--;
+                    if (currentMonth < 0) {
+                        currentMonth = 11;
+                        currentYear--;
+                    }
+                    renderCalendar();
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    currentMonth++;
+                    if (currentMonth > 11) {
+                        currentMonth = 0;
+                        currentYear++;
+                    }
+                    renderCalendar();
+                });
+                renderCalendar();
+            }
+        });
+    </script>
 </body>
 </html>
