@@ -83,7 +83,6 @@
         }
         
         /* --- COULEURS DES ÉVÉNEMENTS --- */
-        /* Vert : Ouvert */
         .day-cell.open-radio {
             border-color: #22c55e;
             background-color: rgba(34, 197, 94, 0.15);
@@ -93,7 +92,6 @@
             color: #4ade80;
         }
         
-        /* Jaune : Vacances et Jours Fériés */
         .day-cell.vacation-or-holiday {
             border-color: #eab308;
             background-color: rgba(234, 179, 8, 0.15);
@@ -103,7 +101,6 @@
             color: #fde047;
         }
 
-        /* Orange : Émission spéciale toute la journée (12 mai) */
         .day-cell.special-orange {
             border-color: #f97316;
             background-color: rgba(249, 115, 22, 0.2);
@@ -116,7 +113,6 @@
             border-radius: 4px;
         }
 
-        /* Rouge : Fermeture spéciale (9 juin) */
         .day-cell.closed-red {
             border-color: #ef4444;
             background-color: rgba(239, 68, 68, 0.2);
@@ -154,8 +150,7 @@
                 <a href="index.html">Accueil</a>
                 <a href="equipe.html">L'Équipe</a>
                 <a href="aide.html">Aide</a>
-                <a href="ia-aide.html" style="color: #a855f7; font-weight: bold;">Aide 2.0</a>
-                <a href="calendrier.html" class="active">🗓️ Calendrier</a>
+                <a href="calendrier.html" class="active" style="color: #a855f7; font-weight: bold;">🗓️ Calendrier</a>
                 <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
                 <button id="param-btn" class="btn-nav-param" title="Paramètres" onclick="openParamModal('modal-menu-param')"><i class="fa-solid fa-gear"></i></button>
             </nav>
@@ -170,8 +165,7 @@
                         <button class="nav-cal-btn" id="btn-next">Suivant <i class="fa-solid fa-chevron-right"></i></button>
                     </div>
                     
-                    <div class="calendar-grid" id="calendar-grid-target">
-                        </div>
+                    <div class="calendar-grid" id="calendar-grid-target"></div>
                 </div>
             </div>
         </main>
@@ -222,7 +216,6 @@
 
     <script src="translate-pages.js"></script>
     <script>
-        // Fonctions d'ouverture et de fermeture des fenêtres de dialogue (Modals) accessible globalement
         window.openParamModal = function(id) {
             const m = document.getElementById(id);
             if (m) m.classList.remove('hidden');
@@ -234,7 +227,6 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Liste des mois de l'année scolaire de Septembre 2025 à Juin 2026
             const moisScolaires = [
                 { name: "septembre 2025", index: 8, year: 2025 },
                 { name: "octobre 2025", index: 9, year: 2025 },
@@ -248,7 +240,6 @@
                 { name: "juin 2026", index: 5, year: 2026 }
             ];
 
-            // Détection automatique du mois en cours
             const today = new Date();
             const currentYear = today.getFullYear();
             const currentMonth = today.getMonth();
@@ -258,7 +249,6 @@
                 currentMonthPointer = 0;
             }
 
-            // Liste complète des vacances scolaires 2025-2026
             const vacances = [
                 { start: new Date('2025-10-18'), end: new Date('2025-11-03'), label: 'Vacances' },
                 { start: new Date('2025-12-20'), end: new Date('2025-01-05'), label: 'Vacances' },
@@ -266,7 +256,6 @@
                 { start: new Date('2025-04-04'), end: new Date('2025-04-20'), label: 'Vacances' }
             ];
 
-            // Liste des jours fériés fixes/connus sur la période scolaire
             const joursFeries = [
                 { date: new Date('2025-11-01'), label: 'Toussaint' },
                 { date: new Date('2025-11-11'), label: 'Armistice' },
@@ -319,7 +308,6 @@
                     const currentDate = new Date(currentMoisData.year, currentMoisData.index, day);
                     let dayOfWeek = currentDate.getDay();
 
-                    // 1. Exception Orange : 12 Mai 2026
                     if (currentMoisData.year === 2026 && currentMoisData.index === 4 && day === 12) {
                         cell.classList.add('special-orange');
                         const status = document.createElement('span');
@@ -327,7 +315,6 @@
                         status.innerText = 'Emission toute la journée';
                         cell.appendChild(status);
                     }
-                    // 2. Exception Rouge : 9 Juin 2026
                     else if (currentMoisData.year === 2026 && currentMoisData.index === 5 && day === 9) {
                         cell.classList.add('closed-red');
                         const status = document.createElement('span');
@@ -401,12 +388,11 @@
 
             renderCurrentMonth();
 
-            // --- CHARGEMENT ET SYNCHRONISATION DES REGLAGES (STYLE ET COULEURS) ---
+            // --- LOCAL STORAGE SYNC ---
             const selectMedia = document.getElementById('param-media');
             const selectTaille = document.getElementById('param-taille-police');
             const selectPolice = document.getElementById('param-police');
 
-            // Appliquer les données sauvegardées
             if (localStorage.getItem('siteTheme') === 'light') {
                 document.body.classList.add('light-mode');
                 if(selectMedia) selectMedia.value = "light";
@@ -420,7 +406,6 @@
                 if(selectPolice) selectPolice.value = "dyslexic";
             }
 
-            // Écouteurs pour mettre à jour en direct comme sur index.html
             if(selectMedia) {
                 selectMedia.addEventListener('change', (e) => {
                     if(e.target.value === 'light') {
