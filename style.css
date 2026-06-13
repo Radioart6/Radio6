@@ -751,3 +751,71 @@ body.font-dyslexic {
         text-align: center;
     }
 }
+/* --- CONFIGURATION DU MENU BURGER (MOBILE) --- */
+
+/* Par défaut sur ordinateur, on cache le bouton burger */
+.burger-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-color, #fff);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color 0.2s;
+}
+
+.burger-btn:hover {
+    color: #a855f7;
+}
+
+/* Style de base des liens sur ordinateur (pour ne rien casser) */
+.nav-links-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* --- ADAPTATION POUR MOBILE (Écrans de moins de 768px) --- */
+@media (max-width: 768px) {
+    header {
+        position: relative; /* Permet de caler le menu déroulant */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* On affiche le bouton burger à droite */
+    .burger-btn {
+        display: block;
+    }
+
+    /* On transforme la liste de liens en menu vertical caché par défaut */
+    .nav-links-container {
+        display: none; /* Caché au départ */
+        flex-direction: column;
+        position: absolute;
+        top: 100%; /* S'ouvre juste en dessous du header */
+        right: 0;
+        left: 0;
+        background-color: #0f172a; /* Même couleur sombre que le fond du site */
+        border-bottom: 2px solid #334155;
+        padding: 1rem;
+        gap: 1rem;
+        z-index: 999; /* Reste bien au-dessus du reste du site */
+    }
+
+    /* Quand on ajoute la classe "open", le menu s'affiche */
+    .nav-links-container.open {
+        display: flex;
+    }
+
+    /* Style des boutons et liens pour qu'ils prennent toute la largeur sur mobile */
+    .nav-links-container a, 
+    .nav-links-container button {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        margin: 0;
+    }
+}
