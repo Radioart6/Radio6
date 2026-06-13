@@ -143,20 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsFontLg: "Grande",
             settingsSave: "Guardar ajustes"
         }
-        const burgerBtn = document.getElementById('burger-menu-btn');
-    const navLinks = document.getElementById('nav-links');
-
-    if (burgerBtn && navLinks) {
-        burgerBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('open');
-            const icon = burgerBtn.querySelector('i');
-            if (navLinks.classList.contains('open')) {
-                icon.className = 'fa-solid fa-xmark';
-            } else {
-                icon.className = 'fa-solid fa-bars';
-            }
-        });
-    }
     };
 
     let currentLang = localStorage.getItem('siteLang') || 'fr';
