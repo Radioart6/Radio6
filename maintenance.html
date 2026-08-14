@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="logo.png">
+    <title>Radio 6 - Maintenance & Problème Technique</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barre supérieure pour le bouton de connexion admin */
+        header.maintenance-header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1.5rem 2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-admin-login {
+            background-color: #a855f7;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-admin-login:hover {
+            background-color: #9333ea;
+        }
+
+        /* Conteneur principal centré */
+        .maintenance-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .maintenance-card {
+            background-color: #1e293b;
+            border: 2px solid #ef4444; /* Bordure rouge pour indiquer le problème */
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+            text-align: center;
+        }
+
+        .maintenance-icon {
+            font-size: 3.5rem;
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+
+        .maintenance-title {
+            font-size: 1.4rem;
+            color: #f8fafc;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .problems-list {
+            text-align: left;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .problems-list p {
+            margin: 0 0 10px 0;
+            color: #94a3b8;
+            font-weight: bold;
+        }
+
+        .problems-list ul {
+            margin: 0;
+            padding-left: 1.2rem;
+            color: #cbd5e1;
+        }
+
+        .problems-list li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .contact-note {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        /* --- STYLES POPUP / MODAL DE CONNEXION --- */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.2rem;
+            font-size: 1.5rem;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.6rem;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: #a855f7;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background-color: #9333ea;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .error-message.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="maintenance-header">
+        <button id="btn-login-open" class="btn-admin-login">
+            <i class="fa-solid fa-lock"></i> Connexion Admin
+        </button>
+    </header>
+
+    <div class="maintenance-container">
+        <div class="maintenance-card">
+            <div class="maintenance-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            
+            <h2 class="maintenance-title">
+                Nous sommes navrés de vous apprendre qu'il y a eu un problème technique.
+            </h2>
+
+            <div class="problems-list">
+                <p>Le site rencontre actuellement des problèmes comme :</p>
+                <ul>
+                    <li>Les audios sont suspendus</li>
+                    <li>Certains boutons ne fonctionnent plus</li>
+                    <li>Obligé d'avoir le lien direct pour accéder au site</li>
+                </ul>
+            </div>
+
+            <p class="contact-note">
+                Seuls les administrateurs connectés peuvent accéder à l'espace complet. Merci de votre compréhension !
+            </p>
+        </div>
+    </div>
+
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="btn-login-close" class="close-btn">&times;</span>
+            <h3 style="margin-top: 0; color: #a855f7; text-align: center;">Espace Administrateur</h3>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Identifiant :</label>
+                    <input type="text" id="username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe :</label>
+                    <input type="password" id="password" required autocomplete="current-password">
+                </div>
+                <p id="login-error" class="error-message hidden">Identifiants incorrects.</p>
+                <button type="submit" class="btn-submit">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Gestion de l'ouverture et fermeture de la fenêtre de connexion
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnLoginOpen = document.getElementById('btn-login-open');
+            const btnLoginClose = document.getElementById('btn-login-close');
+            const loginModal = document.getElementById('login-modal');
+
+            if (btnLoginOpen) {
+                btnLoginOpen.addEventListener('click', () => {
+                    loginModal.classList.remove('hidden');
+                });
+            }
+
+            if (btnLoginClose) {
+                btnLoginClose.addEventListener('click', () => {
+                    loginModal.classList.add('hidden');
+                });
+            }
+
+            // Si l'administrateur est déjà connecté, on le redirige directement vers l'accueil principal
+            if (sessionStorage.getItem('adminMode') === 'true') {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
