@@ -1,3 +1,10 @@
+// --- MODE MAINTENANCE ---
+const isMaintenanceActive = true;
+
+// Redirection automatique des visiteurs vers la page de maintenance
+if (isMaintenanceActive && sessionStorage.getItem('adminMode') !== 'true' && !window.location.pathname.includes('maintenance.html')) {
+    window.location.href = 'maintenance.html';
+}
 // --- CONFIGURATION SUPABASE CENTRALISÉE ---
 const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
