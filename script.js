@@ -591,6 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
                 document.body.classList.add('admin-mode');
                 sessionStorage.setItem('adminMode', 'true');
+                window.location.href = 'index.html';
                 injectIALink();
                 injectCalendarLink(); // S'affiche immédiatement lors de la connexion
                 loginForm.reset();
@@ -610,6 +611,9 @@ document.addEventListener('DOMContentLoaded', () => {
             removeIALink();
             removeCalendarLink(); // Se retire immédiatement lors de la déconnexion
             applyTranslations(currentLang);
+            if (isMaintenanceActive) {
+            window.location.href = 'maintenance.html';
+        }
         });
     }
 });
