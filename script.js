@@ -489,22 +489,45 @@ document.addEventListener('DOMContentLoaded', () => {
         return h > 0 ? `${h}:${mStr}:${sStr}` : `${mStr}:${sStr}`;
     }
 // --- FONCTIONS D'INJECTION POUR LE MODE ADMIN ---
+function injectIALink() {
+    const navContainer = document.getElementById('nav-links'); // Correction ici (nav-links au lieu de main-nav)
+    if (!navContainer || document.getElementById('nav-ia-admin')) return;
+    
+    const iaLink = document.createElement('a');
+    iaLink.href = 'ia-aide.html';
+    iaLink.id = 'nav-ia-admin';
+    iaLink.className = 'ia-link';
+    iaLink.innerText = 'Aide 2.0';
+    
+    const instaLink = navContainer.querySelector('a[href*="instagram.com"]');
+    if (instaLink) {
+        navContainer.insertBefore(iaLink, instaLink);
+    } else {
+        navContainer.appendChild(iaLink);
+    }
+}
+
+function removeIALink() {
+    const iaLink = document.getElementById('nav-ia-admin');
+    if (iaLink) iaLink.remove();
+}
+
 function injectCalendarLink() {
-    const mainNav = document.getElementById('nav-links') || document.getElementById('main-nav');
-    if (mainNav && !document.getElementById('nav-calendrier-admin')) {
-        const calLink = document.createElement('a');
-        calLink.id = 'nav-calendrier-admin';
-        calLink.href = 'calendrier.html';
-        calLink.style.color = '#a855f7';
-        calLink.style.fontWeight = 'bold';
-        calLink.innerText = '🗓️ Calendrier';
-        
-        const paramBtn = document.getElementById('param-btn');
-        if (paramBtn) {
-            mainNav.insertBefore(calLink, paramBtn);
-        } else {
-            mainNav.appendChild(calLink);
-        }
+    const navContainer = document.getElementById('nav-links');
+    if (!navContainer || document.getElementById('nav-calendrier-admin')) return;
+    
+    const calLink = document.createElement('a');
+    calLink.id = 'nav-calendrier-admin';
+    calLink.href = 'calendrier.html';
+    calLink.style.color = '#a855f7';
+    calLink.style.fontWeight = 'bold';
+    calLink.innerText = '🗓️ Calendrier';
+    
+    const paramBtn = document.getElementById('param-btn');
+    if (paramBtn) {
+        navContainer.insertBefore(calLink, paramBtn);
+    } else {
+        navContainer.appendChild(calLink);
     }
 }
 
@@ -512,22 +535,6 @@ function removeCalendarLink() {
     const calLink = document.getElementById('nav-calendrier-admin');
     if (calLink) calLink.remove();
 }
-    function injectIALink() {
-        if (!mainNav || document.getElementById('nav-ia-admin')) return;
-        const iaLink = document.createElement('a');
-        iaLink.href = 'ia-aide.html';
-        iaLink.id = 'nav-ia-admin';
-        iaLink.className = 'ia-link';
-        iaLink.innerText = 'Aide 2.0';
-        const instaLink = mainNav.querySelector('a[href*="instagram.com"]');
-        if (instaLink) mainNav.insertBefore(iaLink, instaLink);
-        else mainNav.appendChild(iaLink);
-    }
-
-    function removeIALink() {
-        const iaLink = document.getElementById('nav-ia-admin');
-        if (iaLink) iaLink.remove();
-    }
 
 // --- GESTION DU BOUTON CALENDRIER GÉNÉRAL ---
     const btnCalendrier = document.getElementById('nav-calendrier');
