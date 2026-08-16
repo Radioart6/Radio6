@@ -488,7 +488,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const sStr = s < 10 ? "0" + s : s;
         return h > 0 ? `${h}:${mStr}:${sStr}` : `${mStr}:${sStr}`;
     }
+// --- FONCTIONS D'INJECTION POUR LE MODE ADMIN ---
+function injectCalendarLink() {
+    const mainNav = document.getElementById('nav-links') || document.getElementById('main-nav');
+    if (mainNav && !document.getElementById('nav-calendrier-admin')) {
+        const calLink = document.createElement('a');
+        calLink.id = 'nav-calendrier-admin';
+        calLink.href = 'calendrier.html';
+        calLink.style.color = '#a855f7';
+        calLink.style.fontWeight = 'bold';
+        calLink.innerText = '🗓️ Calendrier';
+        
+        const paramBtn = document.getElementById('param-btn');
+        if (paramBtn) {
+            mainNav.insertBefore(calLink, paramBtn);
+        } else {
+            mainNav.appendChild(calLink);
+        }
+    }
+}
 
+function removeCalendarLink() {
+    const calLink = document.getElementById('nav-calendrier-admin');
+    if (calLink) calLink.remove();
+}
     function injectIALink() {
         if (!mainNav || document.getElementById('nav-ia-admin')) return;
         const iaLink = document.createElement('a');
