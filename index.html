@@ -7,7 +7,6 @@
     <meta name="keywords" content="Radio 6, Lycée Arcisse de Caumont, Bayeux, podcast, rediffusion, radio lycee">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="favicon.png">
     <title>Radio 6 - La Radio d'Art 6</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -94,7 +93,7 @@
             </div>
             <h1>RADIO 6</h1>
             <p class="splash-subtitle">La Radio d'Art 6 • Lycée Arcisse de Caumont</p>
-            <a href="maintenance.html" class="btn-enter">Entrer dans l'espace de rediffusion</a>
+            <button id="btn-enter" class="btn-splash">Entrer dans l'espace rediffusion</button>
         </div>
     </div>
 
@@ -108,20 +107,14 @@
                 </div>
             </div>
             <nav id="main-nav">
-    <button id="burger-menu-btn" class="burger-btn" title="Menu">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-
-    <div id="nav-links" class="nav-links-container">
-        <button id="btn-login-open" class="btn-nav-login">Connexion</button>
-        <a href="index.html" class="active">Accueil</a>
-        <a href="equipe.html">L'Équipe</a>
-        <a href="aide.html">Aide</a>
-        <a href="calendrier.html">🗓️ Calendrier</a>
-        <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
-        <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
-    </div>
-</nav>
+                <button id="btn-login-open" class="btn-nav-login">Connexion</button>
+                <a href="index.html" class="active">Accueil</a>
+                <a href="equipe.html">L'Équipe</a>
+                <a href="aide.html">Aide</a>
+                <a href="calendrier.html">🗓️ Calendrier</a>
+                <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
+                <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+            </nav>
         </header>
 
         <div id="login-modal" class="modal hidden">
@@ -169,7 +162,6 @@
                             <option value="actualites-infos">Actualités & Infos</option>
                             <option value="En classe">En classe</option>
                             <option value="culture">Culture</option>
-                            <option value="Portrait">Portrait</option>
                             <option value="autres" selected>Autres</option>
                         </select>
                     </div>
@@ -228,11 +220,6 @@
                     <div class="folder-box" data-category="culture">
                         <h3><i class="fa-solid fa-masks-theater"></i> Culture <span class="pod-count" id="count-culture">(0)</span></h3>
                         <div class="podcast-grid hidden" id="grid-culture"></div>
-                    </div>
-
-                    <div class="folder-box" data-category="Portait">
-                        <h3><i class="fa-solid fa-circle-user"></i> Portrait <span class="pod-count" id="Portait">(0)</span></h3>
-                        <div class="podcast-grid hidden" id="Portrait"></div>
                     </div>
 
                     <div class="folder-box" data-category="autres">
