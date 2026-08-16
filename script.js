@@ -1,10 +1,3 @@
-// --- MODE MAINTENANCE ---
-const isMaintenanceActive = false;
-
-// Redirection automatique des visiteurs vers la page de maintenance
-if (isMaintenanceActive && sessionStorage.getItem('adminMode') !== 'true' && !window.location.pathname.includes('maintenance.html')) {
-    window.location.href = 'maintenance.html';
-}
 // --- CONFIGURATION SUPABASE CENTRALISÉE ---
 const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
@@ -489,43 +482,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return h > 0 ? `${h}:${mStr}:${sStr}` : `${mStr}:${sStr}`;
     }
 
-// --- FONCTIONS D'INJECTION POUR LE MODE ADMIN ---
-function injectIALink() {
-    const navContainer = document.getElementById('nav-links') || document.getElementById('main-nav'); 
-    if (!navContainer || document.getElementById('nav-ia-admin')) return;
-    
-    const iaLink = document.createElement('a');
-    iaLink.href = 'ia-aide.html';
-    iaLink.id = 'nav-ia-admin';
-    iaLink.className = 'ia-link';
-    iaLink.innerText = 'Aide 2.0';
-    
-    navContainer.appendChild(iaLink);
-}
+    function injectIALink() {
+        if (!mainNav || document.getElementById('nav-ia-admin')) return;
+        const iaLink = document.createElement('a');
+        iaLink.href = 'ia-aide.html';
+        iaLink.id = 'nav-ia-admin';
+        iaLink.className = 'ia-link';
+        iaLink.innerText = 'Aide 2.0';
+        const instaLink = mainNav.querySelector('a[href*="instagram.com"]');
+        if (instaLink) mainNav.insertBefore(iaLink, instaLink);
+        else mainNav.appendChild(iaLink);
+    }
 
-function removeIALink() {
-    const iaLink = document.getElementById('nav-ia-admin');
-    if (iaLink) iaLink.remove();
-}
-
-function injectCalendarLink() {
-    const navContainer = document.getElementById('nav-links') || document.getElementById('main-nav');
-    if (!navContainer || document.getElementById('nav-calendrier-admin')) return;
-    
-    const calLink = document.createElement('a');
-    calLink.id = 'nav-calendrier-admin';
-    calLink.href = 'calendrier.html';
-    calLink.style.color = '#a855f7';
-    calLink.style.fontWeight = 'bold';
-    calLink.innerText = '🗓️ Calendrier';
-    
-    navContainer.appendChild(calLink);
-}
-
-function removeCalendarLink() {
-    const calLink = document.getElementById('nav-calendrier-admin');
-    if (calLink) calLink.remove();
-}
+    function removeIALink() {
+        const iaLink = document.getElementById('nav-ia-admin');
+        if (iaLink) iaLink.remove();
+    }
 
 // --- GESTION DU BOUTON CALENDRIER GÉNÉRAL ---
     const btnCalendrier = document.getElementById('nav-calendrier');
@@ -612,7 +584,6 @@ function removeCalendarLink() {
                 if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
                 document.body.classList.add('admin-mode');
                 sessionStorage.setItem('adminMode', 'true');
-                window.location.href = 'index.html';
                 injectIALink();
                 injectCalendarLink(); // S'affiche immédiatement lors de la connexion
                 loginForm.reset();
@@ -632,26 +603,10 @@ function removeCalendarLink() {
             removeIALink();
             removeCalendarLink(); // Se retire immédiatement lors de la déconnexion
             applyTranslations(currentLang);
-            if (isMaintenanceActive) {
-            window.location.href = 'maintenance.html';
-        }
         });
     }
 });
-const burgerBtn = document.getElementById('burger-menu-btn');
-    const navLinks = document.getElementById('nav-links');
 
-    if (burgerBtn && navLinks) {
-        burgerBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('open');
-            const icon = burgerBtn.querySelector('i');
-            if (navLinks.classList.contains('open')) {
-                icon.className = 'fa-solid fa-xmark';
-            } else {
-                icon.className = 'fa-solid fa-bars';
-            }
-        });
-    }
 window.closeParamModal = function(modalId) {
     const targetModal = document.getElementById(modalId);
     if (targetModal) {
