@@ -488,6 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sStr = s < 10 ? "0" + s : s;
         return h > 0 ? `${h}:${mStr}:${sStr}` : `${mStr}:${sStr}`;
     }
+
 // --- FONCTIONS D'INJECTION POUR LE MODE ADMIN ---
 function injectIALink() {
     const navContainer = document.getElementById('nav-links') || document.getElementById('main-nav'); 
@@ -499,7 +500,6 @@ function injectIALink() {
     iaLink.className = 'ia-link';
     iaLink.innerText = 'Aide 2.0';
     
-    // On ajoute simplement à la fin du menu pour éviter les crashs "insertBefore"
     navContainer.appendChild(iaLink);
 }
 
@@ -519,7 +519,6 @@ function injectCalendarLink() {
     calLink.style.fontWeight = 'bold';
     calLink.innerText = '🗓️ Calendrier';
     
-    // On ajoute simplement à la fin du menu pour éviter les crashs "insertBefore"
     navContainer.appendChild(calLink);
 }
 
@@ -527,6 +526,7 @@ function removeCalendarLink() {
     const calLink = document.getElementById('nav-calendrier-admin');
     if (calLink) calLink.remove();
 }
+
 // --- GESTION DU BOUTON CALENDRIER GÉNÉRAL ---
     const btnCalendrier = document.getElementById('nav-calendrier');
     if (btnCalendrier) {
