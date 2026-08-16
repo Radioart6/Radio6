@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentTitle = document.getElementById('current-title');
     const playerStatus = document.getElementById('player-status');
 
-    const categoriesList = ['loisir-sport', 'touristique', 'actualites-infos', 'culture', 'autres'];
+    const categoriesList = ['loisir-sport', 'touristique', 'actualites-infos', 'en-classe', 'culture', 'portrait', 'autres'];
 
     // --- DICTIONNAIRE DE TRADUCTION ---
     const translations = {
