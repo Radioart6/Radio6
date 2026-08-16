@@ -1,5 +1,5 @@
 // --- MODE MAINTENANCE ---
-const isMaintenanceActive = true;
+const isMaintenanceActive = false;
 
 // Redirection automatique des visiteurs vers la page de maintenance
 if (isMaintenanceActive && sessionStorage.getItem('adminMode') !== 'true' && !window.location.pathname.includes('maintenance.html')) {
