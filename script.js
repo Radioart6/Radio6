@@ -42,6 +42,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const categoriesList = ['loisir-sport', 'touristique', 'actualites-infos', 'en-classe', 'culture', 'portrait', 'autres'];
 
+    // --- GESTION DU MENU BURGER SUR MOBILE ---
+    const burgerMenuBtn = document.getElementById('burger-menu-btn');
+    const navLinksContainer = document.getElementById('nav-links');
+
+    if (burgerMenuBtn && navLinksContainer) {
+        burgerMenuBtn.addEventListener('click', () => {
+            // Ajoute ou enlève la classe 'open' au clic
+            navLinksContainer.classList.toggle('open');
+        });
+    }
+    
+    // Optionnel : Fermer le menu si on clique en dehors
+    window.addEventListener('click', (e) => {
+        if (navLinksContainer && navLinksContainer.classList.contains('open')) {
+            // Si on clique ailleurs que sur le menu ou le bouton burger
+            if (!navLinksContainer.contains(e.target) && !burgerMenuBtn.contains(e.target)) {
+                navLinksContainer.classList.remove('open');
+            }
+        }
+    });
     // --- DICTIONNAIRE DE TRADUCTION ---
     const translations = {
         fr: {
