@@ -243,19 +243,14 @@
                 });
             }
 
+            
             // --- GESTION DU BOUTON CALENDRIER ---
             const btnCalendrier = document.getElementById('nav-calendrier');
             if (btnCalendrier) {
                 btnCalendrier.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // Comportement identique : si admin -> ouvre calendrier ou redirection, sinon -> travaux
-                    if (sessionStorage.getItem('adminMode') === 'true') {
-                        const modalCal = document.getElementById('modal-calendrier');
-                        if (modalCal) modalCal.classList.remove('hidden');
-                    } else {
-                        const modalTravaux = document.getElementById('modal-travaux');
-                        if (modalTravaux) modalTravaux.classList.remove('hidden');
-                    }
+                    const modalCal = document.getElementById('modal-calendrier');
+                    if (modalCal) modalCal.classList.remove('hidden');
                 });
             }
 
