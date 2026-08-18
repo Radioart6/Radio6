@@ -83,6 +83,12 @@
         .day-cell.active-day {
             color: #fff;
         }
+
+        /* --- ENCADRÉ BLANC POUR LE JOUR ACTUEL (AUJOURD'HUI) --- */
+        .day-cell.today {
+            border: 2px solid #ffffff !important;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.8) !important;
+        }
         
         /* --- COULEURS DES ÉVÉNEMENTS --- */
         .day-cell.open-radio {
@@ -140,30 +146,30 @@
 
     <div id="main-content">
         <header>
-    <div class="logo-area">
-        <img src="logo.png" alt="Radio 6" class="header-logo">
-        <div>
-            <strong class="site-title">RADIO 6</strong><br>
-            <small class="site-subtitle">Lycée Arcisse de Caumont</small>
-        </div>
-    </div>
-    
-    <nav id="main-nav">
-        <button id="burger-menu-btn" class="burger-btn" title="Menu">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+            <div class="logo-area">
+                <img src="logo.png" alt="Radio 6" class="header-logo">
+                <div>
+                    <strong class="site-title">RADIO 6</strong><br>
+                    <small class="site-subtitle">Lycée Arcisse de Caumont</small>
+                </div>
+            </div>
+            
+            <nav id="main-nav">
+                <button id="burger-menu-btn" class="burger-btn" title="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
 
-        <div id="nav-links" class="nav-links-container">
-            <button id="btn-login-open" class="btn-nav-login">Connexion</button>
-            <a href="index.html">Accueil</a>
-            <a href="equipe.html">L'Équipe</a>
-            <a href="aide.html">Aide</a>
-            <a href="calendrier.html" class="active">🗓️ Calendrier</a>
-            <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
-            <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
-        </div>
-    </nav>
-</header>
+                <div id="nav-links" class="nav-links-container">
+                    <button id="btn-login-open" class="btn-nav-login">Connexion</button>
+                    <a href="index.html">Accueil</a>
+                    <a href="equipe.html">L'Équipe</a>
+                    <a href="aide.html">Aide</a>
+                    <a href="calendrier.html" class="active">🗓️ Calendrier</a>
+                    <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
+                    <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </nav>
+        </header>
 
         <main>
             <div class="calendar-page-container">
@@ -228,7 +234,7 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Liste étendue des mois scolaires couvrant 2025-2026 ET 2026-2027 (Jusqu'à Juillet 2027)
+            // Liste étendue des mois scolaires de septembre 2025 à août 2027
             const moisScolaires = [
                 // Année 2025-2026
                 { name: "septembre 2025", index: 8, year: 2025 },
@@ -242,6 +248,7 @@
                 { name: "mai 2026", index: 4, year: 2026 },
                 { name: "juin 2026", index: 5, year: 2026 },
                 { name: "juillet 2026", index: 6, year: 2026 },
+                { name: "août 2026", index: 7, year: 2026 },
                 // Année 2026-2027
                 { name: "septembre 2026", index: 8, year: 2026 },
                 { name: "octobre 2026", index: 9, year: 2026 },
@@ -253,9 +260,11 @@
                 { name: "avril 2027", index: 3, year: 2027 },
                 { name: "mai 2027", index: 4, year: 2027 },
                 { name: "juin 2027", index: 5, year: 2027 },
-                { name: "juillet 2027", index: 6, year: 2027 }
+                { name: "juillet 2027", index: 6, year: 2027 },
+                { name: "août 2027", index: 7, year: 2027 }
             ];
 
+            // Détection automatique du jour et mois actuels
             const today = new Date();
             const currentYear = today.getFullYear();
             const currentMonth = today.getMonth();
@@ -265,23 +274,23 @@
                 currentMonthPointer = 0;
             }
 
-            // Vacances scolaires Normandie (Zone B) pour les deux années scolaires
+            // Vacances scolaires Zone B (Normandie) 2025 à 2027
             const vacances = [
                 // Année 2025-2026
                 { start: new Date('2025-10-18'), end: new Date('2025-11-03'), label: 'Vacances' },
                 { start: new Date('2025-12-20'), end: new Date('2025-01-05'), label: 'Vacances' },
-                { start: new Date('2025-02-07'), end: new Date('2025-02-23'), label: 'Vacances' },
-                { start: new Date('2025-04-04'), end: new Date('2025-04-20'), label: 'Vacances' },
+                { start: new Date('2026-02-07'), end: new Date('2026-02-23'), label: 'Vacances' },
+                { start: new Date('2026-04-04'), end: new Date('2026-04-20'), label: 'Vacances' },
                 { start: new Date('2026-07-04'), end: new Date('2026-08-31'), label: 'Vacances' },
                 // Année 2026-2027 (Zone B)
                 { start: new Date('2026-10-17'), end: new Date('2026-11-02'), label: 'Vacances' },
-                { start: new Date('2026-12-19'), end: new Date('2026-01-04'), label: 'Vacances' },
+                { start: new Date('2026-12-19'), end: new Date('2027-01-04'), label: 'Vacances' },
                 { start: new Date('2027-02-06'), end: new Date('2027-02-22'), label: 'Vacances' },
                 { start: new Date('2027-04-03'), end: new Date('2027-04-19'), label: 'Vacances' },
                 { start: new Date('2027-07-03'), end: new Date('2027-08-31'), label: 'Vacances' }
             ];
 
-            // Liste exhaustive des Jours Fériés (2025 à 2027)
+            // Jours Fériés en France (2025 à 2027)
             const joursFeries = [
                 // 2025
                 { date: new Date('2025-11-01'), label: 'Toussaint' },
@@ -295,6 +304,7 @@
                 { date: new Date('2026-05-14'), label: 'Ascension' },
                 { date: new Date('2026-05-25'), label: 'Pentecôte' },
                 { date: new Date('2026-07-14'), label: 'Fête Nationale' },
+                { date: new Date('2026-08-15'), label: 'Assomption' },
                 { date: new Date('2026-11-01'), label: 'Toussaint' },
                 { date: new Date('2026-11-11'), label: 'Armistice' },
                 { date: new Date('2026-12-25'), label: 'Noël' },
@@ -305,7 +315,8 @@
                 { date: new Date('2027-05-06'), label: 'Ascension' },
                 { date: new Date('2027-05-08'), label: 'Victoire 1945' },
                 { date: new Date('2027-05-17'), label: 'Pentecôte' },
-                { date: new Date('2027-07-14'), label: 'Fête Nationale' }
+                { date: new Date('2027-07-14'), label: 'Fête Nationale' },
+                { date: new Date('2027-08-15'), label: 'Assomption' }
             ];
 
             const gridTarget = document.getElementById('calendar-grid-target');
@@ -341,14 +352,21 @@
                     const cell = document.createElement('div');
                     cell.className = 'day-cell active-day';
                     
+                    const currentDate = new Date(currentMoisData.year, currentMoisData.index, day);
+                    let dayOfWeek = currentDate.getDay();
+
+                    // Encadré blanc si c'est aujourd'hui
+                    if (currentDate.getFullYear() === today.getFullYear() &&
+                        currentDate.getMonth() === today.getMonth() &&
+                        currentDate.getDate() === today.getDate()) {
+                        cell.classList.add('today');
+                    }
+
                     const dayNum = document.createElement('span');
                     dayNum.innerText = day;
                     cell.appendChild(dayNum);
 
-                    const currentDate = new Date(currentMoisData.year, currentMoisData.index, day);
-                    let dayOfWeek = currentDate.getDay();
-
-                    // --- LOGIQUE ÉVÉNEMENTS 2025-2026 UNIQUEMENT ---
+                    // --- ÉVÉNEMENTS SPÉCIAUX ---
                     if (currentMoisData.year === 2026 && currentMoisData.index === 4 && day === 12) {
                         cell.classList.add('special-orange');
                         const status = document.createElement('span');
@@ -366,7 +384,7 @@
                     else {
                         let raisonJaune = '';
 
-                        // Vérification Jours Fériés
+                        // Jours Fériés
                         for (let jf of joursFeries) {
                             if (currentDate.getFullYear() === jf.date.getFullYear() &&
                                 currentDate.getMonth() === jf.date.getMonth() &&
@@ -376,7 +394,7 @@
                             }
                         }
 
-                        // Vérification Vacances
+                        // Vacances
                         if (!raisonJaune) {
                             for (let v of vacances) {
                                 if (currentDate >= v.start && currentDate <= v.end) {
@@ -393,15 +411,13 @@
                             status.innerText = raisonJaune;
                             cell.appendChild(status);
                         } 
-                        // Ouverture par défaut récurrente UNIQUEMENT sur la première année 2025-2026
-                        else if (currentDate.getFullYear() === 2025 || (currentDate.getFullYear() === 2026 && currentDate.getTime() <= new Date('2026-06-08').getTime())) {
-                            if (dayOfWeek === 1 || dayOfWeek === 2) {
-                                cell.classList.add('open-radio');
-                                const status = document.createElement('span');
-                                status.className = 'status-text';
-                                status.innerText = 'web radio ouvert';
-                                cell.appendChild(status);
-                            }
+                        // Ouverture Lundi (1) et Mardi (2)
+                        else if (dayOfWeek === 1 || dayOfWeek === 2) {
+                            cell.classList.add('open-radio');
+                            const status = document.createElement('span');
+                            status.className = 'status-text';
+                            status.innerText = 'web radio ouvert';
+                            cell.appendChild(status);
                         }
                     }
 
@@ -431,7 +447,7 @@
 
             renderCurrentMonth();
 
-            // --- LOCAL STORAGE SYNC & RÉGLAGES ---
+            // --- PARAMÈTRES & PRÉFÉRENCES UTILISATEUR ---
             const selectMedia = document.getElementById('param-media');
             const selectTaille = document.getElementById('param-taille-police');
             const selectPolice = document.getElementById('param-police');
