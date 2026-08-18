@@ -86,7 +86,7 @@
         <div id="nav-links" class="nav-links-container">
             <button id="btn-login-open" class="btn-nav-login">Connexion</button>
             <a href="index.html">Accueil</a>
-            <a href="equipe.html"class="active">L'Équipe</a>
+            <a href="equipe.html" class="active">L'Équipe</a>
             <a href="aide.html">Aide</a>
             <a href="calendrier.html">🗓️ Calendrier</a>
             <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank">Instagram</a>
@@ -233,6 +233,16 @@
                 }
             }
 
+            // --- GESTION DU MENU MOBILE (BURGER) ---
+            const burgerBtn = document.getElementById('burger-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (burgerBtn && navLinks) {
+                burgerBtn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+
             // --- GESTION DU BOUTON CONNEXION ---
             const btnLoginOpen = document.getElementById('btn-login-open');
             if (btnLoginOpen) {
@@ -242,7 +252,7 @@
                     window.location.href = 'index.html';
                 });
             }
-            
+
             // --- GESTION DES PARAMÈTRES ---
             const paramBtn = document.getElementById('param-btn');
             const modalMenuParam = document.getElementById('modal-menu-param');
@@ -316,6 +326,5 @@
             if (e.target === mCal) mCal.classList.add('hidden');
         });
     </script>
-    <script src="script.js"></script>
 </body>
 </html>
