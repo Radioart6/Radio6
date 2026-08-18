@@ -1,63 +1,88 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nos Réseaux Instagram</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <title>Radio 6 - Instagram</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .insta-page-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 30px;
+        .insta-box {
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .insta-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
             text-align: center;
         }
-        .container {
-            width: 100%;
-            max-width: 600px;
+        .insta-header h3 {
+            color: #a855f7;
+            font-size: 1.4rem;
+            margin: 0;
         }
-        .insta-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        .insta-grid {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            transition: transform 0.2s;
+            gap: 1rem;
+        }
+        .insta-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: border-color 0.2s, transform 0.2s;
         }
         .insta-card:hover {
+            border-color: #a855f7;
             transform: translateY(-2px);
         }
-        .insta-title {
-            font-size: 1.2em;
-            font-weight: bold;
+        .insta-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .insta-card-header i {
+            font-size: 1.5rem;
             color: #e1306c;
         }
-        .insta-desc {
-            font-size: 0.95em;
-            color: #555;
+        .insta-card-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        .insta-card-desc {
+            font-size: 0.95rem;
+            color: #cbd5e1;
             line-height: 1.4;
         }
         .insta-btn {
             align-self: flex-start;
             background: linear-gradient(45deg, #405de6, #833ab4, #fd1d1d, #fcb045);
             color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.9em;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
         }
         .insta-btn:hover {
             opacity: 0.9;
@@ -66,54 +91,214 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1>Nos Comptes Instagram</h1>
+    <div id="main-content">
+        <header>
+            <div class="logo-area">
+                <img src="logo.png" alt="Radio 6" class="header-logo">
+                <div>
+                    <strong class="site-title">RADIO 6</strong><br>
+                    <small class="site-subtitle">Lycée Arcisse de Caumont</small>
+                </div>
+            </div>
+            
+            <nav id="main-nav">
+                <button id="burger-menu-btn" class="burger-btn" title="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
 
-        <!-- Radio -->
-        <div class="insta-card">
-            <div class="insta-title">Radio du Lycée</div>
-            <div class="insta-desc">Retrouvez tous les podcasts, annonces d'émissions en direct et projets musicaux de la radio.</div>
-            <a href="LIEN_INSTAGRAM_RADIO" class="insta-btn" target="_blank">Voir sur Instagram</a>
-        </div>
+                <div id="nav-links" class="nav-links-container">
+                    <button id="btn-login-open" class="btn-nav-login">Connexion</button>
+                    <a href="index.html">Accueil</a>
+                    <a href="equipe.html">L'Équipe</a>
+                    <a href="aide.html">Aide</a>
+                    <a href="calendrier.html">🗓️ Calendrier</a>
+                    <a href="instagram.html" class="active">Instagram</a>
+                    <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </nav>
+        </header>
 
-        <!-- CVL -->
-        <div class="insta-card">
-            <div class="insta-title">CVL (Conseil de la Vie Lycéenne)</div>
-            <div class="insta-desc">Suivez les projets des représentants lycéens et les actions menées pour améliorer la vie dans l'établissement.</div>
-            <a href="LIEN_INSTAGRAM_CVL" class="insta-btn" target="_blank">Voir sur Instagram</a>
-        </div>
+        <main>
+            <div class="insta-page-container">
+                <div class="insta-box">
+                    <div class="insta-header">
+                        <h3>Comptes Instagram du Lycée</h3>
+                    </div>
 
-        <!-- MDL -->
-        <div class="insta-card">
-            <div class="insta-title">MDL (Maison des Lycéens)</div>
-            <div class="insta-desc">Découvrez les événements, la gestion du foyer et la vie associative animée par les élèves.</div>
-            <a href="LIEN_INSTAGRAM_MDL" class="insta-btn" target="_blank">Voir sur Instagram</a>
-        </div>
+                    <div class="insta-grid">
+                        <!-- Radio 6 -->
+                        <div class="insta-card">
+                            <div class="insta-card-header">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span class="insta-card-title">Radio 6</span>
+                            </div>
+                            <div class="insta-card-desc">
+                                Podcasts, annonces d'émissions en direct, coulisses des enregistrements et actualités de la web radio du lycée.
+                            </div>
+                            <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank" class="insta-btn">
+                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                            </a>
+                        </div>
 
-        <!-- Terminale Déménageurs -->
-        <div class="insta-card">
-            <div class="insta-title">Terminale Déménageurs</div>
-            <div class="insta-desc">Suivez l'actualité, les événements et les projets de la promotion de terminale.</div>
-            <a href="LIEN_INSTAGRAM_DEMENAGEURS" class="insta-btn" target="_blank">Voir sur Instagram</a>
-        </div>
+                        <!-- CVL -->
+                        <div class="insta-card">
+                            <div class="insta-card-header">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span class="insta-card-title">CVL (Conseil de la Vie Lycéenne)</span>
+                            </div>
+                            <div class="insta-card-desc">
+                                Actualités des représentants des élèves, projets engagés, propositions retenues et améliorations de la vie lycéenne.
+                            </div>
+                            <a href="#" target="_blank" class="insta-btn">
+                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                            </a>
+                        </div>
 
-        <!-- BTS Tourisme -->
-        <div class="insta-card">
-            <div class="insta-title">BTS Tourisme</div>
-            <div class="insta-desc">Le compte de la section pour découvrir nos voyages d'études, projets professionnels et missions de terrain.</div>
-            <a href="LIEN_INSTAGRAM_BTS_TOURISME" class="insta-btn" target="_blank">Voir sur Instagram</a>
-        </div>
+                        <!-- MDL -->
+                        <div class="insta-card">
+                            <div class="insta-card-header">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span class="insta-card-title">MDL (Maison des Lycéens)</span>
+                            </div>
+                            <div class="insta-card-desc">
+                                Événements festifs et culturels, aménagement du foyer, clubs et activités organisés par les élèves.
+                            </div>
+                            <a href="#" target="_blank" class="insta-btn">
+                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                            </a>
+                        </div>
 
-        <!-- Espace pour futur ajout -->
-        <!-- 
-        <div class="insta-card">
-            <div class="insta-title">Nouveau Compte</div>
-            <div class="insta-desc">Description du nouveau compte...</div>
-            <a href="LIEN_INSTAGRAM" class="insta-btn" target="_blank">Voir sur Instagram</a>
-        </div>
-        -->
+                        <!-- Terminale Déménageurs -->
+                        <div class="insta-card">
+                            <div class="insta-card-header">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span class="insta-card-title">Terminale Déménageurs</span>
+                            </div>
+                            <div class="insta-card-desc">
+                                Compte de promotion : suivi des projets de fin d'année, actions de financement et souvenirs de la promo.
+                            </div>
+                            <a href="#" target="_blank" class="insta-btn">
+                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                            </a>
+                        </div>
 
+                        <!-- BTS Tourisme -->
+                        <div class="insta-card">
+                            <div class="insta-card-header">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span class="insta-card-title">BTS Tourisme</span>
+                            </div>
+                            <div class="insta-card-desc">
+                                Projets professionnels, voyages d'études, visites guidées et actions menées par la section tourisme.
+                            </div>
+                            <a href="#" target="_blank" class="insta-btn">
+                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p id="footer-text">© 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux.</p>
+        </footer>
     </div>
 
+    <div id="modal-menu-param" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeParamModal('modal-menu-param')">&times;</span>
+            <h3><i class="fa-solid fa-sliders"></i> Réglages Général</h3>
+            
+            <div class="param-row">
+                <label>Thème Visuel :</label>
+                <select id="param-media">
+                    <option value="dark">Mode Sombre</option>
+                    <option value="light">Mode Clair</option>
+                </select>
+            </div>
+            <div class="param-row">
+                <label>Taille de la police :</label>
+                <select id="param-taille-police">
+                    <option value="small">Petite</option>
+                    <option value="medium">Normale</option>
+                    <option value="large">Grande</option>
+                </select>
+            </div>
+            <div class="param-row">
+                <label>Type de police :</label>
+                <select id="param-police">
+                    <option value="normal">Normale</option>
+                    <option value="dyslexic">OpenDyslexic</option>
+                </select>
+            </div>
+            <button class="btn-submit" style="margin-top: 15px; background: #a855f7; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
+        </div>
+    </div>
+
+    <script src="translate-pages.js"></script>
+    <script>
+        window.openParamModal = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('hidden');
+        };
+
+        window.closeParamModal = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('hidden');
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectMedia = document.getElementById('param-media');
+            const selectTaille = document.getElementById('param-taille-police');
+            const selectPolice = document.getElementById('param-police');
+
+            if (localStorage.getItem('siteTheme') === 'light') {
+                document.body.classList.add('light-mode');
+                if(selectMedia) selectMedia.value = "light";
+            }
+            const pSize = localStorage.getItem('siteFontSize') || 'medium';
+            document.body.classList.add(`font-${pSize}`);
+            if(selectTaille) selectTaille.value = pSize;
+
+            if (localStorage.getItem('siteFont') === 'dyslexic') {
+                document.body.classList.add('font-dyslexic');
+                if(selectPolice) selectPolice.value = "dyslexic";
+            }
+
+            if(selectMedia) {
+                selectMedia.addEventListener('change', (e) => {
+                    if(e.target.value === 'light') {
+                        document.body.classList.add('light-mode');
+                        localStorage.setItem('siteTheme', 'light');
+                    } else {
+                        document.body.classList.remove('light-mode');
+                        localStorage.setItem('siteTheme', 'dark');
+                    }
+                });
+            }
+
+            if(selectTaille) {
+                selectTaille.addEventListener('change', (e) => {
+                    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+                    document.body.classList.add(`font-${e.target.value}`);
+                    localStorage.setItem('siteFontSize', e.target.value);
+                });
+            }
+
+            if(selectPolice) {
+                selectPolice.addEventListener('change', (e) => {
+                    if(e.target.value === 'dyslexic') {
+                        document.body.classList.add('font-dyslexic');
+                        localStorage.setItem('siteFont', 'dyslexic');
+                    } else {
+                        document.body.classList.remove('font-dyslexic');
+                        localStorage.setItem('siteFont', 'normal');
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="script.js"></script>
 </body>
 </html>
