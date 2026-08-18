@@ -255,34 +255,48 @@
         </footer>
     </div>
 
+    <!-- Modale Paramètres identique à la page principale -->
     <div id="modal-menu-param" class="modal hidden">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeParamModal('modal-menu-param')">&times;</span>
-            <h3><i class="fa-solid fa-sliders"></i> Réglages Général</h3>
-            
+            <span class="close-modal" onclick="closeParamModal('modal-menu-param')">&times;</span>
+            <h3 style="color: #2563eb; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-sliders"></i> Réglages Généraux</h3>
+            <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0 20px 0;">
+             
             <div class="param-row">
-                <label>Thème Visuel :</label>
+                <label><i class="fa-solid fa-language"></i> Langue :</label>
+                <select id="param-langue">
+                    <option value="fr" selected>Français</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
+
+            <div class="param-row">
+                <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
                 <select id="param-media">
-                    <option value="dark">Mode Sombre</option>
+                    <option value="dark" selected>Mode Sombre (Par défaut)</option>
                     <option value="light">Mode Clair</option>
                 </select>
             </div>
+
             <div class="param-row">
-                <label>Taille de la police :</label>
+                <label><i class="fa-solid fa-text-height"></i> Taille de la police :</label>
                 <select id="param-taille-police">
                     <option value="small">Petite</option>
-                    <option value="medium">Normale</option>
+                    <option value="medium" selected>Normale</option>
                     <option value="large">Grande</option>
                 </select>
             </div>
+
             <div class="param-row">
-                <label>Type de police :</label>
+                <label><i class="fa-solid fa-font"></i> Type de police :</label>
                 <select id="param-police">
-                    <option value="normal">Normale</option>
+                    <option value="normal" selected>Normale (Par défaut)</option>
                     <option value="dyslexic">OpenDyslexic</option>
                 </select>
             </div>
-            <button class="btn-submit" style="margin-top: 15px; background: #a855f7; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
+             
+            <button class="btn-submit" style="margin-top: 15px;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
         </div>
     </div>
 
@@ -503,10 +517,13 @@
 
             renderCurrentMonth();
 
+            // --- Logique du menu paramètres intégrée ---
             const selectMedia = document.getElementById('param-media');
             const selectTaille = document.getElementById('param-taille-police');
             const selectPolice = document.getElementById('param-police');
+            const selectLangue = document.getElementById('param-langue');
 
+            // --- Initialisation depuis le LocalStorage ---
             if (localStorage.getItem('siteTheme') === 'light') {
                 document.body.classList.add('light-mode');
                 if(selectMedia) selectMedia.value = "light";
@@ -520,6 +537,10 @@
                 if(selectPolice) selectPolice.value = "dyslexic";
             }
 
+            const currentLang = localStorage.getItem('siteLang') || 'fr';
+            if (selectLangue) selectLangue.value = currentLang;
+
+            // --- Écouteurs d'événements pour les changements ---
             if(selectMedia) {
                 selectMedia.addEventListener('change', (e) => {
                     if(e.target.value === 'light') {
@@ -549,6 +570,21 @@
                         document.body.classList.remove('font-dyslexic');
                         localStorage.setItem('siteFont', 'normal');
                     }
+                });
+            }
+
+            if(selectLangue) {
+                selectLangue.addEventListener('change', (e) => {
+                    localStorage.setItem('siteLang', e.target.value);
+                    // Le changement est géré par translate-pages.js (si configuré pour écouter cet event)
+                });
+            }
+            
+            // Écouteur pour ouvrir la modale depuis le header
+            const paramBtn = document.getElementById('param-btn');
+            if (paramBtn) {
+                paramBtn.addEventListener('click', () => {
+                    openParamModal('modal-menu-param');
                 });
             }
         });
