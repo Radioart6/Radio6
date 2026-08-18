@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="favicon.png">
@@ -248,7 +249,7 @@
                     iaLink.className = 'ia-link';
                     iaLink.innerText = 'Aide 2.0';
                     const instaLink = mainNav.querySelector('a[href*="instagram.com"]');
-                    if (instaLink) mainNav.insertBefore(iaLink, instaLink);
+                    if instaLink.parentNode.insertBefore(iaLink, instaLink);
                     else mainNav.appendChild(iaLink);
                 }
             }
