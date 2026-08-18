@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
         iaLink.className = 'ia-link';
         iaLink.innerText = 'Aide 2.0';
         const instaLink = mainNav.querySelector('a[href*="instagram.com"]');
-        if (instaLink) mainNav.insertBefore(iaLink, instaLink);
+        if instaLink.parentNode.insertBefore(iaLink, instaLink);
         else mainNav.appendChild(iaLink);
     }
 
