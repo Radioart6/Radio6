@@ -242,18 +242,7 @@
                     window.location.href = 'index.html';
                 });
             }
-
             
-            // --- GESTION DU BOUTON CALENDRIER ---
-            const btnCalendrier = document.getElementById('nav-calendrier');
-            if (btnCalendrier) {
-                btnCalendrier.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const modalCal = document.getElementById('modal-calendrier');
-                    if (modalCal) modalCal.classList.remove('hidden');
-                });
-            }
-
             // --- GESTION DES PARAMÈTRES ---
             const paramBtn = document.getElementById('param-btn');
             const modalMenuParam = document.getElementById('modal-menu-param');
