@@ -135,7 +135,7 @@
                             <div class="insta-card-desc">
                                 Podcasts, annonces d'émissions en direct, coulisses des enregistrements et actualités de la web radio du lycée.
                             </div>
-                            <a href="https://www.instagram.com/radio_arcisse/?__pwa=1" target="_blank" class="insta-btn">
+                            <a href="https://www.instagram.com/radio_arcisse?igsh=c2Q2eHU1NWlzYW82" target="_blank" class="insta-btn">
                                 <i class="fa-brands fa-instagram"></i> Voir le profil
                             </a>
                         </div>
@@ -149,7 +149,7 @@
                             <div class="insta-card-desc">
                                 Actualités des représentants des élèves, projets engagés, propositions retenues et améliorations de la vie lycéenne.
                             </div>
-                            <a href="#" target="_blank" class="insta-btn">
+                            <a href="https://www.instagram.com/cvl.adc?igsh=MTBodzd5c3p5a2R4Mw==" target="_blank" class="insta-btn">
                                 <i class="fa-brands fa-instagram"></i> Voir le profil
                             </a>
                         </div>
@@ -163,7 +163,7 @@
                             <div class="insta-card-desc">
                                 Événements festifs et culturels, aménagement du foyer, clubs et activités organisés par les élèves.
                             </div>
-                            <a href="#" target="_blank" class="insta-btn">
+                            <a href="https://www.instagram.com/mdlarcisse?igsh=MXB3dTRoYWU5OTlzNA==" target="_blank" class="insta-btn">
                                 <i class="fa-brands fa-instagram"></i> Voir le profil
                             </a>
                         </div>
@@ -177,7 +177,7 @@
                             <div class="insta-card-desc">
                                 Compte de promotion : suivi des projets de fin d'année, actions de financement et souvenirs de la promo.
                             </div>
-                            <a href="#" target="_blank" class="insta-btn">
+                            <a href="https://www.instagram.com/teamdemenageurs_arcisse?igsh=MTd2Nmpna3k5ZXMzNA==" target="_blank" class="insta-btn">
                                 <i class="fa-brands fa-instagram"></i> Voir le profil
                             </a>
                         </div>
@@ -191,7 +191,7 @@
                             <div class="insta-card-desc">
                                 Projets professionnels, voyages d'études, visites guidées et actions menées par la section tourisme.
                             </div>
-                            <a href="#" target="_blank" class="insta-btn">
+                            <a href="https://www.instagram.com/bts_tourisme_bayeux?igsh=ZjhxeWtudndwcmo0" target="_blank" class="insta-btn">
                                 <i class="fa-brands fa-instagram"></i> Voir le profil
                             </a>
                         </div>
@@ -205,34 +205,48 @@
         </footer>
     </div>
 
+    <!-- Modale Paramètres identique à la page principale -->
     <div id="modal-menu-param" class="modal hidden">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeParamModal('modal-menu-param')">&times;</span>
-            <h3><i class="fa-solid fa-sliders"></i> Réglages Général</h3>
-            
+            <span class="close-modal" onclick="closeParamModal('modal-menu-param')">&times;</span>
+            <h3 style="color: #2563eb; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-sliders"></i> Réglages Généraux</h3>
+            <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0 20px 0;">
+             
             <div class="param-row">
-                <label>Thème Visuel :</label>
+                <label><i class="fa-solid fa-language"></i> Langue :</label>
+                <select id="param-langue">
+                    <option value="fr" selected>Français</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
+
+            <div class="param-row">
+                <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
                 <select id="param-media">
-                    <option value="dark">Mode Sombre</option>
+                    <option value="dark" selected>Mode Sombre (Par défaut)</option>
                     <option value="light">Mode Clair</option>
                 </select>
             </div>
+
             <div class="param-row">
-                <label>Taille de la police :</label>
+                <label><i class="fa-solid fa-text-height"></i> Taille de la police :</label>
                 <select id="param-taille-police">
                     <option value="small">Petite</option>
-                    <option value="medium">Normale</option>
+                    <option value="medium" selected>Normale</option>
                     <option value="large">Grande</option>
                 </select>
             </div>
+
             <div class="param-row">
-                <label>Type de police :</label>
+                <label><i class="fa-solid fa-font"></i> Type de police :</label>
                 <select id="param-police">
-                    <option value="normal">Normale</option>
+                    <option value="normal" selected>Normale (Par défaut)</option>
                     <option value="dyslexic">OpenDyslexic</option>
                 </select>
             </div>
-            <button class="btn-submit" style="margin-top: 15px; background: #a855f7; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
+             
+            <button class="btn-submit" style="margin-top: 15px;" onclick="closeParamModal('modal-menu-param')">Enregistrer les réglages</button>
         </div>
     </div>
 
@@ -252,11 +266,14 @@
             const selectMedia = document.getElementById('param-media');
             const selectTaille = document.getElementById('param-taille-police');
             const selectPolice = document.getElementById('param-police');
+            const selectLangue = document.getElementById('param-langue');
 
+            // --- Initialisation depuis le LocalStorage ---
             if (localStorage.getItem('siteTheme') === 'light') {
                 document.body.classList.add('light-mode');
                 if(selectMedia) selectMedia.value = "light";
             }
+            
             const pSize = localStorage.getItem('siteFontSize') || 'medium';
             document.body.classList.add(`font-${pSize}`);
             if(selectTaille) selectTaille.value = pSize;
@@ -266,6 +283,10 @@
                 if(selectPolice) selectPolice.value = "dyslexic";
             }
 
+            const currentLang = localStorage.getItem('siteLang') || 'fr';
+            if (selectLangue) selectLangue.value = currentLang;
+
+            // --- Écouteurs d'événements pour les changements ---
             if(selectMedia) {
                 selectMedia.addEventListener('change', (e) => {
                     if(e.target.value === 'light') {
@@ -295,6 +316,22 @@
                         document.body.classList.remove('font-dyslexic');
                         localStorage.setItem('siteFont', 'normal');
                     }
+                });
+            }
+
+            if(selectLangue) {
+                selectLangue.addEventListener('change', (e) => {
+                    localStorage.setItem('siteLang', e.target.value);
+                    // Le changement de langue est généralement géré par translate-pages.js
+                    // Si vous avez une fonction spécifique à appeler ici, ajoutez-la.
+                });
+            }
+            
+            // Ouvrir le menu des paramètres via le bouton du header
+            const paramBtn = document.getElementById('param-btn');
+            if (paramBtn) {
+                paramBtn.addEventListener('click', () => {
+                    openParamModal('modal-menu-param');
                 });
             }
         });
