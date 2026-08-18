@@ -84,7 +84,7 @@
             color: #fff;
         }
 
-        /* --- ENCADRÉ BLANC POUR LE JOUR ACTUEL (AUJOURD'HUI) --- */
+        /* --- ENCADRÉ BLANC POUR LE JOUR ACTUEL --- */
         .day-cell.today {
             border: 2px solid #ffffff !important;
             box-shadow: 0 0 12px rgba(255, 255, 255, 0.8) !important;
@@ -140,6 +140,52 @@
             margin-top: 4px;
             line-height: 1.1;
         }
+
+        /* --- STYLES DE LA LÉGENDE --- */
+        .calendar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #334155;
+            font-size: 0.85rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #cbd5e1;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: inline-block;
+            box-sizing: border-box;
+        }
+        .legend-color.today {
+            border: 2px solid #ffffff;
+            background-color: #1e293b;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+        }
+        .legend-color.open {
+            background-color: rgba(34, 197, 94, 0.3);
+            border: 1px solid #22c55e;
+        }
+        .legend-color.vacation {
+            background-color: rgba(234, 179, 8, 0.3);
+            border: 1px solid #eab308;
+        }
+        .legend-color.special {
+            background-color: rgba(249, 115, 22, 0.4);
+            border: 1px solid #f97316;
+        }
+        .legend-color.closed {
+            background-color: rgba(239, 68, 68, 0.4);
+            border: 1px solid #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -181,6 +227,25 @@
                     </div>
                     
                     <div class="calendar-grid" id="calendar-grid-target"></div>
+
+                    <!-- LÉGENDE DU CALENDRIER -->
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <span class="legend-color today"></span> Aujourd'hui
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color open"></span> Web radio ouvert
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color vacation"></span> Vacances / Jour férié
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color special"></span> Émission spéciale
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color closed"></span> Web radio fermé
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -234,7 +299,6 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Liste étendue des mois scolaires de septembre 2025 à août 2027
             const moisScolaires = [
                 // Année 2025-2026
                 { name: "septembre 2025", index: 8, year: 2025 },
@@ -264,7 +328,6 @@
                 { name: "août 2027", index: 7, year: 2027 }
             ];
 
-            // Détection automatique du jour et mois actuels
             const today = new Date();
             const currentYear = today.getFullYear();
             const currentMonth = today.getMonth();
@@ -274,7 +337,6 @@
                 currentMonthPointer = 0;
             }
 
-            // Vacances scolaires Zone B (Normandie) 2025 à 2027
             const vacances = [
                 // Année 2025-2026
                 { start: new Date('2025-10-18'), end: new Date('2025-11-03'), label: 'Vacances' },
@@ -290,7 +352,6 @@
                 { start: new Date('2027-07-03'), end: new Date('2027-08-31'), label: 'Vacances' }
             ];
 
-            // Jours Fériés en France (2025 à 2027)
             const joursFeries = [
                 // 2025
                 { date: new Date('2025-11-01'), label: 'Toussaint' },
@@ -355,7 +416,6 @@
                     const currentDate = new Date(currentMoisData.year, currentMoisData.index, day);
                     let dayOfWeek = currentDate.getDay();
 
-                    // Encadré blanc si c'est aujourd'hui
                     if (currentDate.getFullYear() === today.getFullYear() &&
                         currentDate.getMonth() === today.getMonth() &&
                         currentDate.getDate() === today.getDate()) {
@@ -366,7 +426,6 @@
                     dayNum.innerText = day;
                     cell.appendChild(dayNum);
 
-                    // --- ÉVÉNEMENTS SPÉCIAUX ---
                     if (currentMoisData.year === 2026 && currentMoisData.index === 4 && day === 12) {
                         cell.classList.add('special-orange');
                         const status = document.createElement('span');
@@ -384,7 +443,6 @@
                     else {
                         let raisonJaune = '';
 
-                        // Jours Fériés
                         for (let jf of joursFeries) {
                             if (currentDate.getFullYear() === jf.date.getFullYear() &&
                                 currentDate.getMonth() === jf.date.getMonth() &&
@@ -394,7 +452,6 @@
                             }
                         }
 
-                        // Vacances
                         if (!raisonJaune) {
                             for (let v of vacances) {
                                 if (currentDate >= v.start && currentDate <= v.end) {
@@ -411,7 +468,6 @@
                             status.innerText = raisonJaune;
                             cell.appendChild(status);
                         } 
-                        // Ouverture Lundi (1) et Mardi (2)
                         else if (dayOfWeek === 1 || dayOfWeek === 2) {
                             cell.classList.add('open-radio');
                             const status = document.createElement('span');
@@ -447,7 +503,6 @@
 
             renderCurrentMonth();
 
-            // --- PARAMÈTRES & PRÉFÉRENCES UTILISATEUR ---
             const selectMedia = document.getElementById('param-media');
             const selectTaille = document.getElementById('param-taille-police');
             const selectPolice = document.getElementById('param-police');
