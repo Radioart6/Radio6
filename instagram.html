@@ -122,7 +122,7 @@
             <div class="insta-page-container">
                 <div class="insta-box">
                     <div class="insta-header">
-                        <h3>Comptes Instagram du Lycée</h3>
+                        <h3 id="insta-main-title">Comptes Instagram du Lycée</h3>
                     </div>
 
                     <div class="insta-grid">
@@ -130,13 +130,13 @@
                         <div class="insta-card">
                             <div class="insta-card-header">
                                 <i class="fa-brands fa-instagram"></i>
-                                <span class="insta-card-title">Radio 6</span>
+                                <span class="insta-card-title" id="insta-r6-title">Radio 6</span>
                             </div>
-                            <div class="insta-card-desc">
+                            <div class="insta-card-desc" id="insta-r6-desc">
                                 Podcasts, annonces d'émissions en direct, coulisses des enregistrements et actualités de la web radio du lycée.
                             </div>
                             <a href="https://www.instagram.com/radio_arcisse?igsh=c2Q2eHU1NWlzYW82" target="_blank" class="insta-btn">
-                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                                <i class="fa-brands fa-instagram"></i> <span id="insta-btn-1">Voir le profil</span>
                             </a>
                         </div>
 
@@ -144,13 +144,13 @@
                         <div class="insta-card">
                             <div class="insta-card-header">
                                 <i class="fa-brands fa-instagram"></i>
-                                <span class="insta-card-title">CVL (Conseil de la Vie Lycéenne)</span>
+                                <span class="insta-card-title" id="insta-cvl-title">CVL (Conseil de la Vie Lycéenne)</span>
                             </div>
-                            <div class="insta-card-desc">
+                            <div class="insta-card-desc" id="insta-cvl-desc">
                                 Actualités des représentants des élèves, projets engagés, propositions retenues et améliorations de la vie lycéenne.
                             </div>
                             <a href="https://www.instagram.com/cvl.adc?igsh=MTBodzd5c3p5a2R4Mw==" target="_blank" class="insta-btn">
-                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                                <i class="fa-brands fa-instagram"></i> <span id="insta-btn-2">Voir le profil</span>
                             </a>
                         </div>
 
@@ -158,13 +158,13 @@
                         <div class="insta-card">
                             <div class="insta-card-header">
                                 <i class="fa-brands fa-instagram"></i>
-                                <span class="insta-card-title">MDL (Maison des Lycéens)</span>
+                                <span class="insta-card-title" id="insta-mdl-title">MDL (Maison des Lycéens)</span>
                             </div>
-                            <div class="insta-card-desc">
+                            <div class="insta-card-desc" id="insta-mdl-desc">
                                 Événements festifs et culturels, aménagement du foyer, clubs et activités organisés par les élèves.
                             </div>
                             <a href="https://www.instagram.com/mdlarcisse?igsh=MXB3dTRoYWU5OTlzNA==" target="_blank" class="insta-btn">
-                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                                <i class="fa-brands fa-instagram"></i> <span id="insta-btn-3">Voir le profil</span>
                             </a>
                         </div>
 
@@ -172,13 +172,13 @@
                         <div class="insta-card">
                             <div class="insta-card-header">
                                 <i class="fa-brands fa-instagram"></i>
-                                <span class="insta-card-title">Terminale Déménageurs</span>
+                                <span class="insta-card-title" id="insta-term-title">Terminale Déménageurs</span>
                             </div>
-                            <div class="insta-card-desc">
+                            <div class="insta-card-desc" id="insta-term-desc">
                                 Compte de promotion : suivi des projets de fin d'année, actions de financement et souvenirs de la promo.
                             </div>
                             <a href="https://www.instagram.com/teamdemenageurs_arcisse?igsh=MTd2Nmpna3k5ZXMzNA==" target="_blank" class="insta-btn">
-                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                                <i class="fa-brands fa-instagram"></i> <span id="insta-btn-4">Voir le profil</span>
                             </a>
                         </div>
 
@@ -186,13 +186,13 @@
                         <div class="insta-card">
                             <div class="insta-card-header">
                                 <i class="fa-brands fa-instagram"></i>
-                                <span class="insta-card-title">BTS Tourisme</span>
+                                <span class="insta-card-title" id="insta-bts-title">BTS Tourisme</span>
                             </div>
-                            <div class="insta-card-desc">
+                            <div class="insta-card-desc" id="insta-bts-desc">
                                 Projets professionnels, voyages d'études, visites guidées et actions menées par la section tourisme.
                             </div>
                             <a href="https://www.instagram.com/bts_tourisme_bayeux?igsh=ZjhxeWtudndwcmo0" target="_blank" class="insta-btn">
-                                <i class="fa-brands fa-instagram"></i> Voir le profil
+                                <i class="fa-brands fa-instagram"></i> <span id="insta-btn-5">Voir le profil</span>
                             </a>
                         </div>
                     </div>
@@ -205,7 +205,7 @@
         </footer>
     </div>
 
-    <!-- Modale Paramètres identique à la page principale -->
+    <!-- Modale Paramètres -->
     <div id="modal-menu-param" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeParamModal('modal-menu-param')">&times;</span>
@@ -321,13 +321,14 @@
 
             if(selectLangue) {
                 selectLangue.addEventListener('change', (e) => {
-                    localStorage.setItem('siteLang', e.target.value);
-                    // Le changement de langue est généralement géré par translate-pages.js
-                    // Si vous avez une fonction spécifique à appeler ici, ajoutez-la.
+                    const newLang = e.target.value;
+                    localStorage.setItem('siteLang', newLang);
+                    if (window.applyTranslations) {
+                        window.applyTranslations(newLang);
+                    }
                 });
             }
             
-            // Ouvrir le menu des paramètres via le bouton du header
             const paramBtn = document.getElementById('param-btn');
             if (paramBtn) {
                 paramBtn.addEventListener('click', () => {
