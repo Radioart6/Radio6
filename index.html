@@ -230,17 +230,21 @@
                         </div>
                         <span id="total-duration" class="time-display">00:00</span>
                         
-                        <!-- Contrôle de vitesse de lecture -->
-                        <select class="speed-select" onclick="event.stopPropagation();">
-                            <option value="0.25">0,25x</option>
-                            <option value="0.5">0,5x</option>
-                            <option value="0.75">0,75x</option>
-                            <option value="1" selected>1x (normal)</option>
-                            <option value="1.25">1.25x</option>
-                            <option value="1.5">1.5x</option>
-                            <option value="1.75">1.75x</option>
-                            <option value="2">2x</option>
-                        </select>
+                        <div class="custom-audio-player">
+    <!-- Vos éléments existants du lecteur (play, barre, volume...) -->
+    
+    <!-- Boutons de vitesse intégrés -->
+    <div class="speed-controls">
+        <button class="speed-btn" data-speed="0.25">0,25x</button>
+        <button class="speed-btn" data-speed="0.5">0,5x</button>
+        <button class="speed-btn" data-speed="0.75">0,75x</button>
+        <button class="speed-btn active" data-speed="1">1x</button>
+        <button class="speed-btn" data-speed="1.25">1,25x</button>
+        <button class="speed-btn" data-speed="1.5">1,5x</button>
+        <button class="speed-btn" data-speed="1.75">1,75x</button>
+        <button class="speed-btn" data-speed="2">2x</button>
+    </div>
+</div>
 
                         <button id="custom-mute-btn" class="player-mute-btn" title="Couper/Activer le son">
                             <i id="mute-icon" class="fa-solid fa-volume-high"></i>
