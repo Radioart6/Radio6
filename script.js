@@ -518,7 +518,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const iaLink = document.getElementById('nav-ia-admin');
         if (iaLink) iaLink.remove();
     }
+/* --- RECHERCHE INSTANTANÉE --- */
+const searchInput = document.getElementById('search-podcast');
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const podcastCards = document.querySelectorAll('.podcast-card');
 
+        podcastCards.forEach(card => {
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const info = card.querySelector('p').textContent.toLowerCase();
+            
+            if (title.includes(query) || info.includes(query)) {
+                card.style.display = 'flex'; // Affiche la carte si ça correspond
+            } else {
+                card.style.display = 'none'; // Cache la carte sinon
+            }
+        });
+    });
+}
+
+/* --- SYSTÈME DE TRI PAR CATÉGORIE --- */
+document.querySelectorAll('.sort-select').forEach(select => {
+    select.addEventListener('change', (e) => {
+        const gridId = e.target.getAttribute('data-grid');
+        const grid = document.getElementById(gridId);
+        const cards = Array.from(grid.querySelectorAll('.podcast-card'));
+        const sortValue = e.target.value;
+
+        cards.sort((a, b) => {
+            // Récupération des données (basée sur le texte des infos ou attributs personnalisés)
+            const infoA = a.querySelector('p').textContent;
+            const infoB = b.querySelector('p').textContent;
+
+            if (sortValue === 'recent' || sortValue === 'ancien') {
+                // Exemple de tri basé sur l'ordre d'apparition ou une date textuelle
+                return sortValue === 'recent' ? -1 : 1; 
+            }
+            // Tu peux affiner le tri selon la structure de tes durées textuelles (ex: "2h45")
+            return 0;
+        });
+
+        // Réinance les cartes triées dans la grille
+        cards.forEach(card => grid.appendChild(card));
+    });
+});
 // --- GESTION DU BOUTON CALENDRIER GÉNÉRAL ---
     const btnCalendrier = document.getElementById('nav-calendrier');
     if (btnCalendrier) {
