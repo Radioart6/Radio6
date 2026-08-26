@@ -16,7 +16,7 @@
         .updates-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem; /* Espace empêchant les blocs de se coller entre eux */
+            gap: 1.5rem;
             margin-top: 3rem;
             margin-bottom: 2rem;
         }
@@ -47,31 +47,28 @@
         }
         .update-box li { margin-bottom: 0.5rem; }
 
-        /* Style spécial pour l'onglet Aide 2.0 dans la navigation */
-        nav a.ia-link {
-            color: #a855f7;
-            font-weight: bold;
-        }
-        nav a.ia-link:hover {
-            color: #c084fc;
-        }
-
-        /* Style pour le bouton Mute intégré dans la barre de progression */
-        .player-mute-btn {
+        /* Style pour le bouton Mute et le sélecteur de vitesse intégrés */
+        .player-mute-btn, .player-speed-select {
             background: transparent;
             border: none;
             color: var(--text-muted, #cbd5e1);
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            padding: 0 5px;
-            margin-left: 10px;
+            padding: 2px 5px;
+            margin-left: 8px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             transition: color 0.2s ease;
         }
-        .player-mute-btn:hover {
+        .player-mute-btn:hover, .player-speed-select:hover {
             color: #fff;
+        }
+        .player-speed-select {
+            background-color: var(--bg-color);
+            border: 1px solid #334155;
+            border-radius: 4px;
+            font-size: 0.8rem;
         }
         
         /* Style pour rendre le mini calendrier cliquable */
@@ -82,6 +79,22 @@
         .clickable-calendar:hover {
             transform: scale(1.01);
             border-color: #a855f7 !important;
+        }
+
+        /* Barre de recherche instantanée */
+        .search-container input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .search-container input:focus {
+            border-color: var(--primary);
         }
     </style>
 </head>
@@ -100,32 +113,30 @@
 
     <div id="main-content" class="hidden">
         <header>
-    <div class="logo-area">
-        <img src="logo.png" alt="Radio 6" class="header-logo">
-        <div>
-            <strong class="site-title">RADIO 6</strong><br>
-            <small class="site-subtitle">Lycée Arcisse de Caumont</small>
-        </div>
-    </div>
-    
-    <nav id="main-nav">
-        <!-- Ajout du bouton avec les 3 traits (burger) -->
-        <button id="burger-menu-btn" class="burger-btn" title="Menu">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+            <div class="logo-area">
+                <img src="logo.png" alt="Radio 6" class="header-logo">
+                <div>
+                    <strong class="site-title">RADIO 6</strong><br>
+                    <small class="site-subtitle">Lycée Arcisse de Caumont</small>
+                </div>
+            </div>
+            
+            <nav id="main-nav">
+                <button id="burger-menu-btn" class="burger-btn" title="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
 
-        <!-- Conteneur qui sera caché sur mobile puis affiché au clic -->
-        <div id="nav-links" class="nav-links-container">
-            <button id="btn-login-open" class="btn-nav-login">Connexion</button>
-            <a href="index.html" class="active">Accueil</a>
-            <a href="equipe.html">L'Équipe</a>
-            <a href="aide.html">Aide</a>
-            <a href="calendrier.html">🗓️ Calendrier</a>
-            <a href="instagram.html">Instagram</a>
-            <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
-        </div>
-    </nav>
-</header>
+                <div id="nav-links" class="nav-links-container">
+                    <button id="btn-login-open" class="btn-nav-login">Connexion</button>
+                    <a href="index.html" class="active">Accueil</a>
+                    <a href="equipe.html">L'Équipe</a>
+                    <a href="aide.html">Aide</a>
+                    <a href="calendrier.html">🗓️ Calendrier</a>
+                    <a href="instagram.html">Instagram</a>
+                    <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </nav>
+        </header>
 
         <div id="login-modal" class="modal hidden">
             <div class="modal-content">
@@ -196,6 +207,14 @@
                         </div>
                         <span id="total-duration" class="time-display">00:00</span>
                         
+                        <!-- Contrôle de vitesse de lecture -->
+                        <select id="playback-speed" class="player-speed-select" title="Vitesse de lecture">
+                            <option value="1" selected>1x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x</option>
+                        </select>
+
                         <button id="custom-mute-btn" class="player-mute-btn" title="Couper/Activer le son">
                             <i id="mute-icon" class="fa-solid fa-volume-high"></i>
                         </button>
@@ -206,6 +225,11 @@
             <section class="podcast-section">
                 <h2>Liste des Rediffusions</h2>
                  
+                <!-- Barre de recherche instantanée -->
+                <div class="search-container" style="margin-bottom: 1.5rem;">
+                    <input type="text" id="search-podcast" placeholder="🔍 Rechercher une émission par son titre...">
+                </div>
+
                 <div class="folder-container">
                      
                     <div class="folder-box" data-category="loisir-sport">
@@ -251,8 +275,8 @@
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
                         <li>Le site est maintenant accessible à tout le monde même sur mobile.</li>
-                        <li>Tous les podcaste du 12 mai ont étais rajouté.</li>
-                        <li>Les traductions Anglais et Espagnole on était revu.</li>
+                        <li>Ajout de la barre de recherche et de la vitesse de lecture.</li>
+                        <li>Les traductions Anglais et Espagnole ont été revues.</li>
                     </ul>
                 </div>
 
@@ -267,25 +291,16 @@
         </main>
 
         <footer>
-            <p>© 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux.</p>
+            <p>© 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux[cite: 11].</p>
         </footer>
     </div>
 
+    <!-- Modals (Paramètres, Calendrier, etc.) -->
     <div id="modal-travaux" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeParamModal('modal-travaux')">&times;</span>
             <h3 style="color: #f59e0b; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> Zone en travaux</h3>
             <p class="param-notice">Cette section est actuellement en cours de développement ou nécessite des privilèges élevés pour être pleinement fonctionnelle.</p>
-             
-            <div class="param-box-update">
-                <h5>Ajout récent :</h5>
-                <p>• Apparition de l'icône de configuration dans le menu principal.</p>
-            </div>
-             
-            <div class="param-box-update future">
-                <h5>Évolution prévue :</h5>
-                <p>• Ce bouton permettra aux visiteurs d'ajuster leurs préférences de lecture.</p>
-            </div>
         </div>
     </div>
 
@@ -308,7 +323,7 @@
                 <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
                 <select id="param-media">
                     <option value="dark" selected>Mode Sombre (Par défaut)</option>
-                    <option value="light">Mode Clair</option>
+                    <option value="light">Mode Clair (Bleu Clair)</option>
                 </select>
             </div>
 
@@ -333,30 +348,6 @@
         </div>
     </div>
 
-    <div id="modal-calendrier" class="modal hidden">
-        <div class="modal-content" style="max-width: 500px;">
-            <span class="close-modal" onclick="closeParamModal('modal-calendrier')">&times;</span>
-            <h3 style="color: #a855f7; font-size: 1.4rem; margin-top: 5px;">
-                <i class="fa-solid fa-calendar-days"></i> Calendrier des Émissions
-            </h3>
-            <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
-             
-            <div class="calendar-container clickable-calendar" style="background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155;" onclick="window.location.href='calendrier.html'">
-                <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <button id="cal-prev" style="background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">&lt;</button>
-                    <h4 id="cal-month-year" style="margin: 0; color: white;"></h4>
-                    <button id="cal-next" style="background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">&gt;</button>
-                </div>
-                <div class="calendar-weekdays" style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #94a3b8; font-size: 0.85rem; margin-bottom: 10px;">
-                    <div>Dim</div><div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div>
-                </div>
-                <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center;">
-                    </div>
-            </div>
-            <p style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: #94a3b8;">Cliquez sur le calendrier pour voir la version complète.</p>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
     
@@ -365,11 +356,12 @@
             const audioPlayer = document.getElementById('main-audio-player');
             const muteBtn = document.getElementById('custom-mute-btn');
             const muteIcon = document.getElementById('mute-icon');
+            const speedSelect = document.getElementById('playback-speed');
 
+            // Gestion du son Mute/Unmute
             if (muteBtn && audioPlayer && muteIcon) {
                 muteBtn.addEventListener('click', () => {
                     audioPlayer.muted = !audioPlayer.muted;
-                    
                     if (audioPlayer.muted) {
                         muteIcon.className = 'fa-solid fa-volume-xmark';
                         muteBtn.title = "Activer le son";
@@ -377,6 +369,13 @@
                         muteIcon.className = 'fa-solid fa-volume-high';
                         muteBtn.title = "Couper le son";
                     }
+                });
+            }
+
+            // Gestion de la vitesse de lecture
+            if (speedSelect && audioPlayer) {
+                speedSelect.addEventListener('change', () => {
+                    audioPlayer.playbackRate = parseFloat(speedSelect.value);
                 });
             }
         });
