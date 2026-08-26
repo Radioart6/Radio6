@@ -254,106 +254,106 @@
                 </div>
 
                 <div class="folder-container">
-                     
-                    <!-- Loisir & Sport -->
-                    <div class="folder-box" data-category="loisir-sport">
-                        <h3><i class="fa-solid fa-basketball"></i> Loisir & Sport <span class="pod-count" id="count-loisir-sport">(0)</span></h3>
-                        <div class="folder-toolbar hidden" id="toolbar-loisir-sport">
-                            <select class="sort-select" data-grid="grid-loisir-sport">
-                                <option value="recent">🕒 Plus récent</option>
-                                <option value="ancien">⏳ Plus ancien</option>
-                                <option value="long">📈 Plus long</option>
-                                <option value="court">📉 Plus court</option>
-                            </select>
-                        </div>
-                        <div class="podcast-grid hidden" id="grid-loisir-sport"></div>
-                    </div>
 
-                    <!-- En classe -->
-                    <div class="folder-box" data-category="en classe">
-                        <h3><i class="fa-solid fa-chalkboard-user"></i> En classe <span class="pod-count" id="count-en-classe">(0)</span></h3>
-                        <div class="folder-toolbar hidden" id="toolbar-en-classe">
-                            <select class="sort-select" data-grid="grid-en-classe">
-                                <option value="recent">🕒 Plus récent</option>
-                                <option value="ancien">⏳ Plus ancien</option>
-                                <option value="long">📈 Plus long</option>
-                                <option value="court">📉 Plus court</option>
-                            </select>
-                        </div>
-                        <div class="podcast-grid hidden" id="grid-en-classe"></div>
-                    </div>
-                    
-                    <!-- Portrait -->
-                    <div class="folder-box" data-category="portrait">
-                        <h3><i class="fa-solid fa-user"></i> Portrait <span class="pod-count" id="count-portrait">(0)</span></h3>
-                        <div class="folder-toolbar hidden" id="toolbar-portrait">
-                            <select class="sort-select" data-grid="grid-portrait">
-                                <option value="recent">🕒 Plus récent</option>
-                                <option value="ancien">⏳ Plus ancien</option>
-                                <option value="long">📈 Plus long</option>
-                                <option value="court">📉 Plus court</option>
-                            </select>
-                        </div>
-                        <div class="podcast-grid hidden" id="grid-portrait"></div>
-                    </div>
+    <!-- Loisir & Sport -->
+    <div class="folder-box" data-category="loisir-sport">
+        <div class="folder-header">
+            <h3><i class="fa-solid fa-basketball"></i> Loisir & Sport <span class="pod-count" id="count-loisir-sport">(0)</span></h3>
+            <select class="sort-select" data-grid="grid-loisir-sport" onclick="event.stopPropagation();">
+                <option value="recent">🕒 Plus récent</option>
+                <option value="ancien">⏳ Plus ancien</option>
+                <option value="long">📈 Plus long</option>
+                <option value="court">📉 Plus court</option>
+            </select>
+        </div>
+        <div class="podcast-grid hidden" id="grid-loisir-sport"></div>
+    </div>
 
-                    <!-- Minute Touristique -->
-                    <div class="folder-box" data-category="touristique">
-                        <h3><i class="fa-solid fa-camera-retro"></i> Minute Touristique <span class="pod-count" id="count-touristique">(0)</span></h3>
-                        <div class="folder-toolbar hidden" id="toolbar-touristique">
-                            <select class="sort-select" data-grid="grid-touristique">
-                                <option value="recent">🕒 Plus récent</option>
-                                <option value="ancien">⏳ Plus ancien</option>
-                                <option value="long">📈 Plus long</option>
-                                <option value="court">📉 Plus court</option>
-                            </select>
-                        </div>
-                        <div class="podcast-grid hidden" id="grid-touristique"></div>
-                    </div>
+    <!-- En classe -->
+    <div class="folder-box" data-category="en-classe">
+        <div class="folder-header">
+            <h3><i class="fa-solid fa-chalkboard-user"></i> En classe <span class="pod-count" id="count-en-classe">(0)</span></h3>
+            <select class="sort-select" data-grid="grid-en-classe" onclick="event.stopPropagation();">
+                <option value="recent">🕒 Plus récent</option>
+                <option value="ancien">⏳ Plus ancien</option>
+                <option value="long">📈 Plus long</option>
+                <option value="court">📉 Plus court</option>
+            </select>
+        </div>
+        <div class="podcast-grid hidden" id="grid-en-classe"></div>
+    </div>
 
-                    <!-- Actualités & Infos -->
-                    <div class="folder-box" data-category="actualites-infos">
-                        <h3><i class="fa-solid fa-newspaper"></i> Actualités & Infos <span class="pod-count" id="count-actualites-infos">(0)</span></h3>
-                        <div class="folder-toolbar hidden" id="toolbar-actualites-infos">
-                            <select class="sort-select" data-grid="grid-actualites-infos">
-                                <option value="recent">🕒 Plus récent</option>
-                                <option value="ancien">⏳ Plus ancien</option>
-                                <option value="long">📈 Plus long</option>
-                                <option value="court">📉 Plus court</option>
-                            </select>
-                        </div>
-                        <div class="podcast-grid hidden" id="grid-actualites-infos"></div>
-                    </div>
+    <!-- Portrait -->
+    <div class="folder-box" data-category="portrait">
+        <div class="folder-header">
+            <h3><i class="fa-solid fa-user"></i> Portrait <span class="pod-count" id="count-portrait">(0)</span></h3>
+            <select class="sort-select" data-grid="grid-portrait" onclick="event.stopPropagation();">
+                <option value="recent">🕒 Plus récent</option>
+                <option value="ancien">⏳ Plus ancien</option>
+                <option value="long">📈 Plus long</option>
+                <option value="court">📉 Plus court</option>
+            </select>
+        </div>
+        <div class="podcast-grid hidden" id="grid-portrait"></div>
+    </div>
 
-                    <!-- Culture -->
-                    <div class="folder-box" data-category="culture">
-                        <h3><i class="fa-solid fa-masks-theater"></i> Culture <span class="pod-count" id="count-culture">(0)</span></h3>
-                        <div class="folder-toolbar hidden" id="toolbar-culture">
-                            <select class="sort-select" data-grid="grid-culture">
-                                <option value="recent">🕒 Plus récent</option>
-                                <option value="ancien">⏳ Plus ancien</option>
-                                <option value="long">📈 Plus long</option>
-                                <option value="court">📉 Plus court</option>
-                            </select>
-                        </div>
-                        <div class="podcast-grid hidden" id="grid-culture"></div>
-                    </div>
+    <!-- Minute Touristique -->
+    <div class="folder-box" data-category="touristique">
+        <div class="folder-header">
+            <h3><i class="fa-solid fa-camera-retro"></i> Minute Touristique <span class="pod-count" id="count-touristique">(0)</span></h3>
+            <select class="sort-select" data-grid="grid-touristique" onclick="event.stopPropagation();">
+                <option value="recent">🕒 Plus récent</option>
+                <option value="ancien">⏳ Plus ancien</option>
+                <option value="long">📈 Plus long</option>
+                <option value="court">📉 Plus court</option>
+            </select>
+        </div>
+        <div class="podcast-grid hidden" id="grid-touristique"></div>
+    </div>
 
-                    <!-- Autres -->
-                    <div class="folder-box" data-category="autres">
-                        <h3><i class="fa-solid fa-folder-open"></i> Autres <span class="pod-count" id="count-autres">(0)</span></h3>
-                        <div class="folder-toolbar hidden" id="toolbar-autres">
-                            <select class="sort-select" data-grid="grid-autres">
-                                <option value="recent">🕒 Plus récent</option>
-                                <option value="ancien">⏳ Plus ancien</option>
-                                <option value="long">📈 Plus long</option>
-                                <option value="court">📉 Plus court</option>
-                            </select>
-                        </div>
-                        <div class="podcast-grid hidden" id="grid-autres"></div>
-                    </div>
+    <!-- Actualités & Infos -->
+    <div class="folder-box" data-category="actualites-infos">
+        <div class="folder-header">
+            <h3><i class="fa-solid fa-newspaper"></i> Actualités & Infos <span class="pod-count" id="count-actualites-infos">(0)</span></h3>
+            <select class="sort-select" data-grid="grid-actualites-infos" onclick="event.stopPropagation();">
+                <option value="recent">🕒 Plus récent</option>
+                <option value="ancien">⏳ Plus ancien</option>
+                <option value="long">📈 Plus long</option>
+                <option value="court">📉 Plus court</option>
+            </select>
+        </div>
+        <div class="podcast-grid hidden" id="grid-actualites-infos"></div>
+    </div>
 
-                </div>
+    <!-- Culture -->
+    <div class="folder-box" data-category="culture">
+        <div class="folder-header">
+            <h3><i class="fa-solid fa-masks-theater"></i> Culture <span class="pod-count" id="count-culture">(0)</span></h3>
+            <select class="sort-select" data-grid="grid-culture" onclick="event.stopPropagation();">
+                <option value="recent">🕒 Plus récent</option>
+                <option value="ancien">⏳ Plus ancien</option>
+                <option value="long">📈 Plus long</option>
+                <option value="court">📉 Plus court</option>
+            </select>
+        </div>
+        <div class="podcast-grid hidden" id="grid-culture"></div>
+    </div>
+
+    <!-- Autres -->
+    <div class="folder-box" data-category="autres">
+        <div class="folder-header">
+            <h3><i class="fa-solid fa-folder-open"></i> Autres <span class="pod-count" id="count-autres">(0)</span></h3>
+            <select class="sort-select" data-grid="grid-autres" onclick="event.stopPropagation();">
+                <option value="recent">🕒 Plus récent</option>
+                <option value="ancien">⏳ Plus ancien</option>
+                <option value="long">📈 Plus long</option>
+                <option value="court">📉 Plus court</option>
+            </select>
+        </div>
+        <div class="podcast-grid hidden" id="grid-autres"></div>
+    </div>
+
+</div>
             </section>
 
             <div class="updates-container">
