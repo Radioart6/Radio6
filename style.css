@@ -809,3 +809,28 @@ body.font-dyslexic {
         margin: 0;
     }
 }
+.folder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.folder-header h3 {
+    margin: 0;
+}
+
+.sort-select {
+    background: var(--bg-color);
+    color: var(--text);
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+}
+
+.sort-select:focus {
+    border-color: var(--primary);
+}
