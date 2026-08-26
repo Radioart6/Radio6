@@ -683,15 +683,20 @@ window.closeParamModal = function(modalId) {
         targetModal.classList.add('hidden');
     }
 };
-// --- GESTION DE LA VITESSE DE LECTURE ---
-document.querySelectorAll('.speed-select').forEach(select => {
-    select.addEventListener('change', (e) => {
-        // Retrouve la carte de podcast et son élément <audio>
-        const card = e.target.closest('.podcast-card');
-        const audio = card ? card.querySelector('audio') : null;
-
-        if (audio) {
-            audio.playbackRate = parseFloat(e.target.value);
+// --- CONTRÔLE DE LA VITESSE DU LECTEUR PRINCIPAL ---
+document.querySelectorAll('.speed-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const speed = parseFloat(e.target.getAttribute('data-speed'));
+        
+        // Cible la balise audio principale du lecteur
+        const mainAudio = document.querySelector('audio'); // Ajuste le sélecteur si tu as plusieurs balises audio
+        if (mainAudio) {
+            mainAudio.playbackRate = speed;
         }
+
+        // Met à jour l'apparence active des boutons
+        const container = e.target.closest('.speed-controls');
+        container.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
     });
 });
