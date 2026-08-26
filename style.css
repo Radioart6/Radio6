@@ -11,44 +11,82 @@
     --danger: #ef4444;
 }
 
-/* --- MODE CLAIR PROPRE ET HARMONIEUX --- */
+/* ==========================================================================
+   MODE CLAIR : THÈME BLEU CLAIR HARMONIEUX
+   ========================================================================== */
 body.light-mode {
-    background-color: #f8fafc; /* Fond global gris très clair (reposant pour les yeux) */
-    color: #0f172a;            /* Texte principal très foncé */
+    background-color: #e2e8f0; /* Fond global bleu-gris très clair et reposant */
+    color: #0f172a;            /* Texte principal bleu nuit très lisible */
 }
 
-/* 1. Le grand conteneur du lecteur audio en mode clair */
-body.light-mode .player-box, 
-body.light-mode .audio-container { /* Adapte le nom de ta classe si besoin */
-    background-color: #ffffff !important;
+/* 1. Le lecteur audio principal et les grandes cartes en mode bleu clair */
+body.light-mode .player-card,
+body.light-mode .admin-card,
+body.light-mode .podcast-card,
+body.light-mode .modal-content,
+body.light-mode .folder-box {
+    background-color: #f0f9ff !important; /* Fond bleu très clair (effet pastel lumineux) */
     color: #0f172a !important;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #bae6fd !important; /* Bordure bleu ciel élégante */
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1) !important;
 }
 
-/* 2. Les cartes de catégories (Loisir & Sport, En classe, Portrait...) en mode clair */
-body.light-mode .category-card, 
-body.light-mode .playlist-item,
-body.light-mode .card {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+/* Effet au survol des cartes en mode bleu clair */
+body.light-mode .podcast-card:hover,
+body.light-mode .folder-box:hover {
+    background-color: #e0f2fe !important; /* Un bleu un peu plus soutenu au survol */
+    border-color: #38bdf8 !important;
 }
 
-/* Effet au survol des cartes en mode clair */
-body.light-mode .category-card:hover, 
-body.light-mode .playlist-item:hover {
-    background-color: #f1f5f9 !important;
-}
-
-/* 3. Les textes et titres à l'intérieur des blocs */
+/* 2. Correction des titres et des textes principaux */
 body.light-mode h1, 
 body.light-mode h2, 
 body.light-mode h3, 
+body.light-mode h4,
+body.light-mode h5 {
+    color: #0369a1 !important; /* Bleu azur profond pour les titres */
+}
+
+body.light-mode p,
 body.light-mode span,
-body.light-mode p {
-    color: #0f172a;
+body.light-mode label,
+body.light-mode .player-status {
+    color: #334155 !important; /* Texte secondaire bien contrasté */
+}
+
+/* 3. Les champs de saisie (Inputs, Selects, Textareas) */
+body.light-mode input[type="text"],
+body.light-mode input[type="password"],
+body.light-mode select,
+body.light-mode textarea {
+    background-color: #ffffff !important; /* Fond blanc pur pour écrire confortablement */
+    color: #0f172a !important;            /* Texte tapé en noir/bleu nuit */
+    border: 1px solid #7dd3fc !important; /* Bordure bleu clair */
+}
+
+body.light-mode input::placeholder {
+    color: #64748b !important;
+}
+
+/* 4. Barre de navigation en mode bleu clair */
+body.light-mode header {
+    background-color: #0284c7 !important; /* En-tête en beau bleu dynamique */
+    border-bottom: 1px solid #0369a1 !important;
+}
+
+body.light-mode header nav a {
+    color: #f0f9ff !important;
+}
+
+body.light-mode header nav a:hover, 
+body.light-mode header nav a.active {
+    color: #bae6fd !important;
+}
+
+body.light-mode .btn-nav-login,
+body.light-mode .btn-nav-param {
+    color: #f0f9ff !important;
+    border-color: #38bdf8 !important;
 }
 
 /* ==========================================================================
