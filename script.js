@@ -537,7 +537,13 @@ if (searchInput) {
         });
     });
 }
-
+// --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
+document.querySelectorAll('.folder-header').forEach(header => {
+    header.addEventListener('click', () => {
+        const grid = header.nextElementSibling;
+        if (grid) grid.classList.toggle('hidden');
+    });
+});
 /* --- SYSTÈME DE TRI PAR CATÉGORIE --- */
 document.querySelectorAll('.sort-select').forEach(select => {
     select.addEventListener('change', (e) => {
