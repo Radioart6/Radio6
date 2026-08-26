@@ -39,7 +39,7 @@ const siteTranslations = {
             "ai-s2-title": "📱 Je ne vois pas les mêmes émissions sur mon téléphone et sur mon PC",
             "ai-s2-p": "Il est possible que la liste des rediffusions soit différente d'un appareil à un autre :",
             "ai-s2-l1-h": "Le fonctionnement du site :",
-            "ai-s2-l1-t": "Pour stocker des émissions très longues sans coupure, ce site utilise la mémoire propre du navigateur de l'appareil (IndexedDB).",
+            "ai-s2-l1-t": "Pour stocker des émissions très longues sans coupure, ce site uses la mémoire propre du navigateur de l'appareil (IndexedDB).",
             "ai-s2-l2-h": "Conséquence :",
             "ai-s2-l2-t": "Les fichiers audios restent enregistrés sur l'ordinateur où l'équipe de la radio les a déposés. Si vous changez de PC ou utilisez votre téléphone portable, il est normal de voir une liste différente ou vide.",
             "ai-s3-title": "Playback 🛑 Le son se coupe quand le téléphone se met en veille",
@@ -54,7 +54,18 @@ const siteTranslations = {
             "ai-s4-l2": "Les émissions sont disponibles uniquement en streaming direct (écoute libre et illimitée) via notre barre de lecture.",
             "ai-s5-title": "Un bug persiste ? Un fichier semble inaccessible ?",
             "ai-s5-p": "Venez nous le signaler directement au studio de la radio ! En informant l'équipe, nous pourrons remettre le fichier en ligne.",
-            "ai-s5-loc": "📍 Studio ouvert le Lundi et Mardi de 12h40 à 13h25"
+            "ai-s5-loc": "📍 Studio ouvert le Lundi et Mardi de 12h40 à 13h25",
+
+            // --- Page Calendrier ---
+            "cal-title": "🗓️ Calendrier des Émissions",
+            "cal-sub": "Retrouvez la programmation et les prochains événements de Radio 6.",
+            "cal-upcoming-title": "Prochaines Diffusions",
+            "cal-no-events": "Aucun événement prévu pour le moment.",
+
+            // --- Page Instagram ---
+            "insta-title": "📸 Notre Actualité Instagram",
+            "insta-sub": "Découvrez les coulisses du studio et suivez nos dernières publications en direct.",
+            "insta-btn-follow": "S'abonner au compte Instagram"
         }
     },
     en: {
@@ -112,7 +123,18 @@ const siteTranslations = {
             "ai-s4-l2": "Shows are available only in direct streaming (free and unlimited listening) via our player bar.",
             "ai-s5-title": "A bug persists? A file seems inaccessible?",
             "ai-s5-p": "Come report it directly to us at the radio studio! By informing the team, we can put the file back online.",
-            "ai-s5-loc": "📍 Studio open Monday and Tuesday from 12:40 PM to 1:25 PM"
+            "ai-s5-loc": "📍 Studio open Monday and Tuesday from 12:40 PM to 1:25 PM",
+
+            // --- Page Calendrier ---
+            "cal-title": "🗓️ Broadcast Calendar",
+            "cal-sub": "Check out upcoming programs and events on Radio 6.",
+            "cal-upcoming-title": "Upcoming Broadcasts",
+            "cal-no-events": "No events scheduled at the moment.",
+
+            // --- Page Instagram ---
+            "insta-title": "📸 Our Instagram News",
+            "insta-sub": "Discover behind the scenes at the studio and follow our latest posts live.",
+            "insta-btn-follow": "Follow our Instagram account"
         }
     },
     es: {
@@ -170,7 +192,18 @@ const siteTranslations = {
             "ai-s4-l2": "Los programas solo están disponibles en transmisión directa (escucha libre e ilimitada) a través de nuestra barra de reproducción.",
             "ai-s5-title": "¿Un error persiste? ¿Un archivo parece inaccesible?",
             "ai-s5-p": "¡Ven a informarnos directamente al estudio de radio! Al avisar al equipo, podremos volver a poner el archivo en línea.",
-            "ai-s5-loc": "📍 Estudio abierto lunes y martes de 12:40 a 13:25"
+            "ai-s5-loc": "📍 Estudio abierto lunes y martes de 12:40 a 13:25",
+
+            // --- Page Calendrier ---
+            "cal-title": "🗓️ Calendario de Emisiones",
+            "cal-sub": "Consulta la programación y los próximos eventos de Radio 6.",
+            "cal-upcoming-title": "Próximas Difusiones",
+            "cal-no-events": "No hay eventos programados por el momento.",
+
+            // --- Page Instagram ---
+            "insta-title": "📸 Nuestra Actualidad en Instagram",
+            "insta-sub": "Descubre entre bastidores el estudio y sigue nuestras últimas publicaciones en directo.",
+            "insta-btn-follow": "Seguir la cuenta de Instagram"
         }
     }
 };
@@ -178,13 +211,13 @@ const siteTranslations = {
 window.applyTranslations = function(lang) {
     const t = siteTranslations[lang] || siteTranslations['fr'];
 
-    // 1. Traduction par ID (Textes principaux, paragraphes, boutons)
+    // 1. Traduction par ID
     for (const [id, text] of Object.entries(t.ids)) {
         const el = document.getElementById(id);
         if (el) el.innerHTML = text;
     }
 
-    // 2. Traduction du menu de navigation
+    // 2. Traduction de la barre de navigation
     const navLinks = {
         "index.html": t.nav.home,
         "equipe.html": t.nav.team,
@@ -197,7 +230,7 @@ window.applyTranslations = function(lang) {
         if (link) link.innerHTML = text;
     }
 
-    // 3. Traduction ciblée de la modale des paramètres
+    // 3. Traduction de la modale des paramètres
     const modalSettingsTitle = document.querySelector('#modal-menu-param h3');
     if (modalSettingsTitle) modalSettingsTitle.innerHTML = t.settings.title;
 
@@ -212,11 +245,9 @@ window.applyTranslations = function(lang) {
     const saveSettingsBtn = document.querySelector('#modal-menu-param .btn-submit');
     if (saveSettingsBtn) saveSettingsBtn.innerHTML = t.settings.save;
 
-    // Mise à jour de l'attribut langue de la page pour le SEO/Accessibilité
     document.documentElement.lang = lang;
 };
 
-// Application automatique de la langue sauvegardée lors du chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('siteLang') || 'fr';
     window.applyTranslations(savedLang);
