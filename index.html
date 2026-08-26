@@ -97,13 +97,12 @@
             border-color: var(--primary);
         }
 
-        /* Style des sélecteurs de tri par catégorie */
-        .folder-header-row {
+        /* Barre d'outils interne au dossier (pour mettre le filtre en haut à droite à l'intérieur) */
+        .folder-toolbar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+            padding-top: 5px;
         }
         .sort-select {
             background: var(--bg-color);
@@ -256,8 +255,8 @@
                      
                     <!-- Loisir & Sport -->
                     <div class="folder-box" data-category="loisir-sport">
-                        <div class="folder-header-row">
-                            <h3 style="margin: 0;"><i class="fa-solid fa-basketball"></i> Loisir & Sport <span class="pod-count" id="count-loisir-sport">(0)</span></h3>
+                        <h3><i class="fa-solid fa-basketball"></i> Loisir & Sport <span class="pod-count" id="count-loisir-sport">(0)</span></h3>
+                        <div class="folder-toolbar">
                             <select class="sort-select" data-grid="grid-loisir-sport">
                                 <option value="recent">🕒 Plus récent</option>
                                 <option value="ancien">⏳ Plus ancien</option>
@@ -270,8 +269,8 @@
 
                     <!-- En classe -->
                     <div class="folder-box" data-category="en classe">
-                        <div class="folder-header-row">
-                            <h3 style="margin: 0;"><i class="fa-solid fa-chalkboard-user"></i> En classe <span class="pod-count" id="count-en-classe">(0)</span></h3>
+                        <h3><i class="fa-solid fa-chalkboard-user"></i> En classe <span class="pod-count" id="count-en-classe">(0)</span></h3>
+                        <div class="folder-toolbar">
                             <select class="sort-select" data-grid="grid-en-classe">
                                 <option value="recent">🕒 Plus récent</option>
                                 <option value="ancien">⏳ Plus ancien</option>
@@ -284,8 +283,8 @@
                     
                     <!-- Portrait -->
                     <div class="folder-box" data-category="portrait">
-                        <div class="folder-header-row">
-                            <h3 style="margin: 0;"><i class="fa-solid fa-user"></i> Portrait <span class="pod-count" id="count-portrait">(0)</span></h3>
+                        <h3><i class="fa-solid fa-user"></i> Portrait <span class="pod-count" id="count-portrait">(0)</span></h3>
+                        <div class="folder-toolbar">
                             <select class="sort-select" data-grid="grid-portrait">
                                 <option value="recent">🕒 Plus récent</option>
                                 <option value="ancien">⏳ Plus ancien</option>
@@ -298,8 +297,8 @@
 
                     <!-- Minute Touristique -->
                     <div class="folder-box" data-category="touristique">
-                        <div class="folder-header-row">
-                            <h3 style="margin: 0;"><i class="fa-solid fa-camera-retro"></i> Minute Touristique <span class="pod-count" id="count-touristique">(0)</span></h3>
+                        <h3><i class="fa-solid fa-camera-retro"></i> Minute Touristique <span class="pod-count" id="count-touristique">(0)</span></h3>
+                        <div class="folder-toolbar">
                             <select class="sort-select" data-grid="grid-touristique">
                                 <option value="recent">🕒 Plus récent</option>
                                 <option value="ancien">⏳ Plus ancien</option>
@@ -312,8 +311,8 @@
 
                     <!-- Actualités & Infos -->
                     <div class="folder-box" data-category="actualites-infos">
-                        <div class="folder-header-row">
-                            <h3 style="margin: 0;"><i class="fa-solid fa-newspaper"></i> Actualités & Infos <span class="pod-count" id="count-actualites-infos">(0)</span></h3>
+                        <h3><i class="fa-solid fa-newspaper"></i> Actualités & Infos <span class="pod-count" id="count-actualites-infos">(0)</span></h3>
+                        <div class="folder-toolbar">
                             <select class="sort-select" data-grid="grid-actualites-infos">
                                 <option value="recent">🕒 Plus récent</option>
                                 <option value="ancien">⏳ Plus ancien</option>
@@ -326,8 +325,8 @@
 
                     <!-- Culture -->
                     <div class="folder-box" data-category="culture">
-                        <div class="folder-header-row">
-                            <h3 style="margin: 0;"><i class="fa-solid fa-masks-theater"></i> Culture <span class="pod-count" id="count-culture">(0)</span></h3>
+                        <h3><i class="fa-solid fa-masks-theater"></i> Culture <span class="pod-count" id="count-culture">(0)</span></h3>
+                        <div class="folder-toolbar">
                             <select class="sort-select" data-grid="grid-culture">
                                 <option value="recent">🕒 Plus récent</option>
                                 <option value="ancien">⏳ Plus ancien</option>
@@ -340,8 +339,8 @@
 
                     <!-- Autres -->
                     <div class="folder-box" data-category="autres">
-                        <div class="folder-header-row">
-                            <h3 style="margin: 0;"><i class="fa-solid fa-folder-open"></i> Autres <span class="pod-count" id="count-autres">(0)</span></h3>
+                        <h3><i class="fa-solid fa-folder-open"></i> Autres <span class="pod-count" id="count-autres">(0)</span></h3>
+                        <div class="folder-toolbar">
                             <select class="sort-select" data-grid="grid-autres">
                                 <option value="recent">🕒 Plus récent</option>
                                 <option value="ancien">⏳ Plus ancien</option>
@@ -360,7 +359,7 @@
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
                         <li>Ajout de la recherche instantanée dynamique.</li>
-                        <li>Intégration d'un menu de tri par catégorie (récent, ancien, long, court).</li>
+                        <li>Intégration d'un menu de tri par catégorie situé à l'intérieur des dossiers.</li>
                         <li>Contrôle de vitesse de lecture disponible.</li>
                     </ul>
                 </div>
@@ -502,11 +501,10 @@
                         const infoB = b.querySelector('p')?.textContent || '';
 
                         if (sortValue === 'recent') {
-                            return 1; // Inverser selon l'ordre d'insertion de la base
+                            return 1; 
                         } else if (sortValue === 'ancien') {
                             return -1;
                         } else if (sortValue === 'long' || sortValue === 'court') {
-                            // Simple comparaison textuelle de la durée si présente dans les infos
                             return sortValue === 'long' ? infoB.localeCompare(infoA) : infoA.localeCompare(infoB);
                         }
                         return 0;
