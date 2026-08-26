@@ -11,22 +11,44 @@
     --danger: #ef4444;
 }
 
-/* Application dynamique du thème clair */
-body.light-theme {
-    --bg-color: #f1f5f9;
-    --card-bg: #ffffff;
-    --text: #0f172a;
-    --text-muted: #64748b;
-    --primary: #3b82f6;
+/* --- MODE CLAIR PROPRE ET HARMONIEUX --- */
+body.light-mode {
+    background-color: #f8fafc; /* Fond global gris très clair (reposant pour les yeux) */
+    color: #0f172a;            /* Texte principal très foncé */
 }
-body.light-theme header {
-    border-bottom: 1px solid #cbd5e1;
+
+/* 1. Le grand conteneur du lecteur audio en mode clair */
+body.light-mode .player-box, 
+body.light-mode .audio-container { /* Adapte le nom de ta classe si besoin */
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
-body.light-theme .modal-content,
-body.light-theme .player-card,
-body.light-theme .podcast-card,
-body.light-theme .param-row select {
-    border: 1px solid #cbd5e1;
+
+/* 2. Les cartes de catégories (Loisir & Sport, En classe, Portrait...) en mode clair */
+body.light-mode .category-card, 
+body.light-mode .playlist-item,
+body.light-mode .card {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Effet au survol des cartes en mode clair */
+body.light-mode .category-card:hover, 
+body.light-mode .playlist-item:hover {
+    background-color: #f1f5f9 !important;
+}
+
+/* 3. Les textes et titres à l'intérieur des blocs */
+body.light-mode h1, 
+body.light-mode h2, 
+body.light-mode h3, 
+body.light-mode span,
+body.light-mode p {
+    color: #0f172a;
 }
 
 /* ==========================================================================
