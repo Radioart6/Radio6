@@ -834,3 +834,33 @@ body.font-dyslexic {
 .sort-select:focus {
     border-color: var(--primary);
 }
+.speed-controls {
+    display: flex;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 3px;
+    border-radius: 8px;
+    margin-left: 10px;
+}
+
+.speed-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.speed-btn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.speed-btn.active {
+    background: #3b82f6;
+    color: #ffffff;
+}
