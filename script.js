@@ -683,3 +683,15 @@ window.closeParamModal = function(modalId) {
         targetModal.classList.add('hidden');
     }
 };
+// --- GESTION DE LA VITESSE DE LECTURE ---
+document.querySelectorAll('.speed-select').forEach(select => {
+    select.addEventListener('change', (e) => {
+        // Retrouve la carte de podcast et son élément <audio>
+        const card = e.target.closest('.podcast-card');
+        const audio = card ? card.querySelector('audio') : null;
+
+        if (audio) {
+            audio.playbackRate = parseFloat(e.target.value);
+        }
+    });
+});
