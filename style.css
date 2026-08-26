@@ -353,7 +353,7 @@ input[type="file"]:hover { border-color: var(--primary); color: var(--text); }
     background-color: var(--bg-color);
     padding: 1rem 1.5rem;
     border-radius: 50px;
-    max-width: 550px;
+    max-width: 100px;
     margin: 0 auto;
     border: 1px solid #334155;
 }
