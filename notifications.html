@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidatures - RADIO 6</title>
     <link rel="stylesheet" href="style (6).css">
+    <style>
+        /* Petits ajouts esthétiques fluides */
+        .admin-card {
+            animation: fadeIn 0.4s ease-in-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 12px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #btn-suivant:hover {
+            transform: scale(1.1);
+            background: var(--accent) !important;
+        }
+        .info-ligne {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--accent);
+        }
+    </style>
 </head>
 <body>
 
@@ -26,26 +49,26 @@
     </header>
 
     <main style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
-        <section class="admin-card" style="width: 100%; max-width: 550px; position: relative; min-height: 280px;">
-            <h3>📥 Boîte de réception - Candidatures</h3>
+        <section class="admin-card" style="width: 100%; max-width: 580px; position: relative; min-height: 300px; padding: 2.5rem;">
+            <h3 style="display: flex; align-items: center; gap: 10px;">📥 Boîte de réception - Candidatures</h3>
             
             <div id="contenu-candidat" style="margin-top: 1.5rem; line-height: 1.8;">
-                <p id="aucun-msg" style="color: var(--text-muted); text-align: center; padding: 2rem 0;">Aucune candidature pour le moment.</p>
+                <p id="aucun-msg" style="color: var(--text-muted); text-align: center; padding: 3rem 0; font-style: italic;">Aucune candidature pour le moment.</p>
                 
                 <div id="infos-box" class="hidden">
-                    <p style="font-size: 1.1rem;"><strong>👤 Prénom & Nom :</strong> <span id="val-nom"></span></p>
-                    <p style="font-size: 1.1rem;"><strong>🏫 Classe :</strong> <span id="val-classe"></span></p>
-                    <p style="font-size: 1.1rem;"><strong>🎧 Pôle souhaité :</strong> <span id="val-role" style="color: var(--accent);"></span></p>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">Reçu le : <span id="val-date"></span></p>
+                    <div class="info-ligne"><p style="font-size: 1.05rem;"><strong>👤 Prénom & Nom :</strong> <span id="val-nom"></span></p></div>
+                    <div class="info-ligne"><p style="font-size: 1.05rem;"><strong>🏫 Classe :</strong> <span id="val-classe"></span></p></div>
+                    <div class="info-ligne"><p style="font-size: 1.05rem;"><strong>🎧 Pôle souhaité :</strong> <span id="val-role" style="color: var(--accent); font-weight: bold;"></span></p></div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: right;">Reçu le : <span id="val-date"></span></p>
                 </div>
             </div>
 
-            <!-- Flèche en bas à droite pour changer de personne -->
-            <button id="btn-suivant" class="hidden" title="Personne suivante" style="position: absolute; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;">
+            <!-- Flèche élégante en bas à droite -->
+            <button id="btn-suivant" class="hidden" title="Candidat suivant" style="position: absolute; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: all 0.2s;">
                 ➔
             </button>
             
-            <div id="compteur-index" style="position: absolute; bottom: 30px; left: 25px; font-size: 0.85rem; color: var(--text-muted);"></div>
+            <div id="compteur-index" style="position: absolute; bottom: 32px; left: 30px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500;"></div>
         </section>
     </main>
 
@@ -75,19 +98,17 @@
             document.getElementById('val-role').innerText = c.role;
             document.getElementById('val-date').innerText = c.date;
 
-            document.getElementById('compteur-index').innerText = `Candidat ${index + 1} sur ${listeCandidats.length}`;
+            document.getElementById('compteur-index').innerText = `Candidat ${index + 1} / ${listeCandidats.length}`;
         }
 
-        // Action sur la flèche en bas à droite
         document.getElementById('btn-suivant').addEventListener('click', function() {
             currentIndex++;
             if (currentIndex >= listeCandidats.length) {
-                currentIndex = 0; // Revient au début ou bloque si tu préfères
+                currentIndex = 0; 
             }
             afficherCandidat(currentIndex);
         });
 
-        // Lancement au chargement de la page
         afficherCandidat(currentIndex);
     </script>
 </body>
