@@ -230,21 +230,49 @@
     </footer>
 
     <script>
-        document.getElementById('form-recrutement').addEventListener('submit', function(e) {
+        // 1. Initialiser Supabase (Mettez vos vraies clés ici)
+        const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
+        const SUPABASE_KEY = "VOTRE_CLE_SUPABASE_ICI"; // Remplacez par votre clé publique (anon key)
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 2. Gérer la soumission du formulaire
+        document.getElementById('form-recrutement').addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Récupérer le bouton pour le désactiver pendant l'envoi
+            const btnSubmit = document.querySelector('.btn-admin-action');
+            btnSubmit.innerText = "Envoi en cours...";
+            btnSubmit.disabled = true;
 
             const prenom = document.getElementById('prenom').value;
             const nom = document.getElementById('nom').value;
             const classe = document.getElementById('classe').value;
             const role = document.getElementById('role').value;
+            
+            // Note : Si vous ajoutez un champ fichier plus tard, le code d'upload du fichier ira ici.
 
-            let candidatures = JSON.parse(localStorage.getItem('candidatures_radio')) || [];
-            candidatures.push({ prenom, nom, classe, role, date: new Date().toLocaleDateString() });
-            localStorage.setItem('candidatures_radio', JSON.stringify(candidatures));
+            // 3. Envoyer les données dans la table 'candidatures' de Supabase
+            const { error: dbError } = await supabase
+                .from('candidatures')
+                .insert([
+                    { nom: nom, prenom: prenom, classe: classe, role: role }
+                ]);
 
-            document.getElementById('form-recrutement').style.display = 'none';
-            document.getElementById('message-succes').classList.remove('hidden');
+            if (dbError) {
+                alert("Erreur lors de l'envoi : " + dbError.message);
+                btnSubmit.innerText = "Envoyer ma candidature";
+                btnSubmit.disabled = false;
+            } else {
+                // Succès de l'envoi !
+                document.getElementById('form-recrutement').style.display = 'none';
+                document.getElementById('message-succes').classList.remove('hidden');
+            }
         });
     </script>
+    
+    <!-- IMPORTANT : Ajouter ce script pour pouvoir utiliser Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</body>
+</html>
 </body>
 </html>
