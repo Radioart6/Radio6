@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidatures - RADIO 6</title>
+    <link rel="stylesheet" href="style (6).css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <img src="logo (1).png" alt="Logo Radio 6" class="header-logo">
+            <div>
+                <span class="site-title"><strong>RADIO 6</strong></span><br>
+                <span class="site-subtitle" style="font-size: 0.75rem;">Lycée Arcisse de Caumont</span>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html">Accueil</a>
+            <a href="equipe.html">L'Équipe</a>
+            <a href="aide.html">Aide</a>
+            <a href="calendrier.html">Calendrier</a>
+            <a href="instagram.html">Instagram</a>
+        </nav>
+    </header>
+
+    <main style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+        <section class="admin-card" style="width: 100%; max-width: 550px; position: relative; min-height: 280px;">
+            <h3>📥 Boîte de réception - Candidatures</h3>
+            
+            <div id="contenu-candidat" style="margin-top: 1.5rem; line-height: 1.8;">
+                <p id="aucun-msg" style="color: var(--text-muted); text-align: center; padding: 2rem 0;">Aucune candidature pour le moment.</p>
+                
+                <div id="infos-box" class="hidden">
+                    <p style="font-size: 1.1rem;"><strong>👤 Prénom & Nom :</strong> <span id="val-nom"></span></p>
+                    <p style="font-size: 1.1rem;"><strong>🏫 Classe :</strong> <span id="val-classe"></span></p>
+                    <p style="font-size: 1.1rem;"><strong>🎧 Pôle souhaité :</strong> <span id="val-role" style="color: var(--accent);"></span></p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">Reçu le : <span id="val-date"></span></p>
+                </div>
+            </div>
+
+            <!-- Flèche en bas à droite pour changer de personne -->
+            <button id="btn-suivant" class="hidden" title="Personne suivante" style="position: absolute; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;">
+                ➔
+            </button>
+            
+            <div id="compteur-index" style="position: absolute; bottom: 30px; left: 25px; font-size: 0.85rem; color: var(--text-muted);"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux</p>
+    </footer>
+
+    <script>
+        let listeCandidats = JSON.parse(localStorage.getItem('candidatures_radio')) || [];
+        let currentIndex = 0;
+
+        function afficherCandidat(index) {
+            if (listeCandidats.length === 0) {
+                document.getElementById('aucun-msg').style.display = 'block';
+                document.getElementById('infos-box').classList.add('hidden');
+                document.getElementById('btn-suivant').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('aucun-msg').style.display = 'none';
+            document.getElementById('infos-box').classList.remove('hidden');
+            document.getElementById('btn-suivant').classList.remove('hidden');
+
+            let c = listeCandidats[index];
+            document.getElementById('val-nom').innerText = c.prenom + " " + c.nom;
+            document.getElementById('val-classe').innerText = c.classe;
+            document.getElementById('val-role').innerText = c.role;
+            document.getElementById('val-date').innerText = c.date;
+
+            document.getElementById('compteur-index').innerText = `Candidat ${index + 1} sur ${listeCandidats.length}`;
+        }
+
+        // Action sur la flèche en bas à droite
+        document.getElementById('btn-suivant').addEventListener('click', function() {
+            currentIndex++;
+            if (currentIndex >= listeCandidats.length) {
+                currentIndex = 0; // Revient au début ou bloque si tu préfères
+            }
+            afficherCandidat(currentIndex);
+        });
+
+        // Lancement au chargement de la page
+        afficherCandidat(currentIndex);
+    </script>
+</body>
+</html>
