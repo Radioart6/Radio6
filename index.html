@@ -152,6 +152,9 @@
                 <div id="nav-links" class="nav-links-container">
                     <button id="btn-login-open" class="btn-nav-login">Connexion</button>
                     <a href="index.html" class="active">Accueil</a>
+                    <a href="notifications.html" id="lien-cloche" style="position: relative; text-decoration: none; margin-left: 1.5rem;" title="Voir les candidatures">
+        🔔 <span id="badge-notif" style="display: none; background: #ef4444; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 50%; position: absolute; top: -8px; right: -10px; font-weight: bold;">0</span>
+    </a>
                     <a href="equipe.html">L'Équipe</a>
                     <a href="aide.html">Aide</a>
                     <a href="calendrier.html">🗓️ Calendrier</a>
@@ -159,6 +162,14 @@
                     <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
                 </div>
             </nav>
+            <script>
+    const candidaturesStockees = JSON.parse(localStorage.getItem('candidatures_radio')) || [];
+    if (candidaturesStockees.length > 0) {
+        const badge = document.getElementById('badge-notif');
+        badge.innerText = candidaturesStockees.length;
+        badge.style.display = 'inline-block';
+    }
+</script>
         </header>
 
         <div id="login-modal" class="modal hidden">
