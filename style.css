@@ -870,9 +870,18 @@ body.font-dyslexic {
 /* ========================================= */
 @media (max-width: 768px) {
     .custom-player-bar {
-        flex-wrap: wrap;          /* Autorise les éléments à passer à la ligne */
-        justify-content: center;  /* Centre le lecteur, les vitesses et le mute */
-        padding: 1rem;            /* Ajuste les marges intérieures pour mobile */
-        gap: 1rem;                /* Réduit un peu l'espacement global */
+        flex-direction: column;   /* Empile les deux blocs l'un sur l'autre */
+        padding: 1rem;            /* Ajuste l'espacement intérieur */
+        border-radius: 20px;      /* Réduit un peu l'arrondi car la barre sera plus haute */
+        gap: 1rem;
+    }
+
+    .player-top, 
+    .player-bottom {
+        display: flex;
+        justify-content: center;  /* Centre les éléments sur chaque ligne */
+        align-items: center;
+        width: 100%;              /* Prend toute la largeur disponible */
+        gap: 1rem;                /* Espace entre les boutons d'une même ligne */
     }
 }
