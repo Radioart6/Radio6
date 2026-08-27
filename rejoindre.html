@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejoindre l'équipe - RADIO 6</title>
+    <link rel="stylesheet" href="style (6).css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <img src="logo (1).png" alt="Logo Radio 6" class="header-logo">
+            <div>
+                <span class="site-title"><strong>RADIO 6</strong></span><br>
+                <span class="site-subtitle" style="font-size: 0.75rem;">Lycée Arcisse de Caumont</span>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html">Accueil</a>
+            <a href="equipe.html" class="active">L'Équipe</a>
+            <a href="aide.html">Aide</a>
+            <a href="calendrier.html">Calendrier</a>
+            <a href="instagram.html">Instagram</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="admin-card" style="max-width: 600px; margin: 0 auto; border-style: solid;">
+            <h3>🎙️ Rejoindre l'équipe de Radio 6</h3>
+            <p class="param-notice">
+                Remplis ce formulaire pour t'inscrire dans l'équipe officielle de la radio. Choisis ton pôle de préférence, puis valide pour enregistrer ta demande !
+            </p>
+
+            <form id="form-recrutement" class="admin-form">
+                <div class="form-group">
+                    <label for="prenom">Prénom :</label>
+                    <input type="text" id="prenom" required placeholder="Ex : Thomas">
+                </div>
+
+                <div class="form-group">
+                    <label for="nom">Nom :</label>
+                    <input type="text" id="nom" required placeholder="Ex : Dubois">
+                </div>
+
+                <div class="form-group">
+                    <label for="classe">Classe :</label>
+                    <input type="text" id="classe" required placeholder="Ex : 2nde 4">
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Ton pôle / Rôle souhaité :</label>
+                    <select id="role" required>
+                        <option value="" disabled selected>Choisis ton rôle...</option>
+                        <option value="Chroniqueur / Animateur">Chroniqueur / Animateur (Parler au micro, préparer des chroniques)</option>
+                        <option value="Technique / Son">Technique / Son (Gérer la table de mixage, l'enregistrement, le montage)</option>
+                        <option value="Les deux / Polyvalent">Les deux / Je veux tout tester !</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-admin-action" style="width: 100%; justify-content: center;">Envoyer ma candidature</button>
+            </form>
+
+            <div id="message-succes" class="hidden" style="text-align: center; padding: 2rem 0;">
+                <h2 style="color: var(--accent); margin-bottom: 1rem;">🎉 Candidature bien enregistrée !</h2>
+                <p style="font-size: 1.1rem; line-height: 1.6; color: var(--text);">
+                    Viens à la web radio, <br><strong>horaires à redéfinir !</strong>
+                </p>
+                <br>
+                <a href="index.html" class="btn-admin-action" style="display: inline-block; text-decoration: none;">Retour à l'accueil</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Radio 6 - Espace de rediffusion du Lycée Arcisse de Caumont, Bayeux</p>
+    </footer>
+
+    <script>
+        document.getElementById('form-recrutement').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const prenom = document.getElementById('prenom').value;
+            const nom = document.getElementById('nom').value;
+            const classe = document.getElementById('classe').value;
+            const role = document.getElementById('role').value;
+
+            // Enregistrement temporaire dans la mémoire du navigateur
+            let candidatures = JSON.parse(localStorage.getItem('candidatures_radio')) || [];
+            candidatures.push({ prenom, nom, classe, role, date: new Date().toLocaleDateString() });
+            localStorage.setItem('candidatures_radio', JSON.stringify(candidatures));
+
+            // Affichage du message personnalisé
+            document.getElementById('form-recrutement').style.display = 'none';
+            document.getElementById('message-succes').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
