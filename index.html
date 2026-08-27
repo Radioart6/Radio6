@@ -165,7 +165,7 @@
             <div class="modal-content">
                 <span id="btn-login-close" class="close-modal">&times;</span>
                 <h3>Connexion Propriétaire</h3>
-                <p class="login-notice">⚠️ Cet espace est strictement réservé à l'équipe de la radio pour la gestion des fichiers.</p>
+                <p class="login-notice">⚠️ Cet espace est strictly réservé à l'équipe de la radio pour la gestion des fichiers.</p>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="username">Identifiant :</label>
@@ -221,31 +221,32 @@
                 <div class="player-title" id="current-title">🎧 Choisissez une rediffusion ci-dessous</div>
                 <div class="player-status" id="player-status">PRÊT À L'ÉCOUTE</div>
                 <audio id="main-audio-player"></audio>
+                
                 <div class="custom-player-bar">
-                    <button id="custom-play-btn" class="player-btn" disabled>▶</button>
-                    <div class="progress-container">
-                        <span id="current-time" class="time-display">00:00</span>
-                        <div id="progress-bar-bg" class="progress-bar-bg">
-                            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                    <!-- LIGNE DU HAUT : Play et Temps -->
+                    <div class="player-top">
+                        <button id="custom-play-btn" class="player-btn" disabled>▶</button>
+                        <div class="progress-container">
+                            <span id="current-time" class="time-display">00:00</span>
+                            <div id="progress-bar-bg" class="progress-bar-bg">
+                                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                            </div>
+                            <span id="total-duration" class="time-display">00:00</span>
                         </div>
-                        <span id="total-duration" class="time-display">00:00</span>
-                        
-                        <div class="custom-audio-player">
-    <!-- Vos éléments existants du lecteur (play, barre, volume...) -->
-    
-    <!-- Boutons de vitesse intégrés -->
-    <div class="speed-controls">
-        <button class="speed-btn" data-speed="0.25">0,25x</button>
-        <button class="speed-btn" data-speed="0.5">0,5x</button>
-        <button class="speed-btn" data-speed="0.75">0,75x</button>
-        <button class="speed-btn active" data-speed="1">1x</button>
-        <button class="speed-btn" data-speed="1.25">1,25x</button>
-        <button class="speed-btn" data-speed="1.5">1,5x</button>
-        <button class="speed-btn" data-speed="1.75">1,75x</button>
-        <button class="speed-btn" data-speed="2">2x</button>
-    </div>
-</div>
+                    </div>
 
+                    <!-- LIGNE DU BAS : Vitesses et Mute -->
+                    <div class="player-bottom">
+                        <div class="speed-controls">
+                            <button class="speed-btn" data-speed="0.25">0,25x</button>
+                            <button class="speed-btn" data-speed="0.5">0,5x</button>
+                            <button class="speed-btn" data-speed="0.75">0,75x</button>
+                            <button class="speed-btn active" data-speed="1">1x</button>
+                            <button class="speed-btn" data-speed="1.25">1,25x</button>
+                            <button class="speed-btn" data-speed="1.5">1,5x</button>
+                            <button class="speed-btn" data-speed="1.75">1,75x</button>
+                            <button class="speed-btn" data-speed="2">2x</button>
+                        </div>
                         <button id="custom-mute-btn" class="player-mute-btn" title="Couper/Activer le son">
                             <i id="mute-icon" class="fa-solid fa-volume-high"></i>
                         </button>
