@@ -864,3 +864,15 @@ body.font-dyslexic {
     background: #3b82f6;
     color: #ffffff;
 }
+
+/* ========================================= */
+/* ADAPTATION MOBILE (Écrans < 768px)        */
+/* ========================================= */
+@media (max-width: 768px) {
+    .custom-player-bar {
+        flex-wrap: wrap;          /* Autorise les éléments à passer à la ligne */
+        justify-content: center;  /* Centre le lecteur, les vitesses et le mute */
+        padding: 1rem;            /* Ajuste les marges intérieures pour mobile */
+        gap: 1rem;                /* Réduit un peu l'espacement global */
+    }
+}
