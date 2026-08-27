@@ -4,28 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidatures - RADIO 6</title>
-    <link rel="stylesheet" href="style (6).css">
     <style>
-        /* Petits ajouts esthétiques fluides */
-        .admin-card {
-            animation: fadeIn 0.4s ease-in-out;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border-radius: 12px;
+        /* Styles intégrés pour garantir un design sombre et propre */
+        :root {
+            --bg-color: #0f1020;
+            --card-bg: #1a1c38;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent: #f59e0b;
+            --primary: #6366f1;
         }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(15, 16, 32, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .site-title {
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .site-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .admin-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 580px;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            min-height: 280px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        .admin-card h3 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.8rem;
+        }
+
+        .info-ligne {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .info-ligne p {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        #btn-suivant {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s;
+        }
+
         #btn-suivant:hover {
             transform: scale(1.1);
-            background: var(--accent) !important;
+            background: var(--accent);
         }
-        .info-ligne {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border-left: 3px solid var(--accent);
+
+        #compteur-index {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -36,7 +173,7 @@
             <img src="logo (1).png" alt="Logo Radio 6" class="header-logo">
             <div>
                 <span class="site-title"><strong>RADIO 6</strong></span><br>
-                <span class="site-subtitle" style="font-size: 0.75rem;">Lycée Arcisse de Caumont</span>
+                <span class="site-subtitle">Lycée Arcisse de Caumont</span>
             </div>
         </div>
         <nav>
@@ -48,27 +185,23 @@
         </nav>
     </header>
 
-    <main style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
-        <section class="admin-card" style="width: 100%; max-width: 580px; position: relative; min-height: 300px; padding: 2.5rem;">
-            <h3 style="display: flex; align-items: center; gap: 10px;">📥 Boîte de réception - Candidatures</h3>
+    <main>
+        <section class="admin-card">
+            <h3>📥 Boîte de réception - Candidatures</h3>
             
-            <div id="contenu-candidat" style="margin-top: 1.5rem; line-height: 1.8;">
+            <div id="contenu-candidat" style="margin-top: 1.5rem;">
                 <p id="aucun-msg" style="color: var(--text-muted); text-align: center; padding: 3rem 0; font-style: italic;">Aucune candidature pour le moment.</p>
                 
                 <div id="infos-box" class="hidden">
-                    <div class="info-ligne"><p style="font-size: 1.05rem;"><strong>👤 Prénom & Nom :</strong> <span id="val-nom"></span></p></div>
-                    <div class="info-ligne"><p style="font-size: 1.05rem;"><strong>🏫 Classe :</strong> <span id="val-classe"></span></p></div>
-                    <div class="info-ligne"><p style="font-size: 1.05rem;"><strong>🎧 Pôle souhaité :</strong> <span id="val-role" style="color: var(--accent); font-weight: bold;"></span></p></div>
+                    <div class="info-ligne"><p><strong>👤 Prénom & Nom :</strong> <span id="val-nom"></span></p></div>
+                    <div class="info-ligne"><p><strong>🏫 Classe :</strong> <span id="val-classe"></span></p></div>
+                    <div class="info-ligne"><p><strong>🎧 Pôle souhaité :</strong> <span id="val-role" style="color: var(--accent); font-weight: bold;"></span></p></div>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: right;">Reçu le : <span id="val-date"></span></p>
                 </div>
             </div>
 
-            <!-- Flèche élégante en bas à droite -->
-            <button id="btn-suivant" class="hidden" title="Candidat suivant" style="position: absolute; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: all 0.2s;">
-                ➔
-            </button>
-            
-            <div id="compteur-index" style="position: absolute; bottom: 32px; left: 30px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500;"></div>
+            <button id="btn-suivant" class="hidden" title="Candidat suivant">➔</button>
+            <div id="compteur-index"></div>
         </section>
     </main>
 
@@ -85,6 +218,7 @@
                 document.getElementById('aucun-msg').style.display = 'block';
                 document.getElementById('infos-box').classList.add('hidden');
                 document.getElementById('btn-suivant').classList.add('hidden');
+                document.getElementById('compteur-index').innerText = "";
                 return;
             }
 
