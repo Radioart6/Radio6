@@ -14,6 +14,7 @@
             --text-muted: #94a3b8;
             --accent: #f59e0b;
             --primary: #6366f1;
+            --danger: #ef4444;
         }
 
         body {
@@ -94,6 +95,7 @@
             position: relative;
             min-height: 280px;
             animation: fadeIn 0.4s ease-in-out;
+            padding-bottom: 5rem; /* Espace pour les boutons en bas */
         }
 
         @keyframes fadeIn {
@@ -121,12 +123,15 @@
             font-size: 1.05rem;
         }
 
-        #btn-suivant {
+        .action-buttons {
             position: absolute;
             bottom: 20px;
             right: 20px;
-            background: var(--primary);
-            color: white;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
             border: none;
             width: 45px;
             height: 45px;
@@ -138,6 +143,20 @@
             justify-content: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             transition: all 0.2s;
+            color: white;
+        }
+
+        #btn-supprimer {
+            background: var(--danger);
+        }
+
+        #btn-supprimer:hover {
+            transform: scale(1.1);
+            background: #dc2626;
+        }
+
+        #btn-suivant {
+            background: var(--primary);
         }
 
         #btn-suivant:hover {
@@ -201,7 +220,10 @@
                 </div>
             </div>
 
-            <button id="btn-suivant" class="hidden" title="Candidat suivant">➔</button>
+            <div id="bloc-actions" class="action-buttons hidden">
+                <button id="btn-supprimer" class="btn-action" title="Supprimer cette candidature">🗑️</button>
+                <button id="btn-suivant" class="btn-action" title="Candidat suivant">➔</button>
+            </div>
             <div id="compteur-index"></div>
         </section>
     </main>
@@ -218,30 +240,52 @@
             if (listeCandidats.length === 0) {
                 document.getElementById('aucun-msg').style.display = 'block';
                 document.getElementById('infos-box').classList.add('hidden');
-                document.getElementById('btn-suivant').classList.add('hidden');
+                document.getElementById('bloc-actions').classList.add('hidden');
                 document.getElementById('compteur-index').innerText = "";
                 return;
             }
 
+            // S'assure que l'index reste valide si on supprime le dernier élément
+            if (currentIndex >= listeCandidats.length) {
+                currentIndex = listeCandidats.length - 1;
+            }
+
             document.getElementById('aucun-msg').style.display = 'none';
             document.getElementById('infos-box').classList.remove('hidden');
-            document.getElementById('btn-suivant').classList.remove('hidden');
+            document.getElementById('bloc-actions').classList.remove('hidden');
 
-            let c = listeCandidats[index];
+            let c = listeCandidats[currentIndex];
             document.getElementById('val-nom').innerText = c.prenom + " " + c.nom;
             document.getElementById('val-classe').innerText = c.classe;
             document.getElementById('val-role').innerText = c.role;
             document.getElementById('val-date').innerText = c.date;
 
-            document.getElementById('compteur-index').innerText = `Candidat ${index + 1} / ${listeCandidats.length}`;
+            document.getElementById('compteur-index').innerText = `Candidat ${currentIndex + 1} / ${listeCandidats.length}`;
         }
 
+        // Passer au suivant
         document.getElementById('btn-suivant').addEventListener('click', function() {
             currentIndex++;
             if (currentIndex >= listeCandidats.length) {
                 currentIndex = 0; 
             }
             afficherCandidat(currentIndex);
+        });
+
+        // Supprimer la candidature active
+        document.getElementById('btn-supprimer').addEventListener('click', function() {
+            if (listeCandidats.length === 0) return;
+
+            if (confirm("Voulez-vous vraiment supprimer cette candidature ?")) {
+                // Retire 1 élément à l'index actuel
+                listeCandidats.splice(currentIndex, 1);
+                
+                // Met à jour le localStorage
+                localStorage.setItem('candidatures_radio', JSON.stringify(listeCandidats));
+
+                // Rafraîchit l'affichage
+                afficherCandidat(currentIndex);
+            }
         });
 
         afficherCandidat(currentIndex);
