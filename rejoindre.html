@@ -4,7 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rejoindre l'équipe - RADIO 6</title>
-    <link rel="stylesheet" href="style (6).css">
+    <style>
+        /* Styles intégrés pour s'accorder parfaitement avec le mode sombre */
+        :root {
+            --bg-color: #0f1020;
+            --card-bg: #1a1c38;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent: #f59e0b;
+            --primary: #6366f1;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(15, 16, 32, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .site-title {
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .site-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .admin-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-card h3 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.8rem;
+        }
+
+        .admin-form input, .admin-form select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.3);
+            color: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        .admin-form input:focus, .admin-form select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+            outline: none;
+        }
+
+        .btn-admin-action {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-admin-action:hover {
+            transform: translateY(-2px);
+            background: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -13,7 +165,7 @@
             <img src="logo (1).png" alt="Logo Radio 6" class="header-logo">
             <div>
                 <span class="site-title"><strong>RADIO 6</strong></span><br>
-                <span class="site-subtitle" style="font-size: 0.75rem;">Lycée Arcisse de Caumont</span>
+                <span class="site-subtitle">Lycée Arcisse de Caumont</span>
             </div>
         </div>
         <nav>
@@ -26,30 +178,30 @@
     </header>
 
     <main>
-        <section class="admin-card" style="max-width: 600px; margin: 0 auto; border-style: solid;">
+        <section class="admin-card">
             <h3>🎙️ Rejoindre l'équipe de Radio 6</h3>
-            <p class="param-notice">
+            <p class="param-notice" style="margin-bottom: 1.5rem; color: var(--text-muted); line-height: 1.5;">
                 Remplis ce formulaire pour t'inscrire dans l'équipe officielle de la radio. Choisis ton pôle de préférence, puis valide pour enregistrer ta demande !
             </p>
 
             <form id="form-recrutement" class="admin-form">
-                <div class="form-group">
-                    <label for="prenom">Prénom :</label>
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label for="prenom" style="display: block; margin-bottom: 0.4rem; font-weight: 500;">Prénom :</label>
                     <input type="text" id="prenom" required placeholder="Ex : Thomas">
                 </div>
 
-                <div class="form-group">
-                    <label for="nom">Nom :</label>
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label for="nom" style="display: block; margin-bottom: 0.4rem; font-weight: 500;">Nom :</label>
                     <input type="text" id="nom" required placeholder="Ex : Dubois">
                 </div>
 
-                <div class="form-group">
-                    <label for="classe">Classe :</label>
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label for="classe" style="display: block; margin-bottom: 0.4rem; font-weight: 500;">Classe :</label>
                     <input type="text" id="classe" required placeholder="Ex : 2nde 4">
                 </div>
 
-                <div class="form-group">
-                    <label for="role">Ton pôle / Rôle souhaité :</label>
+                <div class="form-group" style="margin-bottom: 1.8rem;">
+                    <label for="role" style="display: block; margin-bottom: 0.4rem; font-weight: 500;">Ton pôle / Rôle souhaité :</label>
                     <select id="role" required>
                         <option value="" disabled selected>Choisis ton rôle...</option>
                         <option value="Chroniqueur / Animateur">Chroniqueur / Animateur (Parler au micro, préparer des chroniques)</option>
@@ -58,7 +210,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn-admin-action" style="width: 100%; justify-content: center;">Envoyer ma candidature</button>
+                <button type="submit" class="btn-admin-action">Envoyer ma candidature</button>
             </form>
 
             <div id="message-succes" class="hidden" style="text-align: center; padding: 2rem 0;">
@@ -67,7 +219,7 @@
                     Viens à la web radio, <br><strong>horaires à redéfinir !</strong>
                 </p>
                 <br>
-                <a href="index.html" class="btn-admin-action" style="display: inline-block; text-decoration: none;">Retour à l'accueil</a>
+                <a href="index.html" class="btn-admin-action" style="display: inline-block; text-decoration: none; padding: 12px 25px; width: auto;">Retour à l'accueil</a>
             </div>
         </section>
     </main>
@@ -85,12 +237,10 @@
             const classe = document.getElementById('classe').value;
             const role = document.getElementById('role').value;
 
-            // Enregistrement temporaire dans la mémoire du navigateur
             let candidatures = JSON.parse(localStorage.getItem('candidatures_radio')) || [];
             candidatures.push({ prenom, nom, classe, role, date: new Date().toLocaleDateString() });
             localStorage.setItem('candidatures_radio', JSON.stringify(candidatures));
 
-            // Affichage du message personnalisé
             document.getElementById('form-recrutement').style.display = 'none';
             document.getElementById('message-succes').classList.remove('hidden');
         });
