@@ -865,6 +865,20 @@ body.font-dyslexic {
     color: #ffffff;
 }
 
+/* --- ALIGNEMENT PC POUR LE LECTEUR --- */
+.player-top {
+    display: flex;
+    align-items: center;
+    flex-grow: 1; /* Permet à la barre de progression de s'étirer sur PC */
+    gap: 10px;
+}
+
+.player-bottom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 /* ========================================= */
 /* ADAPTATION MOBILE (Écrans < 768px)        */
 /* ========================================= */
