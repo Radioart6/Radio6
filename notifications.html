@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="logo.png">
     <title>Candidatures - RADIO 6</title>
+    <!-- SDK Supabase (indispensable) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-color: #0f1020;
@@ -147,7 +149,7 @@
             font-size: 1.05rem;
         }
 
-        /* Vue Grille (4 cartes) */
+        /* Vue Grille */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -262,21 +264,21 @@
             </div>
             
             <div id="contenu-candidat" style="margin-top: 1rem;">
-                <p id="aucun-msg" style="color: var(--text-muted); text-align: center; padding: 3rem 0; font-style: italic;">Aucune candidature pour le moment.</p>
+                <p id="aucun-msg" style="color: var(--text-muted); text-align: center; padding: 3rem 0; font-style: italic;">Chargement des candidatures...</p>
                 
                 <!-- Vue Unique (Flèches) -->
-                <div id="infos-box">
+                <div id="infos-box" class="hidden">
                     <div class="info-ligne"><p><strong>👤 Prénom & Nom :</strong> <span id="val-nom"></span></p></div>
                     <div class="info-ligne"><p><strong>🏫 Classe :</strong> <span id="val-classe"></span></p></div>
                     <div class="info-ligne"><p><strong>🎧 Pôle souhaité :</strong> <span id="val-role" style="color: var(--accent); font-weight: bold;"></span></p></div>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: right;">Reçu le : <span id="val-date"></span></p>
                 </div>
 
-                <!-- Vue Grille (4+ candidatures) -->
+                <!-- Vue Grille -->
                 <div id="grid-box" class="grid-container hidden"></div>
             </div>
 
-            <div id="bloc-actions" class="action-buttons">
+            <div id="bloc-actions" class="action-buttons hidden">
                 <button id="btn-supprimer" class="btn-action" title="Supprimer cette candidature">🗑️</button>
                 <button id="btn-precedent" class="btn-action" title="Candidat précédent">⬅️</button>
                 <button id="btn-suivant" class="btn-action" title="Candidat suivant">➔</button>
@@ -290,13 +292,78 @@
     </footer>
 
     <script>
-        let listeCandidats = JSON.parse(localStorage.getItem('candidatures_radio')) || [];
+        // 1. Configuration de Supabase
+        const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
+        const SUPABASE_KEY = "VOTRE_CLE_SUPABASE_ICI"; // Remplacez par votre clé publique (anon key)
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let listeCandidats = [];
         let currentIndex = 0;
         let modeGrille = false;
 
+        // 2. Charger les candidatures depuis Supabase
+        async function chargerCandidatures() {
+            const aucunMsg = document.getElementById('aucun-msg');
+            aucunMsg.innerText = "Chargement des candidatures...";
+            aucunMsg.style.display = 'block';
+
+            const { data, error } = await supabase
+                .from('candidatures')
+                .select('*')
+                .order('created_at', { ascending: false }); // Classement du plus récent au plus ancien
+
+            if (error) {
+                console.error("Erreur lors de la récupération des données :", error);
+                aucunMsg.innerText = "Erreur lors du chargement des candidatures.";
+                return;
+            }
+
+            // Formater les dates pour chaque candidature
+            listeCandidats = (data || []).map(c => ({
+                ...c,
+                dateFormatee: c.created_at 
+                    ? new Date(c.created_at).toLocaleDateString('fr-FR', {
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                      })
+                    : 'Date inconnue'
+            }));
+
+            mettreAJourAffichage();
+        }
+
+        // 3. Supprimer une candidature dans Supabase
+        async function supprimerCandidatureActuelle() {
+            if (listeCandidats.length === 0) return;
+
+            const candidat = listeCandidats[currentIndex];
+            if (!candidat || !candidat.id) return;
+
+            if (confirm(`Voulez-vous vraiment supprimer la candidature de ${candidat.prenom} ${candidat.nom} ?`)) {
+                const { error } = await supabase
+                    .from('candidatures')
+                    .delete()
+                    .eq('id', candidat.id);
+
+                if (error) {
+                    alert("Erreur lors de la suppression : " + error.message);
+                } else {
+                    // Recharger la liste depuis Supabase
+                    await chargerCandidatures();
+                    if (currentIndex >= listeCandidats.length && currentIndex > 0) {
+                        currentIndex = listeCandidats.length - 1;
+                    }
+                }
+            }
+        }
+
+        // 4. Mettre à jour l'affichage dynamique
         function mettreAJourAffichage() {
+            const aucunMsg = document.getElementById('aucun-msg');
+
             if (listeCandidats.length === 0) {
-                document.getElementById('aucun-msg').style.display = 'block';
+                aucunMsg.innerText = "Aucune candidature pour le moment.";
+                aucunMsg.style.display = 'block';
                 document.getElementById('infos-box').classList.add('hidden');
                 document.getElementById('grid-box').classList.add('hidden');
                 document.getElementById('bloc-actions').classList.add('hidden');
@@ -305,24 +372,24 @@
                 return;
             }
 
-            document.getElementById('aucun-msg').style.display = 'none';
+            aucunMsg.style.display = 'none';
             document.getElementById('btn-grille').classList.remove('hidden');
             document.getElementById('bloc-actions').classList.remove('hidden');
 
             if (modeGrille) {
-                // --- MODE GRILLE (4+ éléments) ---
+                // --- MODE GRILLE ---
                 document.getElementById('infos-box').classList.add('hidden');
                 document.getElementById('grid-box').classList.remove('hidden');
                 document.getElementById('btn-precedent').classList.add('hidden');
                 document.getElementById('btn-suivant').classList.add('hidden');
-                document.getElementById('btn-supprimer').classList.add('hidden'); // On supprime dans la vue détaillée
+                document.getElementById('btn-supprimer').classList.add('hidden');
 
                 let gridHtml = '';
                 listeCandidats.forEach((c, idx) => {
                     gridHtml += `
                         <div class="grid-item" onclick="selectionnerDepuisGrille(${idx})">
-                            <h4>${c.prenom} ${c.nom}</h4>
-                            <p>${c.classe} - ${c.role}</p>
+                            <h4>${echapperHTML(c.prenom)} ${echapperHTML(c.nom)}</h4>
+                            <p>${echapperHTML(c.classe)} - ${echapperHTML(c.role)}</p>
                         </div>
                     `;
                 });
@@ -330,7 +397,7 @@
                 document.getElementById('compteur-index').innerText = `${listeCandidats.length} candidature(s)`;
 
             } else {
-                // --- MODE FICHE UNIQUE (Flèches) ---
+                // --- MODE FICHE UNIQUE ---
                 document.getElementById('grid-box').classList.add('hidden');
                 document.getElementById('infos-box').classList.remove('hidden');
                 document.getElementById('btn-precedent').classList.remove('hidden');
@@ -340,29 +407,45 @@
                 if (currentIndex >= listeCandidats.length) {
                     currentIndex = listeCandidats.length - 1;
                 }
+                if (currentIndex < 0) {
+                    currentIndex = 0;
+                }
 
                 let c = listeCandidats[currentIndex];
-                document.getElementById('val-nom').innerText = c.prenom + " " + c.nom;
-                document.getElementById('val-classe').innerText = c.classe;
-                document.getElementById('val-role').innerText = c.role;
-                document.getElementById('val-date').innerText = c.date;
+                document.getElementById('val-nom').innerText = (c.prenom || '') + " " + (c.nom || '');
+                document.getElementById('val-classe').innerText = c.classe || '';
+                document.getElementById('val-role').innerText = c.role || '';
+                document.getElementById('val-date').innerText = c.dateFormatee || '';
 
                 document.getElementById('compteur-index').innerText = `Candidat ${currentIndex + 1} / ${listeCandidats.length}`;
             }
         }
 
-        // Basculer entre Vue Normale et Vue Grille via le bouton "田"
+        // Sécurité contre l'injection HTML dans la grille
+        function echapperHTML(texte) {
+            if (!texte) return '';
+            return String(texte)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // --- ÉVÉNEMENTS BOUTONS ---
+
+        // Basculer vue Grille / Vue Fiche
         document.getElementById('btn-grille').addEventListener('click', function() {
             modeGrille = !modeGrille;
             mettreAJourAffichage();
         });
 
-        // Cliquer sur une carte dans la grille pour l'ouvrir en grand
+        // Sélectionner depuis la vue grille
         window.selectionnerDepuisGrille = function(index) {
             currentIndex = index;
             modeGrille = false;
             mettreAJourAffichage();
-        }
+        };
 
         // Bouton Suivant ➔
         document.getElementById('btn-suivant').addEventListener('click', function() {
@@ -383,17 +466,10 @@
         });
 
         // Bouton Supprimer 🗑️
-        document.getElementById('btn-supprimer').addEventListener('click', function() {
-            if (listeCandidats.length === 0) return;
+        document.getElementById('btn-supprimer').addEventListener('click', supprimerCandidatureActuelle);
 
-            if (confirm("Voulez-vous vraiment supprimer cette candidature ?")) {
-                listeCandidats.splice(currentIndex, 1);
-                localStorage.setItem('candidatures_radio', JSON.stringify(listeCandidats));
-                mettreAJourAffichage();
-            }
-        });
-
-        mettreAJourAffichage();
+        // Lancement au chargement de la page
+        chargerCandidatures();
     </script>
 </body>
 </html>
