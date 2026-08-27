@@ -594,6 +594,7 @@ document.querySelectorAll('.sort-select').forEach(select => {
         if (adminPanel) adminPanel.classList.remove('hidden');
         if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
         document.body.classList.add('admin-mode');
+        document.getElementById('lien-cloche').classList.remove('hidden');
         injectIALink();
         injectCalendarLink(); // Injected automatically if already connected
     }
@@ -654,6 +655,7 @@ document.querySelectorAll('.sort-select').forEach(select => {
                 if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
                 document.body.classList.add('admin-mode');
                 sessionStorage.setItem('adminMode', 'true');
+                document.getElementById('lien-cloche').classList.remove('hidden');
                 injectIALink();
                 injectCalendarLink(); // S'affiche immédiatement lors de la connexion
                 loginForm.reset();
@@ -670,6 +672,7 @@ document.querySelectorAll('.sort-select').forEach(select => {
             if (btnLoginOpen) btnLoginOpen.classList.remove('hidden');
             document.body.classList.remove('admin-mode');
             sessionStorage.setItem('adminMode', 'false');
+            document.getElementById('lien-cloche').classList.add('hidden');
             removeIALink();
             removeCalendarLink(); // Se retire immédiatement lors de la déconnexion
             applyTranslations(currentLang);
