@@ -6,7 +6,6 @@
     <link rel="icon" type="image/png" href="logo.png">
     <title>Candidatures - RADIO 6</title>
     <style>
-        /* Styles intégrés pour garantir un design sombre et propre */
         :root {
             --bg-color: #0f1020;
             --card-bg: #1a1c38;
@@ -88,14 +87,14 @@
             background-color: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.1);
             width: 100%;
-            max-width: 580px;
+            max-width: 650px;
             padding: 2.5rem;
             border-radius: 16px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             position: relative;
-            min-height: 280px;
+            min-height: 320px;
             animation: fadeIn 0.4s ease-in-out;
-            padding-bottom: 5rem; /* Espace pour les boutons en bas */
+            padding-bottom: 5rem;
         }
 
         @keyframes fadeIn {
@@ -103,11 +102,36 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .admin-card h3 {
-            margin-top: 0;
-            font-size: 1.3rem;
+        .card-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 0.8rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header-top h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        /* Bouton grille stylisé en haut à droite */
+        #btn-grille {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        #btn-grille:hover {
+            background: var(--primary);
+            border-color: var(--primary);
         }
 
         .info-ligne {
@@ -121,6 +145,42 @@
         .info-ligne p {
             margin: 0;
             font-size: 1.05rem;
+        }
+
+        /* Vue Grille (4 cartes) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .grid-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .grid-item:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .grid-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 0.95rem;
+            color: var(--accent);
+        }
+
+        .grid-item p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
         .action-buttons {
@@ -146,23 +206,14 @@
             color: white;
         }
 
-        #btn-supprimer {
-            background: var(--danger);
-        }
+        #btn-supprimer { background: var(--danger); }
+        #btn-supprimer:hover { transform: scale(1.1); background: #dc2626; }
 
-        #btn-supprimer:hover {
-            transform: scale(1.1);
-            background: #dc2626;
-        }
+        #btn-precedent { background: rgba(255, 255, 255, 0.15); }
+        #btn-precedent:hover { transform: scale(1.1); background: rgba(255, 255, 255, 0.3); }
 
-        #btn-suivant {
-            background: var(--primary);
-        }
-
-        #btn-suivant:hover {
-            transform: scale(1.1);
-            background: var(--accent);
-        }
+        #btn-suivant { background: var(--primary); }
+        #btn-suivant:hover { transform: scale(1.1); background: var(--accent); }
 
         #compteur-index {
             position: absolute;
@@ -181,9 +232,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -207,21 +256,29 @@
 
     <main>
         <section class="admin-card">
-            <h3>📥 Boîte de réception - Candidatures</h3>
+            <div class="card-header-top">
+                <h3>📥 Boîte de réception - Candidatures</h3>
+                <button id="btn-grille" title="Vue grille / Vue normale">田</button>
+            </div>
             
-            <div id="contenu-candidat" style="margin-top: 1.5rem;">
+            <div id="contenu-candidat" style="margin-top: 1rem;">
                 <p id="aucun-msg" style="color: var(--text-muted); text-align: center; padding: 3rem 0; font-style: italic;">Aucune candidature pour le moment.</p>
                 
-                <div id="infos-box" class="hidden">
+                <!-- Vue Unique (Flèches) -->
+                <div id="infos-box">
                     <div class="info-ligne"><p><strong>👤 Prénom & Nom :</strong> <span id="val-nom"></span></p></div>
                     <div class="info-ligne"><p><strong>🏫 Classe :</strong> <span id="val-classe"></span></p></div>
                     <div class="info-ligne"><p><strong>🎧 Pôle souhaité :</strong> <span id="val-role" style="color: var(--accent); font-weight: bold;"></span></p></div>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: right;">Reçu le : <span id="val-date"></span></p>
                 </div>
+
+                <!-- Vue Grille (4+ candidatures) -->
+                <div id="grid-box" class="grid-container hidden"></div>
             </div>
 
-            <div id="bloc-actions" class="action-buttons hidden">
+            <div id="bloc-actions" class="action-buttons">
                 <button id="btn-supprimer" class="btn-action" title="Supprimer cette candidature">🗑️</button>
+                <button id="btn-precedent" class="btn-action" title="Candidat précédent">⬅️</button>
                 <button id="btn-suivant" class="btn-action" title="Candidat suivant">➔</button>
             </div>
             <div id="compteur-index"></div>
@@ -235,60 +292,108 @@
     <script>
         let listeCandidats = JSON.parse(localStorage.getItem('candidatures_radio')) || [];
         let currentIndex = 0;
+        let modeGrille = false;
 
-        function afficherCandidat(index) {
+        function mettreAJourAffichage() {
             if (listeCandidats.length === 0) {
                 document.getElementById('aucun-msg').style.display = 'block';
                 document.getElementById('infos-box').classList.add('hidden');
+                document.getElementById('grid-box').classList.add('hidden');
                 document.getElementById('bloc-actions').classList.add('hidden');
+                document.getElementById('btn-grille').classList.add('hidden');
                 document.getElementById('compteur-index').innerText = "";
                 return;
             }
 
-            // S'assure que l'index reste valide si on supprime le dernier élément
-            if (currentIndex >= listeCandidats.length) {
-                currentIndex = listeCandidats.length - 1;
-            }
-
             document.getElementById('aucun-msg').style.display = 'none';
-            document.getElementById('infos-box').classList.remove('hidden');
+            document.getElementById('btn-grille').classList.remove('hidden');
             document.getElementById('bloc-actions').classList.remove('hidden');
 
-            let c = listeCandidats[currentIndex];
-            document.getElementById('val-nom').innerText = c.prenom + " " + c.nom;
-            document.getElementById('val-classe').innerText = c.classe;
-            document.getElementById('val-role').innerText = c.role;
-            document.getElementById('val-date').innerText = c.date;
+            if (modeGrille) {
+                // --- MODE GRILLE (4+ éléments) ---
+                document.getElementById('infos-box').classList.add('hidden');
+                document.getElementById('grid-box').classList.remove('hidden');
+                document.getElementById('btn-precedent').classList.add('hidden');
+                document.getElementById('btn-suivant').classList.add('hidden');
+                document.getElementById('btn-supprimer').classList.add('hidden'); // On supprime dans la vue détaillée
 
-            document.getElementById('compteur-index').innerText = `Candidat ${currentIndex + 1} / ${listeCandidats.length}`;
+                let gridHtml = '';
+                listeCandidats.forEach((c, idx) => {
+                    gridHtml += `
+                        <div class="grid-item" onclick="selectionnerDepuisGrille(${idx})">
+                            <h4>${c.prenom} ${c.nom}</h4>
+                            <p>${c.classe} - ${c.role}</p>
+                        </div>
+                    `;
+                });
+                document.getElementById('grid-box').innerHTML = gridHtml;
+                document.getElementById('compteur-index').innerText = `${listeCandidats.length} candidature(s)`;
+
+            } else {
+                // --- MODE FICHE UNIQUE (Flèches) ---
+                document.getElementById('grid-box').classList.add('hidden');
+                document.getElementById('infos-box').classList.remove('hidden');
+                document.getElementById('btn-precedent').classList.remove('hidden');
+                document.getElementById('btn-suivant').classList.remove('hidden');
+                document.getElementById('btn-supprimer').classList.remove('hidden');
+
+                if (currentIndex >= listeCandidats.length) {
+                    currentIndex = listeCandidats.length - 1;
+                }
+
+                let c = listeCandidats[currentIndex];
+                document.getElementById('val-nom').innerText = c.prenom + " " + c.nom;
+                document.getElementById('val-classe').innerText = c.classe;
+                document.getElementById('val-role').innerText = c.role;
+                document.getElementById('val-date').innerText = c.date;
+
+                document.getElementById('compteur-index').innerText = `Candidat ${currentIndex + 1} / ${listeCandidats.length}`;
+            }
         }
 
-        // Passer au suivant
+        // Basculer entre Vue Normale et Vue Grille via le bouton "田"
+        document.getElementById('btn-grille').addEventListener('click', function() {
+            modeGrille = !modeGrille;
+            mettreAJourAffichage();
+        });
+
+        // Cliquer sur une carte dans la grille pour l'ouvrir en grand
+        window.selectionnerDepuisGrille = function(index) {
+            currentIndex = index;
+            modeGrille = false;
+            mettreAJourAffichage();
+        }
+
+        // Bouton Suivant ➔
         document.getElementById('btn-suivant').addEventListener('click', function() {
             currentIndex++;
             if (currentIndex >= listeCandidats.length) {
                 currentIndex = 0; 
             }
-            afficherCandidat(currentIndex);
+            mettreAJourAffichage();
         });
 
-        // Supprimer la candidature active
+        // Bouton Précédent ⬅️
+        document.getElementById('btn-precedent').addEventListener('click', function() {
+            currentIndex--;
+            if (currentIndex < 0) {
+                currentIndex = listeCandidats.length - 1; 
+            }
+            mettreAJourAffichage();
+        });
+
+        // Bouton Supprimer 🗑️
         document.getElementById('btn-supprimer').addEventListener('click', function() {
             if (listeCandidats.length === 0) return;
 
             if (confirm("Voulez-vous vraiment supprimer cette candidature ?")) {
-                // Retire 1 élément à l'index actuel
                 listeCandidats.splice(currentIndex, 1);
-                
-                // Met à jour le localStorage
                 localStorage.setItem('candidatures_radio', JSON.stringify(listeCandidats));
-
-                // Rafraîchit l'affichage
-                afficherCandidat(currentIndex);
+                mettreAJourAffichage();
             }
         });
 
-        afficherCandidat(currentIndex);
+        mettreAJourAffichage();
     </script>
 </body>
 </html>
