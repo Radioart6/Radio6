@@ -292,33 +292,34 @@
     </footer>
 
     <script>
-        // 1. Configuration de Supabase
-        const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         let listeCandidats = [];
         let currentIndex = 0;
         let modeGrille = false;
 
-        // 2. Charger les candidatures depuis Supabase
+        // Sécurité : on récupère SupabaseClient de script.js, ou on le recrée si besoin
+        const url_sb = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
+        const key_sb = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
+        const clientSupabase = typeof SupabaseClient !== 'undefined' ? SupabaseClient : window.supabase.createClient(url_sb, key_sb);
+
+        // 1. Charger les candidatures depuis Supabase
         async function chargerCandidatures() {
             const aucunMsg = document.getElementById('aucun-msg');
-            aucunMsg.innerText = "Chargement des candidatures...";
-            aucunMsg.style.display = 'block';
+            if (aucunMsg) {
+                aucunMsg.innerText = "Chargement des candidatures...";
+                aucunMsg.style.display = 'block';
+            }
 
-            const { data, error } = await supabase
+            const { data, error } = await clientSupabase
                 .from('candidatures')
                 .select('*')
-                .order('created_at', { ascending: false }); // Classement du plus récent au plus ancien
+                .order('created_at', { ascending: false });
 
             if (error) {
-                console.error("Erreur lors de la récupération des données :", error);
-                aucunMsg.innerText = "Erreur lors du chargement des candidatures.";
+                console.error("Erreur lors de la récupération :", error);
+                if (aucunMsg) aucunMsg.innerText = "Erreur lors du chargement des candidatures.";
                 return;
             }
 
-            // Formater les dates pour chaque candidature
             listeCandidats = (data || []).map(c => ({
                 ...c,
                 dateFormatee: c.created_at 
@@ -332,7 +333,7 @@
             mettreAJourAffichage();
         }
 
-        // 3. Supprimer une candidature dans Supabase
+        // 2. Supprimer une candidature
         async function supprimerCandidatureActuelle() {
             if (listeCandidats.length === 0) return;
 
@@ -340,7 +341,7 @@
             if (!candidat || !candidat.id) return;
 
             if (confirm(`Voulez-vous vraiment supprimer la candidature de ${candidat.prenom} ${candidat.nom} ?`)) {
-                const { error } = await supabase
+                const { error } = await clientSupabase
                     .from('candidatures')
                     .delete()
                     .eq('id', candidat.id);
@@ -348,7 +349,6 @@
                 if (error) {
                     alert("Erreur lors de la suppression : " + error.message);
                 } else {
-                    // Recharger la liste depuis Supabase
                     await chargerCandidatures();
                     if (currentIndex >= listeCandidats.length && currentIndex > 0) {
                         currentIndex = listeCandidats.length - 1;
@@ -357,13 +357,15 @@
             }
         }
 
-        // 4. Mettre à jour l'affichage dynamique
+        // 3. Mettre à jour l'affichage dynamique
         function mettreAJourAffichage() {
             const aucunMsg = document.getElementById('aucun-msg');
 
             if (listeCandidats.length === 0) {
-                aucunMsg.innerText = "Aucune candidature pour le moment.";
-                aucunMsg.style.display = 'block';
+                if (aucunMsg) {
+                    aucunMsg.innerText = "Aucune candidature pour le moment.";
+                    aucunMsg.style.display = 'block';
+                }
                 document.getElementById('infos-box').classList.add('hidden');
                 document.getElementById('grid-box').classList.add('hidden');
                 document.getElementById('bloc-actions').classList.add('hidden');
@@ -372,12 +374,11 @@
                 return;
             }
 
-            aucunMsg.style.display = 'none';
+            if (aucunMsg) aucunMsg.style.display = 'none';
             document.getElementById('btn-grille').classList.remove('hidden');
             document.getElementById('bloc-actions').classList.remove('hidden');
 
             if (modeGrille) {
-                // --- MODE GRILLE ---
                 document.getElementById('infos-box').classList.add('hidden');
                 document.getElementById('grid-box').classList.remove('hidden');
                 document.getElementById('btn-precedent').classList.add('hidden');
@@ -397,19 +398,14 @@
                 document.getElementById('compteur-index').innerText = `${listeCandidats.length} candidature(s)`;
 
             } else {
-                // --- MODE FICHE UNIQUE ---
                 document.getElementById('grid-box').classList.add('hidden');
                 document.getElementById('infos-box').classList.remove('hidden');
                 document.getElementById('btn-precedent').classList.remove('hidden');
                 document.getElementById('btn-suivant').classList.remove('hidden');
                 document.getElementById('btn-supprimer').classList.remove('hidden');
 
-                if (currentIndex >= listeCandidats.length) {
-                    currentIndex = listeCandidats.length - 1;
-                }
-                if (currentIndex < 0) {
-                    currentIndex = 0;
-                }
+                if (currentIndex >= listeCandidats.length) currentIndex = listeCandidats.length - 1;
+                if (currentIndex < 0) currentIndex = 0;
 
                 let c = listeCandidats[currentIndex];
                 document.getElementById('val-nom').innerText = (c.prenom || '') + " " + (c.nom || '');
@@ -421,7 +417,6 @@
             }
         }
 
-        // Sécurité contre l'injection HTML dans la grille
         function echapperHTML(texte) {
             if (!texte) return '';
             return String(texte)
@@ -432,44 +427,34 @@
                 .replace(/'/g, "&#039;");
         }
 
-        // --- ÉVÉNEMENTS BOUTONS ---
-
-        // Basculer vue Grille / Vue Fiche
-        document.getElementById('btn-grille').addEventListener('click', function() {
+        // Événements
+        document.getElementById('btn-grille').addEventListener('click', () => {
             modeGrille = !modeGrille;
             mettreAJourAffichage();
         });
 
-        // Sélectionner depuis la vue grille
-        window.selectionnerDepuisGrille = function(index) {
+        window.selectionnerDepuisGrille = (index) => {
             currentIndex = index;
             modeGrille = false;
             mettreAJourAffichage();
         };
 
-        // Bouton Suivant ➔
-        document.getElementById('btn-suivant').addEventListener('click', function() {
+        document.getElementById('btn-suivant').addEventListener('click', () => {
             currentIndex++;
-            if (currentIndex >= listeCandidats.length) {
-                currentIndex = 0; 
-            }
+            if (currentIndex >= listeCandidats.length) currentIndex = 0;
             mettreAJourAffichage();
         });
 
-        // Bouton Précédent ⬅️
-        document.getElementById('btn-precedent').addEventListener('click', function() {
+        document.getElementById('btn-precedent').addEventListener('click', () => {
             currentIndex--;
-            if (currentIndex < 0) {
-                currentIndex = listeCandidats.length - 1; 
-            }
+            if (currentIndex < 0) currentIndex = listeCandidats.length - 1;
             mettreAJourAffichage();
         });
 
-        // Bouton Supprimer 🗑️
         document.getElementById('btn-supprimer').addEventListener('click', supprimerCandidatureActuelle);
 
-        // Lancement au chargement de la page
-        chargerCandidatures();
+        // Démarrage
+        document.addEventListener('DOMContentLoaded', chargerCandidatures);
     </script>
 </body>
 </html>
