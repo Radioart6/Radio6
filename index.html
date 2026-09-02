@@ -119,6 +119,54 @@
         .sort-select:focus {
             border-color: var(--primary);
         }
+
+        .banner-recrutement {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(245, 158, 11, 0.25));
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    flex-wrap: wrap;
+}
+
+.banner-text h3 {
+    margin: 0 0 0.4rem 0;
+    color: #f59e0b;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.banner-text p {
+    margin: 0;
+    color: var(--text-muted, #94a3b8);
+    font-size: 0.95rem;
+}
+
+.btn-join-banner {
+    background: var(--primary, #6366f1);
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.btn-join-banner:hover {
+    background: #f59e0b;
+    color: #0f1020;
+    transform: translateY(-2px);
+}
     </style>
 </head>
 <body>
@@ -133,7 +181,7 @@
             <button id="btn-enter" class="btn-splash">Entrer dans l'espace rediffusion</button>
         </div>
     </div>
-
+    
     <div id="main-content" class="hidden">
         <header>
             <div class="logo-area">
@@ -155,6 +203,7 @@
                     
                     <a href="index.html" class="active">Accueil</a>
                     <a href="equipe.html">L'Équipe</a>
+                    <a href="rejoindre.html">Rejoindre l'équipe</a>
                     <a href="aide.html">Aide</a>
                     <a href="calendrier.html">🗓️ Calendrier</a>
                     <a href="instagram.html">Instagram</a>
@@ -190,6 +239,14 @@
         </div>
 
         <main>
+            <!-- BANNIÈRE D'INVITATION AU RECRUTEMENT -->
+<section class="banner-recrutement">
+    <div class="banner-text">
+        <h3>🎙️ Venez faire de la radio avec nous !</h3>
+        <p>Émissions le midi, chroniques en journée, musique, technique... Rejoignez l'équipe à côté du CDI !</p>
+    </div>
+    <a href="rejoindre.html" class="btn-join-banner">S'inscrire à Radio 6 ➔</a>
+</section>
             <section id="admin-panel" class="admin-card hidden">
                 <h3>🛠️ Panneau de Gestion (Propriétaire)</h3>
                 <p>Ajouter une nouvelle rediffusion (sans limite de taille) :</p>
