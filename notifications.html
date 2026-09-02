@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="logo.png">
     <title>Candidatures - RADIO 6</title>
-    <!-- SDK Supabase (indispensable) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -119,7 +118,6 @@
             font-size: 1.3rem;
         }
 
-        /* Bouton grille stylisé en haut à droite */
         #btn-grille {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -149,7 +147,6 @@
             font-size: 1.05rem;
         }
 
-        /* Vue Grille */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -266,7 +263,6 @@
             <div id="contenu-candidat" style="margin-top: 1rem;">
                 <p id="aucun-msg" style="color: var(--text-muted); text-align: center; padding: 3rem 0; font-style: italic;">Chargement des candidatures...</p>
                 
-                <!-- Vue Unique (Flèches) -->
                 <div id="infos-box" class="hidden">
                     <div class="info-ligne"><p><strong>👤 Prénom & Nom :</strong> <span id="val-nom"></span></p></div>
                     <div class="info-ligne"><p><strong>🏫 Classe :</strong> <span id="val-classe"></span></p></div>
@@ -274,7 +270,6 @@
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: right;">Reçu le : <span id="val-date"></span></p>
                 </div>
 
-                <!-- Vue Grille -->
                 <div id="grid-box" class="grid-container hidden"></div>
             </div>
 
@@ -296,12 +291,10 @@
         let currentIndex = 0;
         let modeGrille = false;
 
-        // Sécurité : on récupère SupabaseClient de script.js, ou on le recrée si besoin
         const url_sb = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
         const key_sb = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
-        const clientSupabase = typeof SupabaseClient !== 'undefined' ? SupabaseClient : window.supabase.createClient(url_sb, key_sb);
+        const clientSupabase = window.supabase.createClient(url_sb, key_sb);
 
-        // 1. Charger les candidatures depuis Supabase
         async function chargerCandidatures() {
             const aucunMsg = document.getElementById('aucun-msg');
             if (aucunMsg) {
@@ -315,8 +308,8 @@
                 .order('created_at', { ascending: false });
 
             if (error) {
-                console.error("Erreur lors de la récupération :", error);
-                if (aucunMsg) aucunMsg.innerText = "Erreur lors du chargement des candidatures.";
+                console.error("Erreur de chargement :", error);
+                if (aucunMsg) aucunMsg.innerText = "Erreur de chargement.";
                 return;
             }
 
@@ -333,31 +326,36 @@
             mettreAJourAffichage();
         }
 
-        // 2. Supprimer une candidature
         async function supprimerCandidatureActuelle() {
             if (listeCandidats.length === 0) return;
 
             const candidat = listeCandidats[currentIndex];
-            if (!candidat || !candidat.id) return;
+            if (!candidat) return;
 
-            if (confirm(`Voulez-vous vraiment supprimer la candidature de ${candidat.prenom} ${candidat.nom} ?`)) {
-                const { error } = await clientSupabase
-                    .from('candidatures')
-                    .delete()
-                    .eq('id', candidat.id);
+            if (confirm(`Supprimer la candidature de ${candidat.prenom} ${candidat.nom} ?`)) {
+                // Suppression basée sur l'ID ou les champs uniques si pas d'ID
+                let query = clientSupabase.from('candidatures').delete();
+                
+                if (candidat.id) {
+                    query = query.eq('id', candidat.id);
+                } else {
+                    query = query.eq('nom', candidat.nom).eq('prenom', candidat.prenom);
+                }
+
+                const { error } = await query;
 
                 if (error) {
-                    alert("Erreur lors de la suppression : " + error.message);
+                    alert("Erreur lors de la suppression : " + error.message + "\n\n(Vérifiez que la politique 'DELETE' est activée dans les règles RLS de Supabase).");
                 } else {
-                    await chargerCandidatures();
+                    listeCandidats.splice(currentIndex, 1);
                     if (currentIndex >= listeCandidats.length && currentIndex > 0) {
                         currentIndex = listeCandidats.length - 1;
                     }
+                    mettreAJourAffichage();
                 }
             }
         }
 
-        // 3. Mettre à jour l'affichage dynamique
         function mettreAJourAffichage() {
             const aucunMsg = document.getElementById('aucun-msg');
 
@@ -427,7 +425,6 @@
                 .replace(/'/g, "&#039;");
         }
 
-        // Événements
         document.getElementById('btn-grille').addEventListener('click', () => {
             modeGrille = !modeGrille;
             mettreAJourAffichage();
@@ -453,7 +450,6 @@
 
         document.getElementById('btn-supprimer').addEventListener('click', supprimerCandidatureActuelle);
 
-        // Démarrage
         document.addEventListener('DOMContentLoaded', chargerCandidatures);
     </script>
 </body>
