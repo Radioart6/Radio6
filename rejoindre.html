@@ -6,11 +6,9 @@
     <link rel="icon" type="image/png" href="logo.png">
     <title>Rejoindre l'équipe - RADIO 6</title>
     
-    <!-- IMPORTANT : Le script Supabase doit être chargé ICI, dans le head -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* Styles intégrés pour s'accorder parfaitement avec le mode sombre */
         :root {
             --bg-color: #0f1020;
             --card-bg: #1a1c38;
@@ -91,7 +89,7 @@
             background-color: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.1);
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             padding: 2.5rem;
             border-radius: 16px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
@@ -105,9 +103,32 @@
 
         .admin-card h3 {
             margin-top: 0;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 0.8rem;
+        }
+
+        .presentation-box {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 4px solid var(--accent);
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .presentation-box p {
+            margin: 0 0 0.8rem 0;
+            font-size: 0.95rem;
+        }
+
+        .presentation-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
         }
 
         .admin-form input, .admin-form select {
@@ -158,9 +179,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -185,9 +204,12 @@
     <main>
         <section class="admin-card">
             <h3>🎙️ Rejoindre l'équipe de Radio 6</h3>
-            <p class="param-notice" style="margin-bottom: 1.5rem; color: var(--text-muted); line-height: 1.5;">
-                Remplis ce formulaire pour t'inscrire dans l'équipe officielle de la radio. Choisis ton pôle de préférence, puis valide pour enregistrer ta demande !
-            </p>
+
+            <div class="presentation-box">
+                <p>📍 <strong>Où nous trouver ?</strong> Le studio de Radio 6 est situé <strong>juste à côté du CDI</strong> ! Passes nous voir quand tu veux.</p>
+                <p>📻 <strong>Ce qu'on fait :</strong> Nous préparons des <strong>émissions thématiques pendant la journée</strong> et des <strong>sessions musique le midi</strong> pour mettre l'ambiance au lycée.</p>
+                <p>🤝 <strong>L'ambiance :</strong> Ici, <span class="highlight">tout le monde s'entend bien !</span> Pas besoin d'avoir de l'expérience : que tu sois à l'aise au micro ou passionné par la technique, tu trouveras ta place parmi nous.</p>
+            </div>
 
             <form id="form-recrutement" class="admin-form">
                 <div class="form-group" style="margin-bottom: 1.2rem;">
@@ -220,8 +242,8 @@
 
             <div id="message-succes" class="hidden" style="text-align: center; padding: 2rem 0;">
                 <h2 style="color: var(--accent); margin-bottom: 1rem;">🎉 Candidature bien enregistrée !</h2>
-                <p style="font-size: 1.1rem; line-height: 1.6; color: var(--text-main);">
-                    Viens à la web radio, <br><strong>horaires à redéfinir !</strong>
+                <p style="font-size: 1.1rem; line-height: 1.6;">
+                    Passe nous voir au studio (à côté du CDI) ! <br><strong>Horaires et réunions à venir très vite.</strong>
                 </p>
                 <br>
                 <a href="index.html" class="btn-admin-action" style="display: inline-block; text-decoration: none; padding: 12px 25px; width: auto;">Retour à l'accueil</a>
@@ -234,16 +256,13 @@
     </footer>
 
     <script>
-        // 1. Initialiser Supabase avec la bonne clé et un nouveau nom de variable (clientSupabase)
         const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg"; 
         const clientSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 2. Gérer la soumission du formulaire
         document.getElementById('form-recrutement').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Récupérer le bouton pour le désactiver pendant l'envoi
             const btnSubmit = document.querySelector('.btn-admin-action');
             btnSubmit.innerText = "Envoi en cours...";
             btnSubmit.disabled = true;
@@ -253,7 +272,6 @@
             const classe = document.getElementById('classe').value;
             const role = document.getElementById('role').value;
             
-            // 3. Envoyer les données dans la table 'candidatures' de Supabase
             const { error: dbError } = await clientSupabase
                 .from('candidatures')
                 .insert([
@@ -265,8 +283,8 @@
                 btnSubmit.innerText = "Envoyer ma candidature";
                 btnSubmit.disabled = false;
             } else {
-                // Succès de l'envoi !
                 document.getElementById('form-recrutement').style.display = 'none';
+                document.querySelector('.presentation-box').style.display = 'none';
                 document.getElementById('message-succes').classList.remove('hidden');
             }
         });
