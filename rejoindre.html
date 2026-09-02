@@ -185,21 +185,31 @@
 <body>
 
     <header>
-        <div class="logo-area">
-            <img src="logo.png" alt="Logo Radio 6" class="header-logo">
-            <div>
-                <span class="site-title"><strong>RADIO 6</strong></span><br>
-                <span class="site-subtitle">Lycée Arcisse de Caumont</span>
-            </div>
+    <div class="logo-area">
+        <img src="logo.png" alt="Radio 6" class="header-logo">
+        <div>
+            <strong class="site-title">RADIO 6</strong><br>
+            <small class="site-subtitle">Lycée Arcisse de Caumont</small>
         </div>
-        <nav>
+    </div>
+    
+    <nav id="main-nav">
+        <button id="burger-menu-btn" class="burger-btn" title="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div id="nav-links" class="nav-links-container">
+            <button id="btn-login-open" class="btn-nav-login">Connexion</button>
             <a href="index.html">Accueil</a>
-            <a href="equipe.html" class="active">L'Équipe</a>
+            <a href="equipe.html">L'Équipe</a>
+            <a href="rejoidre.html" class="active">Rejoindre l'équipe</a>
             <a href="aide.html">Aide</a>
-            <a href="calendrier.html">Calendrier</a>
+            <a href="calendrier.html">🗓️ Calendrier</a>
             <a href="instagram.html">Instagram</a>
-        </nav>
-    </header>
+            <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+        </div>
+    </nav>
+</header>
 
     <main>
         <section class="admin-card">
