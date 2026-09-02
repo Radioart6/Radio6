@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="logo.png">
     <title>Rejoindre l'équipe - RADIO 6</title>
+    
+    <!-- IMPORTANT : Le script Supabase doit être chargé ICI, dans le head -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         /* Styles intégrés pour s'accorder parfaitement avec le mode sombre */
         :root {
@@ -216,7 +220,7 @@
 
             <div id="message-succes" class="hidden" style="text-align: center; padding: 2rem 0;">
                 <h2 style="color: var(--accent); margin-bottom: 1rem;">🎉 Candidature bien enregistrée !</h2>
-                <p style="font-size: 1.1rem; line-height: 1.6; color: var(--text);">
+                <p style="font-size: 1.1rem; line-height: 1.6; color: var(--text-main);">
                     Viens à la web radio, <br><strong>horaires à redéfinir !</strong>
                 </p>
                 <br>
@@ -230,10 +234,10 @@
     </footer>
 
     <script>
-        // 1. Initialiser Supabase (Mettez vos vraies clés ici)
+        // 1. Initialiser Supabase avec la bonne clé et un nouveau nom de variable (clientSupabase)
         const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
-        const SUPABASE_KEY = "VOTRE_CLE_SUPABASE_ICI"; // Remplacez par votre clé publique (anon key)
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg"; 
+        const clientSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // 2. Gérer la soumission du formulaire
         document.getElementById('form-recrutement').addEventListener('submit', async function(e) {
@@ -249,10 +253,8 @@
             const classe = document.getElementById('classe').value;
             const role = document.getElementById('role').value;
             
-            // Note : Si vous ajoutez un champ fichier plus tard, le code d'upload du fichier ira ici.
-
             // 3. Envoyer les données dans la table 'candidatures' de Supabase
-            const { error: dbError } = await supabase
+            const { error: dbError } = await clientSupabase
                 .from('candidatures')
                 .insert([
                     { nom: nom, prenom: prenom, classe: classe, role: role }
@@ -269,10 +271,5 @@
             }
         });
     </script>
-    
-    <!-- IMPORTANT : Ajouter ce script pour pouvoir utiliser Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</body>
-</html>
 </body>
 </html>
