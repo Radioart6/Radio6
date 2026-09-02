@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
             splashBtn: "Entrer dans l'espace rediffusion",
             navLogin: "Connexion",
             navHome: "Accueil",
-            navTeam: "L'Équipe",
+             navTeam: "L'Équipe",
+            navJoin: "Rejoindre l'équipe",
             navHelp: "Aide",
             ready: "PRÊT À L'ÉCOUTE",
             playing: "LECTURE EN COURS",
@@ -102,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navLogin: "Login",
             navHome: "Home",
             navTeam: "The Team",
+            navJoin: "Join the team",
             navHelp: "Help",
             ready: "READY TO LISTEN",
             playing: "PLAYING",
@@ -135,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navLogin: "Conexión",
             navHome: "Inicio",
             navTeam: "El Equipo",
+            navJoin: "Unirse al equipo",
             navHelp: "Ayuda",
             ready: "LISTO PARA ESCUCHAR",
             playing: "REPRODUCIENDO",
@@ -252,13 +255,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnLoginOpen) btnLoginOpen.innerText = t.navLogin;
         
         if (mainNav) {
-            const navLinks = mainNav.querySelectorAll('a');
-            if (navLinks.length >= 3) {
-                navLinks[0].innerText = t.navHome;
-                navLinks[1].innerText = t.navTeam;
-                navLinks[2].innerText = t.navHelp;
-            }
-        }
+    const linkHome = mainNav.querySelector('a[href="index.html"]');
+    if (linkHome) linkHome.innerText = t.navHome;
+    
+    const linkTeam = mainNav.querySelector('a[href="equipe.html"]');
+    if (linkTeam) linkTeam.innerText = t.navTeam;
+
+    const linkJoin = mainNav.querySelector('a[href="rejoindre.html"]');
+    if (linkJoin) linkJoin.innerText = t.navJoin;
+
+    const linkHelp = mainNav.querySelector('a[href="aide.html"]');
+    if (linkHelp) linkHelp.innerText = t.navHelp;
+}
 
         if (mainAudioPlayer && currentTitle && playerStatus) {
             if (mainAudioPlayer.paused && mainAudioPlayer.currentTime === 0) {
