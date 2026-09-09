@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             aiS4L2: "Les émissions sont disponibles uniquement en streaming direct (écoute libre et illimitée) via notre barre de lecture.",
             aiS5Title: "Un bug persiste ? Un fichier semble inaccessible ?",
             aiS5P: "Venez nous le signaler directement au studio de la radio ! En informant l'équipe, nous pourrons remettre le fichier en ligne.",
-            aiS5Loc: "📍 Studio ouvert le Lundi et Mardi de 12h40 à 13h25",
+            aiS5Loc: "📍 Studio ouvert le Jeudi de 12h40 à 13h25",
             // Instagram
             instaMainTitle: "Comptes Instagram du Lycée",
             instaR6Desc: "Podcasts, annonces d'émissions en direct, coulisses des enregistrements et actualités de la web radio du lycée.",
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             aiS4L2: "Shows are only available via direct streaming (free and unlimited listening) using our media player.",
             aiS5Title: "Does a bug persist? Does a file seem inaccessible?",
             aiS5P: "Come report it to us directly at the radio studio! By letting the team know, we can put the file back online.",
-            aiS5Loc: "📍 Studio open Monday and Tuesday from 12:40 PM to 1:25 PM",
+            aiS5Loc: "📍 Studio open Thursdays from 12:40 PM to 1:25 PM",
             // Instagram
             instaMainTitle: "High School Instagram Accounts",
             instaR6Desc: "Podcasts, live show announcements, recording backstage news, and high school web radio updates.",
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             aiS4L2: "Los programas solo están disponibles a través de streaming directo (escucha libre e ilimitada) utilizando nuestro reproductor.",
             aiS5Title: "¿Persiste el error? ¿Un archivo parece inaccesible?",
             aiS5P: "¡Ven a informarnos directamente al estudio de radio! Al avisar al equipo, podremos volver a poner el archivo en línea.",
-            aiS5Loc: "📍 Estudio abierto lunes y martes de 12:40 a 13:25",
+            aiS5Loc: "📍 Estudio abierto Jueves de 12:40 a 13:25",
             // Instagram
             instaMainTitle: "Cuentas de Instagram del Instituto",
             instaR6Desc: "Podcasts, anuncios de programas en directo, detrás de las cámaras de las grabaciones y noticias de la radio web del instituto.",
