@@ -4,6 +4,9 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Variable globale pour suivre le podcast en cours de modification
+let editPodcastId = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- ÉLÉMENTS UI GLOBAUX ---
     const splashScreen = document.getElementById('splash-screen');
@@ -48,27 +51,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (burgerMenuBtn && navLinksContainer) {
         burgerMenuBtn.addEventListener('click', () => {
-            // Ajoute ou enlève la classe 'open' au clic
             navLinksContainer.classList.toggle('open');
         });
     }
     
-    // Optionnel : Fermer le menu si on clique en dehors
     window.addEventListener('click', (e) => {
         if (navLinksContainer && navLinksContainer.classList.contains('open')) {
-            // Si on clique ailleurs que sur le menu ou le bouton burger
             if (!navLinksContainer.contains(e.target) && !burgerMenuBtn.contains(e.target)) {
                 navLinksContainer.classList.remove('open');
             }
         }
     });
+
     // --- DICTIONNAIRE DE TRADUCTION ---
     const translations = {
         fr: {
             splashBtn: "Entrer dans l'espace rediffusion",
             navLogin: "Connexion",
             navHome: "Accueil",
-             navTeam: "L'Équipe",
+            navTeam: "L'Équipe",
             navJoin: "Rejoindre l'équipe",
             navHelp: "Aide",
             ready: "PRÊT À L'ÉCOUTE",
@@ -181,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedFont = localStorage.getItem('siteFont') || 'normal';
     if (savedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
 
-    // Chargement automatique global depuis Supabase au lancement
     loadPodcastsFromSupabase();
 
     // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
@@ -255,18 +255,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnLoginOpen) btnLoginOpen.innerText = t.navLogin;
         
         if (mainNav) {
-    const linkHome = mainNav.querySelector('a[href="index.html"]');
-    if (linkHome) linkHome.innerText = t.navHome;
-    
-    const linkTeam = mainNav.querySelector('a[href="equipe.html"]');
-    if (linkTeam) linkTeam.innerText = t.navTeam;
+            const linkHome = mainNav.querySelector('a[href="index.html"]');
+            if (linkHome) linkHome.innerText = t.navHome;
+            
+            const linkTeam = mainNav.querySelector('a[href="equipe.html"]');
+            if (linkTeam) linkTeam.innerText = t.navTeam;
 
-    const linkJoin = mainNav.querySelector('a[href="rejoindre.html"]');
-    if (linkJoin) linkJoin.innerText = t.navJoin;
+            const linkJoin = mainNav.querySelector('a[href="rejoindre.html"]');
+            if (linkJoin) linkJoin.innerText = t.navJoin;
 
-    const linkHelp = mainNav.querySelector('a[href="aide.html"]');
-    if (linkHelp) linkHelp.innerText = t.navHelp;
-}
+            const linkHelp = mainNav.querySelector('a[href="aide.html"]');
+            if (linkHelp) linkHelp.innerText = t.navHelp;
+        }
 
         if (mainAudioPlayer && currentTitle && playerStatus) {
             if (mainAudioPlayer.paused && mainAudioPlayer.currentTime === 0) {
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        if (btnSubmitPodcast) btnSubmitPodcast.innerText = t.btnSubmit;
+        if (btnSubmitPodcast && !editPodcastId) btnSubmitPodcast.innerText = t.btnSubmit;
         if (uploadStatus) uploadStatus.innerText = t.uploadStatus;
         if (btnLogout) btnLogout.innerText = t.btnLogout;
 
@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ENREGISTRER LE LIEN DU PODCAST DANS SUPABASE ---
+    // --- ENREGISTRER OU MODIFIER UN PODCAST DANS SUPABASE ---
     if (addPodcastForm) {
         addPodcastForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -391,17 +391,38 @@ document.addEventListener('DOMContentLoaded', () => {
             const info = infoInput ? infoInput.value.trim() : "";
             const category = categorySelect ? categorySelect.value : "autres";
 
-            // Envoi des données du lien dans la table Supabase podcasts_ia
-            const { data, error } = await SupabaseClient
-                .from('podcasts_ia')
-                .insert([{ title, info, category, url: audioUrl }]);
+            if (editPodcastId) {
+                // MODIFICATION D'UN PODCAST EXISTANT
+                const { error } = await SupabaseClient
+                    .from('podcasts_ia')
+                    .update({ title, info, category, url: audioUrl })
+                    .eq('id', editPodcastId);
 
-            if (error) {
-                console.error("Erreur lors de l'envoi :", error);
-                alert("Erreur lors de la sauvegarde du podcast.");
+                if (error) {
+                    console.error("Erreur lors de la modification :", error);
+                    alert("Erreur lors de la modification du podcast.");
+                } else {
+                    editPodcastId = null;
+                    addPodcastForm.reset();
+                    if (btnSubmitPodcast) {
+                        btnSubmitPodcast.innerText = translations[currentLang].btnSubmit;
+                        btnSubmitPodcast.style.backgroundColor = "";
+                    }
+                    loadPodcastsFromSupabase();
+                }
             } else {
-                addPodcastForm.reset();
-                loadPodcastsFromSupabase();
+                // AJOUT D'UN NOUVEAU PODCAST
+                const { error } = await SupabaseClient
+                    .from('podcasts_ia')
+                    .insert([{ title, info, category, url: audioUrl }]);
+
+                if (error) {
+                    console.error("Erreur lors de l'envoi :", error);
+                    alert("Erreur lors de la sauvegarde du podcast.");
+                } else {
+                    addPodcastForm.reset();
+                    loadPodcastsFromSupabase();
+                }
             }
 
             if (btnSubmitPodcast) btnSubmitPodcast.disabled = false;
@@ -416,7 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (grid) grid.innerHTML = "";
         });
 
-        // Lecture globale pour tous les élèves du lycée
         const { data: podcasts, error } = await SupabaseClient
             .from('podcasts_ia')
             .select('*')
@@ -431,24 +451,64 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const isAdmin = sessionStorage.getItem('adminMode') === 'true';
+
         podcasts.forEach(pod => {
             const targetGrid = document.getElementById(`grid-${pod.category}`) || document.getElementById('grid-autres');
 
             if (targetGrid) {
                 const card = document.createElement('div');
                 card.className = 'podcast-card';
+
+                const editBtnHtml = isAdmin 
+                    ? `<button class="btn-edit" data-id="${pod.id}" style="background-color: #f59e0b; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-weight: bold; font-size: 0.85rem; transition: transform 0.2s;">✏️ Modifier</button>` 
+                    : '';
+
                 card.innerHTML = `
                     <div class="podcast-info">
                         <h3>${pod.title}</h3>
                         <p>${pod.info}</p>
                     </div>
-                    <div class="podcast-actions-wrapper">
+                    <div class="podcast-actions-wrapper" style="display: flex; align-items: center;">
+                        ${editBtnHtml}
                         <button class="btn-play" data-url="${pod.url}" data-title="${pod.title}">${translations[currentLang].listenBtn}</button>
-                        <button class="btn-delete" data-id="${pod.id}">&times;</button>
+                        ${isAdmin ? `<button class="btn-delete" data-id="${pod.id}">&times;</button>` : ''}
                     </div>
                 `;
                 targetGrid.appendChild(card);
             }
+        });
+
+        // Gestion du clic sur le bouton Modifier
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const podId = btn.getAttribute('data-id');
+                const pod = podcasts.find(p => p.id == podId);
+                if (!pod) return;
+
+                editPodcastId = pod.id;
+
+                const titleInput = document.getElementById('pod-title');
+                const infoInput = document.getElementById('pod-info');
+                const urlInput = document.getElementById('pod-url');
+                const categorySelect = document.getElementById('pod-category');
+
+                if (titleInput) titleInput.value = pod.title || '';
+                if (infoInput) infoInput.value = pod.info || '';
+                if (urlInput) urlInput.value = pod.url || '';
+                if (categorySelect) categorySelect.value = pod.category || 'autres';
+
+                const btnSubmit = document.getElementById('btn-submit-podcast');
+                if (btnSubmit) {
+                    btnSubmit.innerText = "💾 Enregistrer les modifications";
+                    btnSubmit.style.backgroundColor = "#f59e0b";
+                }
+
+                const adminCard = document.getElementById('admin-panel');
+                if (adminCard) {
+                    adminCard.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
         });
 
         // Gestion de la lecture
@@ -466,7 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Suppression de la ligne pour l'admin
+        // Suppression pour l'admin
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', async () => {
                 if (confirm(translations[currentLang].confirmDelete)) {
@@ -526,72 +586,71 @@ document.addEventListener('DOMContentLoaded', () => {
         const iaLink = document.getElementById('nav-ia-admin');
         if (iaLink) iaLink.remove();
     }
-/* --- RECHERCHE INSTANTANÉE --- */
-const searchInput = document.getElementById('search-podcast');
-if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        const podcastCards = document.querySelectorAll('.podcast-card');
 
-        podcastCards.forEach(card => {
-            const title = card.querySelector('h3').textContent.toLowerCase();
-            const info = card.querySelector('p').textContent.toLowerCase();
-            
-            if (title.includes(query) || info.includes(query)) {
-                card.style.display = 'flex'; // Affiche la carte si ça correspond
-            } else {
-                card.style.display = 'none'; // Cache la carte sinon
-            }
+    // --- RECHERCHE INSTANTANÉE ---
+    const searchInput = document.getElementById('search-podcast');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const podcastCards = document.querySelectorAll('.podcast-card');
+
+            podcastCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const info = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(query) || info.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
+    document.querySelectorAll('.folder-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const grid = header.nextElementSibling;
+            if (grid) grid.classList.toggle('hidden');
         });
     });
-}
-// --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
-document.querySelectorAll('.folder-header').forEach(header => {
-    header.addEventListener('click', () => {
-        const grid = header.nextElementSibling;
-        if (grid) grid.classList.toggle('hidden');
-    });
-});
-/* --- SYSTÈME DE TRI PAR CATÉGORIE --- */
-document.querySelectorAll('.sort-select').forEach(select => {
-    select.addEventListener('change', (e) => {
-        const gridId = e.target.getAttribute('data-grid');
-        const grid = document.getElementById(gridId);
-        const cards = Array.from(grid.querySelectorAll('.podcast-card'));
-        const sortValue = e.target.value;
 
-        cards.sort((a, b) => {
-            // Récupération des données (basée sur le texte des infos ou attributs personnalisés)
-            const infoA = a.querySelector('p').textContent;
-            const infoB = b.querySelector('p').textContent;
+    // --- SYSTÈME DE TRI PAR CATÉGORIE ---
+    document.querySelectorAll('.sort-select').forEach(select => {
+        select.addEventListener('change', (e) => {
+            const gridId = e.target.getAttribute('data-grid');
+            const grid = document.getElementById(gridId);
+            const cards = Array.from(grid.querySelectorAll('.podcast-card'));
+            const sortValue = e.target.value;
 
-            if (sortValue === 'recent' || sortValue === 'ancien') {
-                // Exemple de tri basé sur l'ordre d'apparition ou une date textuelle
-                return sortValue === 'recent' ? -1 : 1; 
-            }
-            // Tu peux affiner le tri selon la structure de tes durées textuelles (ex: "2h45")
-            return 0;
+            cards.sort((a, b) => {
+                const infoA = a.querySelector('p').textContent;
+                const infoB = b.querySelector('p').textContent;
+
+                if (sortValue === 'recent' || sortValue === 'ancien') {
+                    return sortValue === 'recent' ? -1 : 1; 
+                }
+                return 0;
+            });
+
+            cards.forEach(card => grid.appendChild(card));
         });
-
-        // Réinance les cartes triées dans la grille
-        cards.forEach(card => grid.appendChild(card));
     });
-});
-// --- GESTION DU BOUTON CALENDRIER GÉNÉRAL ---
+
+    // --- GESTION DU BOUTON CALENDRIER GÉNÉRAL ---
     const btnCalendrier = document.getElementById('nav-calendrier');
     if (btnCalendrier) {
         btnCalendrier.addEventListener('click', (e) => {
             e.preventDefault();
-            // Si l'admin est connecté
             if (sessionStorage.getItem('adminMode') === 'true') {
                 window.location.href = 'calendrier.html';
             } else {
-                // Si c'est un simple visiteur, on affiche la zone en travaux
                 const modalTravaux = document.getElementById('modal-travaux');
                 if (modalTravaux) modalTravaux.classList.remove('hidden');
             }
         });
     }
+
     // --- ACCÈS DIRECT ET ÉCRANS SPLASH ---
     if (sessionStorage.getItem('enteredSite') === 'true') {
         if (splashScreen) splashScreen.classList.add('hidden');
@@ -604,7 +663,6 @@ document.querySelectorAll('.sort-select').forEach(select => {
         document.body.classList.add('admin-mode');
         document.getElementById('lien-cloche').classList.remove('hidden');
         injectIALink();
-        injectCalendarLink(); // Injected automatically if already connected
     }
 
     if (btnEnter) {
@@ -665,9 +723,9 @@ document.querySelectorAll('.sort-select').forEach(select => {
                 sessionStorage.setItem('adminMode', 'true');
                 document.getElementById('lien-cloche').classList.remove('hidden');
                 injectIALink();
-                injectCalendarLink(); // S'affiche immédiatement lors de la connexion
                 loginForm.reset();
                 applyTranslations(currentLang);
+                loadPodcastsFromSupabase();
             } else {
                 if (loginError) loginError.classList.remove('hidden');
             }
@@ -682,8 +740,8 @@ document.querySelectorAll('.sort-select').forEach(select => {
             sessionStorage.setItem('adminMode', 'false');
             document.getElementById('lien-cloche').classList.add('hidden');
             removeIALink();
-            removeCalendarLink(); // Se retire immédiatement lors de la déconnexion
             applyTranslations(currentLang);
+            loadPodcastsFromSupabase();
         });
     }
 });
@@ -694,18 +752,16 @@ window.closeParamModal = function(modalId) {
         targetModal.classList.add('hidden');
     }
 };
+
 // --- CONTRÔLE DE LA VITESSE DU LECTEUR PRINCIPAL ---
 document.querySelectorAll('.speed-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const speed = parseFloat(e.target.getAttribute('data-speed'));
-        
-        // Cible la balise audio principale du lecteur
-        const mainAudio = document.querySelector('audio'); // Ajuste le sélecteur si tu as plusieurs balises audio
+        const mainAudio = document.querySelector('audio');
         if (mainAudio) {
             mainAudio.playbackRate = speed;
         }
 
-        // Met à jour l'apparence active des boutons
         const container = e.target.closest('.speed-controls');
         container.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
