@@ -484,8 +484,16 @@
                             status.innerText = raisonJaune;
                             cell.appendChild(status);
                         } 
-                        // "Web radio ouvert" uniquement sur les lundis/mardis de l'année scolaire 2025-2026 (avant septembre 2026)
+                        // 2025-2026 : Web radio ouvert les lundis et mardis
                         else if ((dayOfWeek === 1 || dayOfWeek === 2) && currentDate < new Date('2026-09-01')) {
+                            cell.classList.add('open-radio');
+                            const status = document.createElement('span');
+                            status.className = 'status-text';
+                            status.innerText = 'web radio ouvert';
+                            cell.appendChild(status);
+                        }
+                        // À partir du 17 septembre 2026 : Web radio ouvert tous les jeudis jusqu'à la fin de l'année 2026
+                        else if (dayOfWeek === 4 && currentDate >= new Date('2026-09-17') && currentDate <= new Date('2026-12-31')) {
                             cell.classList.add('open-radio');
                             const status = document.createElement('span');
                             status.className = 'status-text';
