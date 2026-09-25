@@ -1,7 +1,20 @@
 /* ==========================================================================
-   1. VARIABLES DE COULEURS ET THÈME (DESIGN SOMBRE / CLAIR)
+   1. VARIABLES DE COULEURS ET THÈMES
    ========================================================================== */
-:root {
+
+/* --- MODE SAISON : AUTOMNE (PAR DÉFAUT) --- */
+:root, body.season-mode {
+    --bg-color: #180d0a;
+    --card-bg: #281711;
+    --primary: #ea580c;
+    --accent: #f59e0b;
+    --text: #ffedd5;
+    --text-muted: #a8a29e;
+    --danger: #ef4444;
+}
+
+/* --- MODE SOMBRE CLASSIQUE --- */
+body.dark-mode {
     --bg-color: #0f172a;
     --card-bg: #1e293b;
     --primary: #2563eb;
@@ -10,24 +23,26 @@
     --text-muted: #94a3b8;
     --danger: #ef4444;
 }
-/* --- MODE CLAIR : VERSION BLEU CLAIR (MÊME STRUCTURE) --- */
+
+/* --- MODE CLAIR (BLEU CLAIR) --- */
 body.light-mode {
-    --bg-color: #e0f2fe;    /* Un joli bleu ciel très clair pour le fond global */
-    --card-bg: #bae6fd;    /* Un bleu pastel doux pour les cartes, le lecteur et le header */
-    --text: #0f172a;       /* Un texte bleu nuit foncé pour une lisibilité parfaite */
-    --text-muted: #334155; /* Un gris-bleu foncé pour les textes secondaires */
-    --primary: #0284c7;    /* Un bleu dynamique pour les boutons et accents */
+    --bg-color: #e0f2fe;
+    --card-bg: #bae6fd;
+    --text: #0f172a;
+    --text-muted: #334155;
+    --primary: #0284c7;
+    --accent: #f97316;
+    --danger: #ef4444;
 }
 
 /* ==========================================================================
    2. STYLES GÉNÉRAUX & CORPS DE PAGE (BARRE DE DÉFILEMENT CACHÉE)
    ========================================================================== */
 html, body {
-    scrollbar-width: none; /* Cache la barre sur Firefox */
-    -ms-overflow-style: none; /* Cache la barre sur les anciens IE/Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-/* Cache la barre sur Chrome, Safari, Opera et le Edge moderne */
 html::-webkit-scrollbar, body::-webkit-scrollbar {
     display: none;
 }
@@ -40,11 +55,10 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    padding-top: 85px; /* Évite que le header fixe ne masque le début du contenu */
-    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-top: 85px;
+    transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Règles dynamiques pour changer la taille de police globale via le menu */
 body.font-small { font-size: 0.9rem; }
 body.font-medium { font-size: 1rem; }
 body.font-large { font-size: 1.15rem; }
@@ -54,7 +68,7 @@ body.font-large { font-size: 1.15rem; }
 }
 
 /* ==========================================================================
-   3. ÉCRAN D'ACCUEIL / START (SPLASH SCREEN)
+   3. ÉCRAN D'ACCUEIL / START (SPLASH SCREEN SAISONNIER)
    ========================================================================== */
 .splash-container {
     position: fixed;
@@ -62,12 +76,21 @@ body.font-large { font-size: 1.15rem; }
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    background: radial-gradient(circle at center, var(--card-bg) 0%, var(--bg-color) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
     transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.season-mode .splash-container::after {
+    content: "🍂 🍁 🍂";
+    position: absolute;
+    bottom: 20px;
+    font-size: 1.8rem;
+    opacity: 0.25;
+    letter-spacing: 15px;
 }
 
 .splash-content {
@@ -82,9 +105,10 @@ body.font-large { font-size: 1.15rem; }
     height: 160px;
     margin: 0 auto 2rem auto;
     border-radius: 24px;
-    background-color: rgba(255, 255, 255, 0.03);
+    background-color: rgba(255, 255, 255, 0.04);
     padding: 10px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(234, 88, 12, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -101,7 +125,7 @@ body.font-large { font-size: 1.15rem; }
     font-size: 2.8rem;
     letter-spacing: 4px;
     margin: 0 0 0.5rem 0;
-    background: linear-gradient(to right, #ffffff, var(--text-muted));
+    background: linear-gradient(to right, #ffffff, var(--accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -113,7 +137,7 @@ body.font-large { font-size: 1.15rem; }
 }
 
 .btn-splash {
-    background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #b45309 100%);
     color: white;
     border: none;
     padding: 1rem 2.5rem;
@@ -121,13 +145,13 @@ body.font-large { font-size: 1.15rem; }
     border-radius: 2rem;
     cursor: pointer;
     font-weight: 600;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-splash:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+    box-shadow: 0 6px 20px rgba(234, 88, 12, 0.6);
 }
 
 .fade-out { 
@@ -142,23 +166,23 @@ body.font-large { font-size: 1.15rem; }
 }
 
 /* ==========================================================================
-   4. EN-TÊTE & NAVIGATION (HEADER TOUJOURS EN HAUT)
+   4. EN-TÊTE & NAVIGATION
    ========================================================================== */
 header {
-    position: fixed; /* Reste figé en haut */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 2000; /* Passe au-dessus du reste */
+    z-index: 2000;
     box-sizing: border-box;
     background-color: var(--card-bg);
     padding: 0.8rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #334155;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
 .logo-area {
@@ -203,7 +227,7 @@ nav a:hover, nav a.active {
 
 .btn-nav-login {
     background: transparent;
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     color: var(--text);
     padding: 0.4rem 1rem;
     border-radius: 6px;
@@ -214,18 +238,17 @@ nav a:hover, nav a.active {
 }
 
 .btn-nav-login:hover {
-    background-color: #334155;
-    border-color: var(--text-muted);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* ==========================================================================
-   ENCAPSULATION DU CONTENU PRINCIPAL (CARRÉS RÉTRÉCIS ET CENTRÉS)
+   ENCAPSULATION DU CONTENU PRINCIPAL
    ========================================================================== */
 main {
-    max-width: 1200px;      /* Largeur maximale de la zone de contenu */
+    max-width: 1200px;
     width: 100%;
-    margin: 0 auto;         /* Centre automatiquement toute la page */
-    padding: 2rem;          /* Évite que les éléments collent aux bords gauche/droite */
+    margin: 0 auto;
+    padding: 2rem;
     box-sizing: border-box;
 }
 
@@ -246,9 +269,9 @@ main {
     border-radius: 12px;
     width: 90%; max-width: 400px;
     position: relative;
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.4s ease;
 }
 
 .close-modal {
@@ -258,7 +281,7 @@ main {
 .close-modal:hover { color: var(--text); }
 
 .login-notice {
-    background-color: rgba(249, 115, 22, 0.1);
+    background-color: rgba(245, 158, 11, 0.1);
     border-left: 3px solid var(--accent);
     color: var(--text-muted);
     font-size: 0.85rem;
@@ -275,7 +298,7 @@ main {
 .form-group input[type="text"], 
 .form-group input[type="password"] {
     width: 100%; padding: 0.7rem; background-color: var(--bg-color);
-    border: 1px solid #334155; border-radius: 6px; color: var(--text); box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: var(--text); box-sizing: border-box;
 }
 .form-group input:focus { outline: none; border-color: var(--primary); }
 
@@ -286,14 +309,14 @@ main {
 .error-msg { color: var(--danger); font-size: 0.85rem; margin-bottom: 0.5rem; }
 
 /* ==========================================================================
-   6. ZONE D'ADMINISTRATION (CARRÉ UNIQUE RÉTRÉCI)
+   6. ZONE D'ADMINISTRATION
    ========================================================================== */
 .admin-card {
-    background-color: #1e1b4b;
+    background-color: var(--card-bg);
     border: 1px dashed var(--primary);
     border-radius: 12px;
     padding: 2rem;
-    margin-bottom: 2rem; /* Espace pour ne pas coller le carré suivant */
+    margin-bottom: 2rem;
     text-align: left;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
@@ -304,7 +327,7 @@ main {
 
 input[type="file"] {
     background-color: var(--bg-color);
-    border: 2px dashed #334155;
+    border: 2px dashed rgba(255, 255, 255, 0.1);
     padding: 1rem;
     border-radius: 8px;
     color: var(--text-muted);
@@ -314,12 +337,12 @@ input[type="file"] {
 input[type="file"]:hover { border-color: var(--primary); color: var(--text); }
 
 .btn-admin-action {
-    background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #b45309 100%);
     border: none; color: white; padding: 0.8rem 1.5rem; border-radius: 6px;
     cursor: pointer; font-weight: bold; font-size: 1rem; transition: transform 0.1s, box-shadow 0.2s;
     align-self: flex-start;
 }
-.btn-admin-action:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+.btn-admin-action:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4); }
 .btn-admin-action:disabled { background: #334155; color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
 
 .btn-logout {
@@ -329,7 +352,7 @@ input[type="file"]:hover { border-color: var(--primary); color: var(--text); }
 .btn-logout:hover { background-color: var(--danger); color: white; }
 
 /* ==========================================================================
-   7. LECTEUR AUDIO PRINCIPAL (CARRÉ UNIQUE RÉTRÉCI)
+   7. LECTEUR AUDIO PRINCIPAL
    ========================================================================== */
 .player-card {
     background-color: var(--card-bg);
@@ -337,9 +360,9 @@ input[type="file"]:hover { border-color: var(--primary); color: var(--text); }
     padding: 2rem;
     text-align: center;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-    margin-bottom: 2.5rem; /* Espace avec la section du dessous */
-    border: 1px solid #334155;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    margin-bottom: 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
 .player-title { font-size: 1.3rem; margin-bottom: 0.5rem; font-weight: 600; }
@@ -355,7 +378,7 @@ input[type="file"]:hover { border-color: var(--primary); color: var(--text); }
     border-radius: 50px;
     max-width: 800px;
     margin: 0 auto;
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .player-btn {
@@ -363,28 +386,28 @@ input[type="file"]:hover { border-color: var(--primary); color: var(--text); }
     width: 45px; height: 45px; border-radius: 50%; font-size: 1.1rem; cursor: pointer;
     display: flex; align-items: center; justify-content: center; transition: transform 0.2s, background-color 0.2s; flex-shrink: 0;
 }
-.player-btn:hover:not(:disabled) { transform: scale(1.05); background-color: #1d4ed8; }
-.player-btn:disabled { background-color: #334155; color: var(--text-muted); cursor: not-allowed; }
+.player-btn:hover:not(:disabled) { transform: scale(1.05); background-color: var(--accent); }
+.player-btn:disabled { background-color: rgba(255, 255, 255, 0.1); color: var(--text-muted); cursor: not-allowed; }
 
 .progress-container { display: flex; align-items: center; gap: 0.8rem; width: 100%; }
 .time-display { font-size: 0.85rem; color: var(--text-muted); font-variant-numeric: tabular-nums; min-width: 38px; }
-.progress-bar-bg { flex: 1; height: 6px; background-color: #334155; border-radius: 3px; cursor: pointer; position: relative; }
+.progress-bar-bg { flex: 1; height: 6px; background-color: rgba(255, 255, 255, 0.15); border-radius: 3px; cursor: pointer; position: relative; }
 .progress-bar-fill { height: 100%; width: 0%; background-color: var(--accent); border-radius: 3px; transition: width 0.1s linear; }
 
 /* ==========================================================================
-   8. LISTE DES REDIFFUSIONS & CARTES PODCASTS (CARRÉS INDIVIDUELS ESPACÉS)
+   8. LISTE DES REDIFFUSIONS & CARTES PODCASTS
    ========================================================================== */
 .podcast-section h2 { border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 1.5rem; }
 .podcast-grid { 
     display: flex; 
     flex-direction: column; 
-    gap: 1.5rem; /* Augmentation de l'espace pour éviter que les carrés se touchent */
+    gap: 1.5rem;
 }
 
 .podcast-card {
     background-color: var(--card-bg); border-radius: 0.5rem; padding: 1.2rem;
     display: flex; justify-content: space-between; align-items: center;
-    border: 1px solid #334155; transition: transform 0.2s, border-color 0.2s, background-color 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08); transition: transform 0.2s, border-color 0.2s, background-color 0.4s ease;
 }
 .podcast-card:hover { transform: translateX(4px); border-color: var(--primary); }
 
@@ -393,10 +416,10 @@ input[type="file"]:hover { border-color: var(--primary); color: var(--text); }
 .podcast-info p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
 
 .btn-play {
-    background-color: #334155; color: var(--text); border: none;
+    background-color: rgba(255, 255, 255, 0.1); color: var(--text); border: none;
     padding: 0.6rem 1.2rem; border-radius: 2rem; cursor: pointer; font-weight: bold; transition: background-color 0.2s;
 }
-.btn-play:hover { background-color: var(--primary); }
+.btn-play:hover { background-color: var(--primary); color: white; }
 
 .btn-delete {
     background-color: transparent; color: var(--danger); border: 1px solid var(--danger);
@@ -413,7 +436,7 @@ body.admin-mode .btn-delete { display: flex; }
 footer { background-color: var(--card-bg); text-align: center; padding: 1.5rem; font-size: 0.9rem; color: var(--text-muted); margin-top: auto; }
 
 /* ==========================================================================
-   10. STYLE DU BOUTON ENGRENAGE PARAMÈTRES
+   10. PARAMÈTRES ET REGLAGES
    ========================================================================== */
 .btn-nav-param {
     background: transparent;
@@ -433,9 +456,6 @@ footer { background-color: var(--card-bg); text-align: center; padding: 1.5rem; 
     transform: rotate(60deg);
 }
 
-/* ==========================================================================
-   11. STYLE INTERNE DES FENÊTRES MODALES DE RÉGLAGES
-   ========================================================================== */
 .param-notice {
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -443,22 +463,21 @@ footer { background-color: var(--card-bg); text-align: center; padding: 1.5rem; 
     line-height: 1.4;
 }
 
-/* Boîtes de mise à jour (Zone en travaux) */
 .param-box-update {
     background-color: var(--bg-color);
     padding: 12px 15px;
     margin: 12px 0;
     border-radius: 8px;
     text-align: left;
-    border-left: 4px solid #f59e0b;
+    border-left: 4px solid var(--accent);
 }
 .param-box-update.future {
-    border-left-color: #2563eb;
+    border-left-color: var(--primary);
 }
 .param-box-update h5 {
     margin: 0 0 5px 0;
     font-size: 0.95rem;
-    color: #ffffff;
+    color: var(--text);
 }
 .param-box-update p {
     margin: 0;
@@ -466,7 +485,6 @@ footer { background-color: var(--card-bg); text-align: center; padding: 1.5rem; 
     color: var(--text-muted);
 }
 
-/* Lignes de sélection (Vrai menu) */
 .param-row {
     display: flex;
     justify-content: space-between;
@@ -476,15 +494,15 @@ footer { background-color: var(--card-bg); text-align: center; padding: 1.5rem; 
 }
 .param-row label {
     font-size: 0.95rem;
-    color: #ffffff;
+    color: var(--text);
     display: flex;
     align-items: center;
     gap: 8px;
 }
 .param-row select {
     background-color: var(--bg-color);
-    color: #ffffff;
-    border: 1px solid #334155;
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
@@ -496,84 +514,62 @@ footer { background-color: var(--card-bg); text-align: center; padding: 1.5rem; 
 .param-row select:focus {
     border-color: var(--primary);
 }
-/* --- COMPATIBILITÉ MULTI-PAGES : THÈME BLEU CLAIR HARMONIEUX --- */
-body.light-mode {
-    background-color: #eef5fc; /* Fond bleu très clair pour tout le site */
-    color: #0f172a;            /* Texte principal bleu nuit/sombre très lisible */
-}
 
-/* Modification des conteneurs (panneaux, cartes, modales) */
+/* COMPATIBILITÉ MODE CLAIR */
 body.light-mode #main-content,
 body.light-mode #admin-panel,
 body.light-mode .podcast-card,
 body.light-mode .modal-content,
 body.light-mode .update-box {
-    background-color: #ffffff !important; /* Fond blanc propre pour les blocs */
+    background-color: #ffffff !important;
     color: #1e293b !important;
-    border: 1px solid #bae6fd !important; /* Bordure discrète bleu ciel */
+    border: 1px solid #bae6fd !important;
     box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08) !important;
 }
 
-/* Correction des textes de description et des labels */
 body.light-mode label,
 body.light-mode p,
 body.light-mode span,
 body.light-mode .form-group label {
-    color: #334155 !important; /* Gris-bleu foncé pour être parfaitement visible */
+    color: #334155 !important;
 }
 
-/* Correction des Titres */
 body.light-mode h1, 
 body.light-mode h2, 
 body.light-mode h3, 
 body.light-mode h4,
 body.light-mode h5 {
-    color: #0369a1 !important; /* Bleu azur foncé pour les titres */
+    color: #0369a1 !important;
 }
 
-/* --- RE-STYLISATION DES CHAMPS DE SAISIE (INPUTS ET SELECTS) --- */
 body.light-mode input[type="text"],
 body.light-mode input[type="password"],
 body.light-mode select,
 body.light-mode textarea {
-    background-color: #f8fafc !important; /* Fond blanc/gris très clair, fini le bleu nuit foncé ! */
-    color: #0f172a !important;            /* Texte tapé en noir/bleu nuit */
-    border: 1px solid #cbd5e1 !important; /* Bordure grise propre */
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
 }
 
-/* Style spécifique pour le placeholder (le texte indicatif "Ex: Émission...") */
 body.light-mode input::placeholder {
-    color: #94a3b8 !important; /* Gris clair texturé */
+    color: #94a3b8 !important;
 }
 
-/* Zone d'import de fichier MP3 */
-body.light-mode input[type="file"] {
-    background-color: #f0fdf4 !important; /* Vert/bleu très pâle pour le fichier */
-    color: #1e293b !important;
-    border: 1px solid #bbf7d0 !important;
-}
-
-/* --- BARRE DE NAVIGATION MULTI-PAGES --- */
 body.light-mode header,
 body.light-mode #main-nav {
-    background-color: #0c4a6e !important; /* On garde la barre foncée d'origine pour le contraste... */
+    background-color: #0c4a6e !important;
 }
 
-/* --- 1. GESTION DES TAILLES DE POLICE --- */
-body.font-small { font-size: 14px !important; }
-body.font-medium { font-size: 16px !important; }
-body.font-large { font-size: 20px !important; }
-
-/* --- 2. GESTION DU TYPE DE POLICE (ACCESSIBILITÉ) --- */
+/* TYPOGRAPHIES DYSLEXIQUE */
 @import url('https://fonts.googleapis.com/css2?family=Open+Dyslexic&display=swap');
 
-/* --- STYLE POUR L'ACCESSIBILITÉ DYSLEXIQUE --- */
 body.font-dyslexic {
     font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
     letter-spacing: 0.12em !important;
     word-spacing: 0.25em !important;
     line-height: 1.6 !important;
 }
+
 .folder-container {
     display: flex;
     flex-direction: column;
@@ -582,8 +578,8 @@ body.font-dyslexic {
 }
 
 .folder-box {
-    background-color: var(--card-bg, #1e293b);
-    border: 1px solid #334155;
+    background-color: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     padding: 1rem;
     cursor: pointer;
@@ -591,7 +587,7 @@ body.font-dyslexic {
 }
 
 .folder-box:hover {
-    background-color: #334155;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .folder-box h3 {
@@ -600,215 +596,15 @@ body.font-dyslexic {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #fff;
+    color: var(--text);
 }
 
 .pod-count {
     font-size: 1rem;
-    color: var(--accent, #34d399);
+    color: var(--accent);
     font-weight: bold;
 }
 
-/* On réutilise ta grille actuelle mais avec une marge quand elle s'ouvre */
-.podcast-grid {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px dashed #475569;
-}
-/* --- RELOOKING DU PANNEAU DE GESTION --- */
-
-/* Style pour la liste déroulante des Catégories */
-#pod-category {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    background-color: #0f172a; /* Fond sombre identique aux inputs */
-    border: 1px solid #334155;
-    border-radius: 8px;
-    color: #f8fafc; /* Texte blanc/clair */
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    appearance: none; /* Enlève la flèche par défaut pour certains navigateurs */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1.25rem;
-}
-
-#pod-category:focus {
-    border-color: #3b82f6; /* Bordure bleue au focus */
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-/* Options à l'intérieur de la liste déroulante */
-#pod-category option {
-    background-color: #1e293b;
-    color: #f8fafc;
-    padding: 10px;
-}
-
-/* Style pour la zone de sélection de fichier MP3 */
-#pod-file {
-    width: 100%;
-    padding: 0.5rem;
-    background-color: #0f172a;
-    border: 1px dashed #475569; /* Bordure en pointillés plus discrète */
-    border-radius: 8px;
-    color: #94a3b8;
-    cursor: pointer;
-}
-
-/* Customisation du bouton interne "Choisir un fichier" */
-#pod-file::-webkit-file-upload-button {
-    background-color: #1e293b;
-    color: #f8fafc;
-    border: 1px solid #334155;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    margin-right: 1rem;
-    transition: background-color 0.2s ease;
-}
-
-#pod-file::-webkit-file-upload-button:hover {
-    background-color: #334155;
-    border-color: #475569;
-}
-
-/* Style pour le bouton "Se déconnecter" rouge discret */
-.btn-logout {
-    background-color: transparent;
-    border: 1px solid #ef4444;
-    color: #fca5a5;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease;
-}
-
-.btn-logout:hover {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-}
-/* --- ADAPTATION POUR MOBILES ET TABLETTES --- */
-@media screen and (max-width: 768px) {
-    
-    /* 1. On passe les grilles (les dossiers de podcasts) sur 1 seule colonne */
-    .podcast-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        padding: 10px;
-    }
-
-    /* 2. On ajuste la taille des cartes de podcast pour qu'elles prennent toute la largeur */
-    .podcast-card {
-        width: 100% !important;
-        box-sizing: border-box;
-        flex-direction: column; /* Aligne le texte et les boutons verticalement si besoin */
-        gap: 10px;
-        text-align: center;
-    }
-
-    /* 3. On adapte la barre audio personnalisée en bas de l'écran */
-    .audio-player-container {
-        flex-direction: column;
-        height: auto;
-        padding: 15px;
-        gap: 10px;
-    }
-
-    .progress-bar-container {
-        width: 100%; /* La barre de progression prend toute la largeur sur mobile */
-    }
-
-    /* 4. On réduit un peu les gros titres pour qu'ils ne prennent pas tout l'écran */
-    h1 {
-        font-size: 2rem !important;
-    }
-    
-    h2 {
-        font-size: 1.5rem !important;
-    }
-
-    /* 5. Si tu as un menu de navigation horizontal, on l'aligne verticalement */
-    nav {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-}
-/* --- CONFIGURATION DU MENU BURGER (MOBILE) --- */
-
-/* Par défaut sur ordinateur, on cache le bouton burger */
-.burger-btn {
-    display: none;
-    background: transparent;
-    border: none;
-    color: var(--text-color, #fff);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 5px 10px;
-    transition: color 0.2s;
-}
-
-.burger-btn:hover {
-    color: #a855f7;
-}
-
-/* Style de base des liens sur ordinateur (pour ne rien casser) */
-.nav-links-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-/* --- ADAPTATION POUR MOBILE (Écrans de moins de 768px) --- */
-@media (max-width: 768px) {
-    header {
-        position: relative; /* Permet de caler le menu déroulant */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    /* On affiche le bouton burger à droite */
-    .burger-btn {
-        display: block;
-    }
-
-    /* On transforme la liste de liens en menu vertical caché par défaut */
-    .nav-links-container {
-        display: none; /* Caché au départ */
-        flex-direction: column;
-        position: absolute;
-        top: 100%; /* S'ouvre juste en dessous du header */
-        right: 0;
-        left: 0;
-        background-color: #0f172a; /* Même couleur sombre que le fond du site */
-        border-bottom: 2px solid #334155;
-        padding: 1rem;
-        gap: 1rem;
-        z-index: 999; /* Reste bien au-dessus du reste du site */
-    }
-
-    /* Quand on ajoute la classe "open", le menu s'affiche */
-    .nav-links-container.open {
-        display: flex;
-    }
-
-    /* Style des boutons et liens pour qu'ils prennent toute la largeur sur mobile */
-    .nav-links-container a, 
-    .nav-links-container button {
-        width: 100%;
-        text-align: center;
-        padding: 10px 0;
-        margin: 0;
-    }
-}
 .folder-header {
     display: flex;
     justify-content: space-between;
@@ -816,14 +612,10 @@ body.font-dyslexic {
     width: 100%;
 }
 
-.folder-header h3 {
-    margin: 0;
-}
-
 .sort-select {
     background: var(--bg-color);
     color: var(--text);
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     padding: 6px 10px;
     font-size: 0.85rem;
@@ -834,6 +626,7 @@ body.font-dyslexic {
 .sort-select:focus {
     border-color: var(--primary);
 }
+
 .speed-controls {
     display: flex;
     gap: 4px;
@@ -846,7 +639,7 @@ body.font-dyslexic {
 .speed-btn {
     background: transparent;
     border: none;
-    color: #94a3b8;
+    color: var(--text-muted);
     font-size: 0.75rem;
     font-weight: 600;
     padding: 4px 6px;
@@ -856,20 +649,19 @@ body.font-dyslexic {
 }
 
 .speed-btn:hover {
-    color: #ffffff;
+    color: var(--text);
     background: rgba(255, 255, 255, 0.05);
 }
 
 .speed-btn.active {
-    background: #3b82f6;
+    background: var(--primary);
     color: #ffffff;
 }
 
-/* --- ALIGNEMENT PC POUR LE LECTEUR --- */
 .player-top {
     display: flex;
     align-items: center;
-    flex-grow: 1; /* Permet à la barre de progression de s'étirer sur PC */
+    flex-grow: 1;
     gap: 10px;
 }
 
@@ -879,23 +671,51 @@ body.font-dyslexic {
     gap: 10px;
 }
 
-/* ========================================= */
-/* ADAPTATION MOBILE (Écrans < 768px)        */
-/* ========================================= */
+/* RESPONSIVE MOBILE */
 @media (max-width: 768px) {
     .custom-player-bar {
-        flex-direction: column;   /* Empile les deux blocs l'un sur l'autre */
-        padding: 1rem;            /* Ajuste l'espacement intérieur */
-        border-radius: 20px;      /* Réduit un peu l'arrondi car la barre sera plus haute */
+        flex-direction: column;
+        padding: 1rem;
+        border-radius: 20px;
         gap: 1rem;
     }
 
     .player-top, 
     .player-bottom {
         display: flex;
-        justify-content: center;  /* Centre les éléments sur chaque ligne */
+        justify-content: center;
         align-items: center;
-        width: 100%;              /* Prend toute la largeur disponible */
-        gap: 1rem;                /* Espace entre les boutons d'une même ligne */
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .burger-btn {
+        display: block;
+    }
+
+    .nav-links-container {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        background-color: var(--bg-color);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        gap: 1rem;
+        z-index: 999;
+    }
+
+    .nav-links-container.open {
+        display: flex;
+    }
+
+    .nav-links-container a, 
+    .nav-links-container button {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        margin: 0;
     }
 }
