@@ -13,13 +13,13 @@
     --danger: #ef4444;
 }
 
-/* --- MODE SOMBRE CLASSIQUE --- */
+/* --- MODE SOMBRE CLASSIQUE (BLEU NUIT / ARDOISE) --- */
 body.dark-mode {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --primary: #2563eb;
-    --accent: #f97316;
-    --text: #f8fafc;
+    --bg-color: #0b0f19;
+    --card-bg: #161f30;
+    --primary: #3b82f6;
+    --accent: #38bdf8;
+    --text: #f1f5f9;
     --text-muted: #94a3b8;
     --danger: #ef4444;
 }
@@ -401,19 +401,26 @@ input[type="file"]:hover { border-color: var(--primary); color: var(--text); }
 .podcast-grid { 
     display: flex; 
     flex-direction: column; 
-    gap: 1.5rem;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
 }
 
 .podcast-card {
-    background-color: var(--card-bg); border-radius: 0.5rem; padding: 1.2rem;
-    display: flex; justify-content: space-between; align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.08); transition: transform 0.2s, border-color 0.2s, background-color 0.4s ease;
+    background-color: rgba(0, 0, 0, 0.2); 
+    border-radius: 0.6rem; 
+    padding: 1rem 1.2rem;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    transition: transform 0.2s, border-color 0.2s, background-color 0.3s ease;
 }
-.podcast-card:hover { transform: translateX(4px); border-color: var(--primary); }
+.podcast-card:hover { transform: translateX(4px); border-color: var(--primary); background-color: rgba(255, 255, 255, 0.03); }
 
 .podcast-actions-wrapper { display: flex; align-items: center; gap: 1rem; }
-.podcast-info h3 { margin: 0 0 0.3rem 0; font-size: 1.1rem; }
-.podcast-info p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
+.podcast-info h3 { margin: 0 0 0.3rem 0; font-size: 1.05rem; }
+.podcast-info p { margin: 0; color: var(--text-muted); font-size: 0.88rem; }
 
 .btn-play {
     background-color: rgba(255, 255, 255, 0.1); color: var(--text); border: none;
@@ -570,39 +577,52 @@ body.font-dyslexic {
     line-height: 1.6 !important;
 }
 
+/* ==========================================================================
+   11. DOSSIERS & ACCORDÉONS D'ÉMISSIONS (STYLE OPTIMISÉ)
+   ========================================================================== */
 .folder-container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.1rem;
     margin-top: 1.5rem;
 }
 
 .folder-box {
     background-color: var(--card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 1.1rem 1.4rem;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
 }
 
 .folder-box:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
 .folder-box h3 {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     color: var(--text);
+    font-weight: 600;
+}
+
+.folder-box h3 i {
+    color: var(--accent);
+    font-size: 1.25rem;
 }
 
 .pod-count {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--accent);
     font-weight: bold;
+    margin-left: 4px;
 }
 
 .folder-header {
@@ -615,12 +635,13 @@ body.font-dyslexic {
 .sort-select {
     background: var(--bg-color);
     color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 6px 12px;
     font-size: 0.85rem;
     cursor: pointer;
     outline: none;
+    transition: border-color 0.2s ease;
 }
 
 .sort-select:focus {
