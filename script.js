@@ -173,18 +173,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentLang = localStorage.getItem('siteLang') || 'fr';
 
-    // --- APPLICATION ET GESTION DES THÈMES VISUELS ---
+    // --- APPLICATION ET GESTION DES THÈMES VISUELS ET LOGOS ---
     const savedTheme = localStorage.getItem('siteTheme') || 'season';
     applyTheme(savedTheme);
 
     function applyTheme(theme) {
         document.body.classList.remove('light-mode', 'dark-mode', 'season-mode');
+        
+        const splashLogo = document.querySelector('.splash-logo');
+        const headerLogo = document.querySelector('.header-logo');
+        
         if (theme === 'light') {
             document.body.classList.add('light-mode');
+            if (splashLogo) splashLogo.src = 'logo.png';
+            if (headerLogo) headerLogo.src = 'logo.png';
         } else if (theme === 'dark') {
             document.body.classList.add('dark-mode');
+            if (splashLogo) splashLogo.src = 'logo.png';
+            if (headerLogo) headerLogo.src = 'logo.png';
         } else {
+            // Mode saison (automne) par défaut
             document.body.classList.add('season-mode');
+            if (splashLogo) splashLogo.src = 'LogoArt6automne.png';
+            if (headerLogo) headerLogo.src = 'LogoArt6automne.png';
         }
     }
 
