@@ -32,6 +32,84 @@
             font-weight: bold;
             margin-top: 0.5rem;
         }
+
+        /* --- STYLES DES MEMBRES DE L'ÉQUIPE --- */
+        .team-box {
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            text-align: left;
+        }
+        .team-box h3 {
+            color: #a855f7;
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 1rem;
+        }
+        .team-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .team-card:hover {
+            transform: translateY(-3px);
+            border-color: #a855f7;
+            box-shadow: 0 6px 16px rgba(168, 85, 247, 0.2);
+        }
+        .team-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7 0%, #2563eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .team-details {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .team-name {
+            color: #f8fafc;
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .team-class {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: 3px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #38bdf8;
+            background-color: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
         .recrutement-card {
             background: linear-gradient(135deg, #1e1b4b 0%, #2e1065 100%);
             border: 2px dashed var(--accent);
@@ -72,31 +150,31 @@
 
     <div id="main-content">
         <header>
-    <div class="logo-area">
-        <img src="logo.png" alt="Radio 6" class="header-logo">
-        <div>
-            <strong class="site-title">RADIO 6</strong><br>
-            <small class="site-subtitle">Lycée Arcisse de Caumont</small>
-        </div>
-    </div>
-    
-    <nav id="main-nav">
-        <button id="burger-menu-btn" class="burger-btn" title="Menu">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+            <div class="logo-area">
+                <img src="logo.png" alt="Radio 6" class="header-logo">
+                <div>
+                    <strong class="site-title">RADIO 6</strong><br>
+                    <small class="site-subtitle">Lycée Arcisse de Caumont</small>
+                </div>
+            </div>
+            
+            <nav id="main-nav">
+                <button id="burger-menu-btn" class="burger-btn" title="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
 
-        <div id="nav-links" class="nav-links-container">
-            <button id="btn-login-open" class="btn-nav-login">Connexion</button>
-            <a href="index.html">Accueil</a>
-            <a href="equipe.html" class="active">L'Équipe</a>
-            <a href="rejoindre.html">Rejoindre l'équipe</a>
-            <a href="aide.html">Aide</a>
-            <a href="calendrier.html">🗓️ Calendrier</a>
-            <a href="instagram.html">Instagram</a>
-            <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
-        </div>
-    </nav>
-</header>
+                <div id="nav-links" class="nav-links-container">
+                    <button id="btn-login-open" class="btn-nav-login">Connexion</button>
+                    <a href="index.html">Accueil</a>
+                    <a href="equipe.html" class="active">L'Équipe</a>
+                    <a href="rejoindre.html">Rejoindre l'équipe</a>
+                    <a href="aide.html">Aide</a>
+                    <a href="calendrier.html">🗓️ Calendrier</a>
+                    <a href="instagram.html">Instagram</a>
+                    <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </nav>
+        </header>
 
         <main class="equipe-container">
             <img src="logo.png" alt="Logo de l'équipe Radio 6" class="page-logo">
@@ -104,16 +182,108 @@
             <h2 id="eq-title">L'Équipe de Radio 6</h2>
             <p id="eq-sub" style="color: var(--text-muted); margin-bottom: 2rem;">Découvrez les coulisses de la Radio d'Art 6 du Lycée Arcisse de Caumont à Bayeux.</p>
 
+            <!-- BOÎTE 1 : HORAIRES -->
             <section class="info-box">
                 <h3 id="eq-h3-hours">🕒 Horaires d'Ouverture du Studio</h3>
                 <p id="eq-p-hours">Le club et le studio de la radio vous accueillent chaque semaine aux horaires suivants :</p>
-                <!-- Dans equipe.html -->
                 <div class="horaires-badge" id="eq-badge">Jeudi de 12h40 à 13h25</div>
                 <p id="eq-p-desc" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem;">
                     Passez nous voir au studio pour découvrir le matériel, assister aux enregistrements ou proposer vos idées d'émissions !
                 </p>
             </section>
 
+            <!-- BOÎTE INTERMÉDIAIRE : LES MEMBRES DE L'ÉQUIPE -->
+            <section class="team-box">
+                <h3>🎙️ Les ÉLÈVES DU CLUB RADIO</h3>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="team-avatar">M</div>
+                        <div class="team-details">
+                            <span class="team-name">Matis Thomas</span>
+                            <span class="team-class">T STI2D</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">G</div>
+                        <div class="team-details">
+                            <span class="team-name">Gabin Moreno-Bigot</span>
+                            <span class="team-class">TG3</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">M</div>
+                        <div class="team-details">
+                            <span class="team-name">Mathias Leclerc</span>
+                            <span class="team-class">T MRC</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">G</div>
+                        <div class="team-details">
+                            <span class="team-name">Guillaume Le Bobier</span>
+                            <span class="team-class">TG3</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">J</div>
+                        <div class="team-details">
+                            <span class="team-name">Jonas Le Bourgeois</span>
+                            <span class="team-class">1 OTM</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">M</div>
+                        <div class="team-details">
+                            <span class="team-name">Maëlys Meslin</span>
+                            <span class="team-class">TG2</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">L</div>
+                        <div class="team-details">
+                            <span class="team-name">Louna Tanquerel</span>
+                            <span class="team-class">TG3</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">N</div>
+                        <div class="team-details">
+                            <span class="team-name">Naïa Schwartz</span>
+                            <span class="team-class">1 MRC</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">C</div>
+                        <div class="team-details">
+                            <span class="team-name">Camille Moreau</span>
+                            <span class="team-class">1 MRC</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">M</div>
+                        <div class="team-details">
+                            <span class="team-name">Mélanie Ruinart</span>
+                            <span class="team-class">T MRC</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">A</div>
+                        <div class="team-details">
+                            <span class="team-name">Anne Resmond Girard</span>
+                            <span class="team-class">1 MRC</span>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">S</div>
+                        <div class="team-details">
+                            <span class="team-name">Shemsy Tolmer</span>
+                            <span class="team-class">1 STMG 2</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BOÎTE 2 : RECRUTEMENT -->
             <section class="recrutement-card">
                 <h3 id="eq-join-title">🎙️ Rejoignez l'aventure pour 2026 / 2027 !</h3>
                 <p id="eq-join-p1">Tu es passionné par le son, l'actualité, la musique, la technique ou l'animation ? Tu as envie de faire entendre ta voix au lycée ?</p>
@@ -242,8 +412,6 @@
             const btnLoginOpen = document.getElementById('btn-login-open');
             if (btnLoginOpen) {
                 btnLoginOpen.addEventListener('click', () => {
-                    // Comme le modal de traitement de connexion est centralisé sur l'index, 
-                    // on redirige proprement l'utilisateur vers la mire de l'index
                     window.location.href = 'index.html';
                 });
             }
