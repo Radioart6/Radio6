@@ -456,6 +456,13 @@
                         status.innerText = 'web radio fermé';
                         cell.appendChild(status);
                     }
+                    else if (currentMoisData.year === 2026 && currentMoisData.index === 9 && day === 1) {
+                        cell.classList.add('special-orange');
+                        const status = document.createElement('span');
+                        status.className = 'status-text';
+                        status.innerText = 'Émission le midi';
+                        cell.appendChild(status);
+                    }
                     else {
                         let raisonJaune = '';
 
