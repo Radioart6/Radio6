@@ -120,53 +120,167 @@
             border-color: var(--primary);
         }
 
+        /* BANNIÈRE RECRUTEMENT */
         .banner-recrutement {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(245, 158, 11, 0.25));
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    flex-wrap: wrap;
-}
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(245, 158, 11, 0.25));
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            flex-wrap: wrap;
+        }
+        .banner-text h3 {
+            margin: 0 0 0.4rem 0;
+            color: #f59e0b;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .banner-text p {
+            margin: 0;
+            color: var(--text-muted, #94a3b8);
+            font-size: 0.95rem;
+        }
+        .btn-join-banner {
+            background: var(--primary, #6366f1);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        .btn-join-banner:hover {
+            background: #f59e0b;
+            color: #0f1020;
+            transform: translateY(-2px);
+        }
 
-.banner-text h3 {
-    margin: 0 0 0.4rem 0;
-    color: #f59e0b;
-    font-size: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.banner-text p {
-    margin: 0;
-    color: var(--text-muted, #94a3b8);
-    font-size: 0.95rem;
-}
-
-.btn-join-banner {
-    background: var(--primary, #6366f1);
-    color: white;
-    text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 0.95rem;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-}
-
-.btn-join-banner:hover {
-    background: #f59e0b;
-    color: #0f1020;
-    transform: translateY(-2px);
-}
+        /* STYLES BANNIÈRE ÉMISSION 1ER OCTOBRE */
+        .banner-event-octobre {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(180, 83, 9, 0.3) 50%, rgba(30, 27, 75, 0.4) 100%);
+            border: 2px solid #f97316;
+            border-radius: 16px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.25);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+        .banner-event-octobre::before {
+            content: "🍂";
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 5rem;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .event-badge {
+            display: inline-block;
+            background-color: #f97316;
+            color: #ffffff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        .banner-event-octobre h2 {
+            color: #ffedd5;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.6rem;
+        }
+        .event-datetime {
+            color: #fbbf24;
+            font-size: 1.05rem;
+            margin-bottom: 0.4rem;
+        }
+        .event-location {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin: 0 0 1.2rem 0;
+        }
+        .event-program {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .event-program h4 {
+            color: #f97316;
+            margin: 0 0 0.6rem 0;
+            font-size: 1rem;
+        }
+        .event-program ul {
+            margin: 0;
+            padding-left: 0;
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+        .event-program li {
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .event-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn-event-insta {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-event-insta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 39, 67, 0.4);
+        }
+        .btn-event-cal {
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid #a855f7;
+            color: #e9d5ff;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .btn-event-cal:hover {
+            background: #a855f7;
+            color: white;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -197,7 +311,6 @@
                     <i class="fa-solid fa-bars"></i>
                 </button>
 
-                
                 <div id="nav-links" class="nav-links-container">
                     <button id="btn-login-open" class="btn-nav-login">Connexion</button>
                     
@@ -208,10 +321,10 @@
                     <a href="calendrier.html">🗓️ Calendrier</a>
                     <a href="instagram.html">Instagram</a>
                     
-                    <!-- CLOCHE DE NOTIFICATION ADMIN (Cachée par défaut, s'affiche si l'admin est connecté ou s'il y a des notifs) -->
+                    <!-- CLOCHE DE NOTIFICATION ADMIN -->
                     <a href="notifications.html" id="lien-cloche" class="hidden" style="position: relative; text-decoration: none; margin-left: 0.5rem; display: inline-flex; align-items: center;" title="Voir les candidatures">
-    🔔 <span id="badge-notif" style="display: none; background: #ef4444; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 50%; position: absolute; top: -6px; right: -8px; font-weight: bold;">0</span>
-</a>
+                        🔔 <span id="badge-notif" style="display: none; background: #ef4444; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 50%; position: absolute; top: -6px; right: -8px; font-weight: bold;">0</span>
+                    </a>
 
                     <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
                 </div>
@@ -222,7 +335,7 @@
             <div class="modal-content">
                 <span id="btn-login-close" class="close-modal">&times;</span>
                 <h3>Connexion Propriétaire</h3>
-                <p class="login-notice">⚠️ Cet espace est strictement réservé à l'équipe de la radio pour la gestion des fichiers.</p>
+                <p class="login-notice">⚠️ Cet espace est strictly réservé à l'équipe de la radio pour la gestion des fichiers.</p>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="username">Identifiant :</label>
@@ -239,14 +352,44 @@
         </div>
 
         <main>
+            <!-- BANNIÈRE ÉMISSION SPÉCIALE DU 1ER OCTOBRE -->
+            <section class="banner-event-octobre">
+                <div class="event-badge">🍂 Émission Spéciale</div>
+                <h2>🎙️ Émission du Midi sur Radio 6</h2>
+                <div class="event-datetime">
+                    <i class="fa-solid fa-calendar-day"></i> <strong>Jeudi 1ᵉʳ Octobre</strong> &bull; <i class="fa-solid fa-clock"></i> <strong>Du midi à 13h</strong>
+                </div>
+                <p class="event-location"><i class="fa-solid fa-location-dot"></i> En direct dans le hall et les foyers &amp; disponible en podcast</p>
+                
+                <div class="event-program">
+                    <h4><i class="fa-solid fa-list-check"></i> Au Programme :</h4>
+                    <ul>
+                        <li>🍁 Présentation de la radio</li>
+                        <li>🍁 Présentation de l'équipe</li>
+                        <li>🍁 Intervention de Mme Claire Lamole</li>
+                        <li>🍁 Interview d'Axel</li>
+                    </ul>
+                </div>
+                
+                <div class="event-actions">
+                    <a href="https://www.instagram.com/radio_arcisse" target="_blank" rel="noopener noreferrer" class="btn-event-insta">
+                        <i class="fa-brands fa-instagram"></i> Suivez-nous sur Instagram (@radio_arcisse)
+                    </a>
+                    <a href="calendrier.html" class="btn-event-cal">
+                        <i class="fa-solid fa-calendar-days"></i> Voir le calendrier
+                    </a>
+                </div>
+            </section>
+
             <!-- BANNIÈRE D'INVITATION AU RECRUTEMENT -->
-<section class="banner-recrutement">
-    <div class="banner-text">
-        <h3>🎙️ Venez faire de la radio avec nous !</h3>
-        <p>Émissions le midi, chroniques en journée, musique, technique... Rejoignez l'équipe à côté du CDI !</p>
-    </div>
-    <a href="rejoindre.html" class="btn-join-banner">S'inscrire à Radio 6 ➔</a>
-</section>
+            <section class="banner-recrutement">
+                <div class="banner-text">
+                    <h3>🎙️ Venez faire de la radio avec nous !</h3>
+                    <p>Émissions le midi, chroniques en journée, musique, technique... Rejoignez l'équipe à côté du CDI !</p>
+                </div>
+                <a href="rejoindre.html" class="btn-join-banner">S'inscrire à Radio 6 ➔</a>
+            </section>
+
             <section id="admin-panel" class="admin-card hidden">
                 <h3>🛠️ Panneau de Gestion (Propriétaire)</h3>
                 <p>Ajouter une nouvelle rediffusion (sans limite de taille) :</p>
@@ -434,16 +577,16 @@
                 <div class="update-box last">
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
+                        <li>Ajout de l'annonce d'émission spéciale du 1ᵉʳ octobre sur la page d'accueil.</li>
                         <li>Recherche instantanée et tri par dossier parfaitement opérationnels.</li>
-                        <li>Contrôle de vitesse de lecture disponible.</li>
-                        <li>les nouveaux horaires pour la saison 2026/2027 ont était mis à jour sur tous le site le jeudi midi de 12h40 à 13h25.</li>
+                        <li>Mise à jour des horaires pour la saison 2026/2027 (le jeudi midi de 12h40 à 13h25).</li>
                     </ul>
                 </div>
 
                 <div class="update-box next">
                     <h4>🚀 Prochaine mise à jour</h4>
                     <ul>
-                    </li>Surement des mise à jour pour faire plaisire à l'équipe.</li>
+                        <li>Améliorations continues et nouveautés pour le club radio.</li>
                     </ul>
                 </div>
             </div>
@@ -455,7 +598,7 @@
         </footer>
     </div>
 
-    <!-- Modals (Paramètres, Calendrier, etc.) -->
+    <!-- Modals (Paramètres, Travaux, etc.) -->
     <div id="modal-travaux" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeParamModal('modal-travaux')">&times;</span>
