@@ -90,9 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsTitle: "Réglages Généraux",
             settingsLang: "Langue :",
             settingsMedia: "Thème Visuel :",
-            settingsMediaSsn: "🍂 Mode Saison (Automne - Par défaut)",
+            settingsMediaSsn: "Mode Saison (par défaut)",
             settingsMediaDft: "Mode Sombre",
-            settingsMediaEar: "Mode Clair",
+            settingsMediaEar: "Mode clair",
             settingsFont: "Taille de la police :",
             settingsFontSm: "Petite",
             settingsFontMd: "Normale",
@@ -125,9 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsTitle: "General Settings",
             settingsLang: "Language:",
             settingsMedia: "Visual Theme:",
-            settingsMediaSsn: "🍂 Season Mode (Autumn - Default)",
+            settingsMediaSsn: "Season Mode (default)",
             settingsMediaDft: "Dark Mode",
-            settingsMediaEar: "Light Mode",
+            settingsMediaEar: "Light mode",
             settingsFont: "Font size:",
             settingsFontSm: "Small",
             settingsFontMd: "Normal",
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsTitle: "Ajustes Générales",
             settingsLang: "Idioma:",
             settingsMedia: "Tema Visual:",
-            settingsMediaSsn: "🍂 Modo Estación (Otoño - Por defecto)",
+            settingsMediaSsn: "Modo Estación (por defecto)",
             settingsMediaDft: "Modo Oscuro",
             settingsMediaEar: "Modo Claro",
             settingsFont: "Tamaño de fuente:",
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentLang = localStorage.getItem('siteLang') || 'fr';
 
-    // --- APPLICATION DU THÈME SAISON (PAR DÉFAUT OU ENREGISTRÉ) ---
+    // --- APPLICATION ET GESTION DES THÈMES VISUELS ---
     const savedTheme = localStorage.getItem('siteTheme') || 'season';
     applyTheme(savedTheme);
 
@@ -199,8 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
     document.querySelectorAll('.folder-box h3').forEach(header => {
-        header.addEventListener('click', () => {
-            const grid = header.nextElementSibling;
+        header.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const folderBox = header.closest('.folder-box');
+            const grid = folderBox ? folderBox.querySelector('.podcast-grid') : null;
             if (grid) grid.classList.toggle('hidden');
         });
     });
@@ -589,70 +591,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function removeIALink() {
         const iaLink = document.getElementById('nav-ia-admin');
         if (iaLink) iaLink.remove();
-    }
-
-    // --- RECHERCHE INSTANTANÉE ---
-    const searchInput = document.getElementById('search-podcast');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            const podcastCards = document.querySelectorAll('.podcast-card');
-
-            podcastCards.forEach(card => {
-                const title = card.querySelector('h3').textContent.toLowerCase();
-                const info = card.querySelector('p').textContent.toLowerCase();
-                
-                if (title.includes(query) || info.includes(query)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    }
-
-    // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
-    document.querySelectorAll('.folder-header').forEach(header => {
-        header.addEventListener('click', () => {
-            const grid = header.nextElementSibling;
-            if (grid) grid.classList.toggle('hidden');
-        });
-    });
-
-    // --- SYSTÈME DE TRI PAR CATÉGORIE ---
-    document.querySelectorAll('.sort-select').forEach(select => {
-        select.addEventListener('change', (e) => {
-            const gridId = e.target.getAttribute('data-grid');
-            const grid = document.getElementById(gridId);
-            const cards = Array.from(grid.querySelectorAll('.podcast-card'));
-            const sortValue = e.target.value;
-
-            cards.sort((a, b) => {
-                const infoA = a.querySelector('p').textContent;
-                const infoB = b.querySelector('p').textContent;
-
-                if (sortValue === 'recent' || sortValue === 'ancien') {
-                    return sortValue === 'recent' ? -1 : 1; 
-                }
-                return 0;
-            });
-
-            cards.forEach(card => grid.appendChild(card));
-        });
-    });
-
-    // --- GESTION DU BOUTON CALENDRIER GÉNÉRAL ---
-    const btnCalendrier = document.getElementById('nav-calendrier');
-    if (btnCalendrier) {
-        btnCalendrier.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (sessionStorage.getItem('adminMode') === 'true') {
-                window.location.href = 'calendrier.html';
-            } else {
-                const modalTravaux = document.getElementById('modal-travaux');
-                if (modalTravaux) modalTravaux.classList.remove('hidden');
-            }
-        });
     }
 
     // --- ACCÈS DIRECT ET ÉCRANS SPLASH ---
