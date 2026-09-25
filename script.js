@@ -4,7 +4,6 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Variable globale pour suivre le podcast en cours de modification
 let editPodcastId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadStatus = document.getElementById('upload-status');
     const mainNav = document.getElementById('main-nav');
 
-    // Gestion des fenêtres de paramètres
+    // Réglages
     const paramBtn = document.getElementById('param-btn');
     const modalTravaux = document.getElementById('modal-travaux');
     const modalMenuParam = document.getElementById('modal-menu-param');
@@ -33,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectTheme = document.getElementById('param-media'); 
     const selectTaille = document.getElementById('param-taille-police');
 
-    // Éléments liés à la BARRE AUDIO PERSONNALISÉE
+    // Lecteur
     const mainAudioPlayer = document.getElementById('main-audio-player');
     const customPlayBtn = document.getElementById('custom-play-btn');
     const progressBarBg = document.getElementById('progress-bar-bg');
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const categoriesList = ['loisir-sport', 'touristique', 'actualites-infos', 'en-classe', 'culture', 'portrait', 'autres'];
 
-    // --- GESTION DU MENU BURGER SUR MOBILE ---
+    // --- MENU BURGER MOBILE ---
     const burgerMenuBtn = document.getElementById('burger-menu-btn');
     const navLinksContainer = document.getElementById('nav-links');
 
@@ -91,7 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsTitle: "Réglages Généraux",
             settingsLang: "Langue :",
             settingsMedia: "Thème Visuel :",
-            settingsMediaDft: "Mode Sombre (Par défaut)",
+            settingsMediaSsn: "🍂 Mode Saison (Automne - Par défaut)",
+            settingsMediaDft: "Mode Sombre",
             settingsMediaEar: "Mode Clair",
             settingsFont: "Taille de la police :",
             settingsFontSm: "Petite",
@@ -125,7 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsTitle: "General Settings",
             settingsLang: "Language:",
             settingsMedia: "Visual Theme:",
-            settingsMediaDft: "Dark Mode (Default)",
+            settingsMediaSsn: "🍂 Season Mode (Autumn - Default)",
+            settingsMediaDft: "Dark Mode",
             settingsMediaEar: "Light Mode",
             settingsFont: "Font size:",
             settingsFontSm: "Small",
@@ -156,10 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
             btnSubmit: "Añadir podcast",
             uploadStatus: "Guardando enlace en el servidor...",
             btnLogout: "Cerrar sesión",
-            settingsTitle: "Ajustes Génales",
+            settingsTitle: "Ajustes Générales",
             settingsLang: "Idioma:",
             settingsMedia: "Tema Visual:",
-            settingsMediaDft: "Modo Oscuro (Por defecto)",
+            settingsMediaSsn: "🍂 Modo Estación (Otoño - Por defecto)",
+            settingsMediaDft: "Modo Oscuro",
             settingsMediaEar: "Modo Claro",
             settingsFont: "Tamaño de fuente:",
             settingsFontSm: "Pequeña",
@@ -171,9 +173,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentLang = localStorage.getItem('siteLang') || 'fr';
 
-    // --- CONFIGURATION THEME & POLICES AU CHARGEMENT ---
-    const savedTheme = localStorage.getItem('siteTheme') || 'dark';
-    if (savedTheme === 'light') document.body.classList.add('light-mode');
+    // --- APPLICATION DU THÈME SAISON (PAR DÉFAUT OU ENREGISTRÉ) ---
+    const savedTheme = localStorage.getItem('siteTheme') || 'season';
+    applyTheme(savedTheme);
+
+    function applyTheme(theme) {
+        document.body.classList.remove('light-mode', 'dark-mode', 'season-mode');
+        if (theme === 'light') {
+            document.body.classList.add('light-mode');
+        } else if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.add('season-mode');
+        }
+    }
 
     const savedSize = localStorage.getItem('siteFontSize') || 'medium';
     document.body.classList.remove('font-small', 'font-medium', 'font-large');
@@ -238,11 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectTheme.addEventListener('change', (e) => {
             const selectedTheme = e.target.value;
             localStorage.setItem('siteTheme', selectedTheme);
-            if (selectedTheme === 'light') {
-                document.body.classList.add('light-mode');
-            } else {
-                document.body.classList.remove('light-mode');
-            }
+            applyTheme(selectedTheme);
         });
     }
 
@@ -308,9 +317,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 settingsLabels[1].innerHTML = `<i class="fa-solid fa-palette"></i> ${t.settingsMedia}`;
                 settingsLabels[2].innerHTML = `<i class="fa-solid fa-font"></i> ${t.settingsFont}`;
             }
-            if (selectTheme && selectTheme.options.length >= 2) {
-                selectTheme.options[0].text = t.settingsMediaDft;
-                selectTheme.options[1].text = t.settingsMediaEar;
+            if (selectTheme && selectTheme.options.length >= 3) {
+                selectTheme.options[0].text = t.settingsMediaSsn;
+                selectTheme.options[1].text = t.settingsMediaDft;
+                selectTheme.options[2].text = t.settingsMediaEar;
             }
             const saveBtn = modalMenuParam.querySelector('.btn-submit');
             if (saveBtn) saveBtn.innerText = t.settingsSave;
@@ -392,7 +402,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const category = categorySelect ? categorySelect.value : "autres";
 
             if (editPodcastId) {
-                // MODIFICATION D'UN PODCAST EXISTANT
                 const { error } = await SupabaseClient
                     .from('podcasts_ia')
                     .update({ title, info, category, url: audioUrl })
@@ -411,7 +420,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     loadPodcastsFromSupabase();
                 }
             } else {
-                // AJOUT D'UN NOUVEAU PODCAST
                 const { error } = await SupabaseClient
                     .from('podcasts_ia')
                     .insert([{ title, info, category, url: audioUrl }]);
@@ -430,7 +438,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CHARGER LA GRILLE COMMUNE DEPUIS SUPABASE ---
     async function loadPodcastsFromSupabase() {
         categoriesList.forEach(cat => {
             const grid = document.getElementById(`grid-${cat}`);
@@ -479,7 +486,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Gestion du clic sur le bouton Modifier
         document.querySelectorAll('.btn-edit').forEach(btn => {
             btn.addEventListener('click', () => {
                 const podId = btn.getAttribute('data-id');
@@ -511,7 +517,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Gestion de la lecture
         document.querySelectorAll('.btn-play').forEach(btn => {
             btn.addEventListener('click', () => {
                 const audioUrl = btn.getAttribute('data-url');
@@ -526,7 +531,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Suppression pour l'admin
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', async () => {
                 if (confirm(translations[currentLang].confirmDelete)) {
@@ -753,7 +757,7 @@ window.closeParamModal = function(modalId) {
     }
 };
 
-// --- CONTRÔLE DE LA VITESSE DU LECTEUR PRINCIPAL ---
+// --- VITESSE DU LECTEUR ---
 document.querySelectorAll('.speed-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const speed = parseFloat(e.target.getAttribute('data-speed'));
