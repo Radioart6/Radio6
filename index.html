@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Styles pour le bloc des nouveautés (placé en bas) */
         .updates-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -22,7 +21,7 @@
         }
         .update-box {
             background-color: var(--card-bg);
-            border: 1px solid #334155;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 1.5rem;
             text-align: left;
@@ -47,11 +46,10 @@
         }
         .update-box li { margin-bottom: 0.5rem; }
 
-        /* Style pour le bouton Mute et le sélecteur de vitesse intégrés */
         .player-mute-btn, .player-speed-select {
             background: transparent;
             border: none;
-            color: var(--text-muted, #cbd5e1);
+            color: var(--text-muted);
             font-size: 0.9rem;
             cursor: pointer;
             padding: 2px 5px;
@@ -62,16 +60,15 @@
             transition: color 0.2s ease;
         }
         .player-mute-btn:hover, .player-speed-select:hover {
-            color: #fff;
+            color: var(--text);
         }
         .player-speed-select {
             background-color: var(--bg-color);
-            border: 1px solid #334155;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             font-size: 0.8rem;
         }
         
-        /* Style pour rendre le mini calendrier cliquable */
         .clickable-calendar {
             cursor: pointer;
             transition: transform 0.2s ease, border-color 0.2s ease;
@@ -81,12 +78,11 @@
             border-color: #a855f7 !important;
         }
 
-        /* Barre de recherche instantanée */
         .search-container input {
             width: 100%;
             padding: 0.8rem 1rem;
             background-color: var(--card-bg);
-            border: 1px solid #334155;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             color: var(--text);
             font-size: 1rem;
@@ -97,7 +93,6 @@
             border-color: var(--primary);
         }
 
-        /* Barre d'outils interne au dossier (affichée en haut à droite à l'intérieur) */
         .folder-toolbar {
             display: flex;
             justify-content: flex-end;
@@ -106,23 +101,9 @@
         .folder-toolbar.hidden {
             display: none !important;
         }
-        .sort-select {
-            background: var(--bg-color);
-            color: var(--text);
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 5px 10px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            outline: none;
-        }
-        .sort-select:focus {
-            border-color: var(--primary);
-        }
 
-        /* BANNIÈRE RECRUTEMENT */
         .banner-recrutement {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(245, 158, 11, 0.25));
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.2), rgba(245, 158, 11, 0.2));
             border: 1px solid rgba(245, 158, 11, 0.4);
             border-radius: 12px;
             padding: 1.5rem;
@@ -136,7 +117,7 @@
         }
         .banner-text h3 {
             margin: 0 0 0.4rem 0;
-            color: #f59e0b;
+            color: var(--accent);
             font-size: 1.25rem;
             display: flex;
             align-items: center;
@@ -144,11 +125,11 @@
         }
         .banner-text p {
             margin: 0;
-            color: var(--text-muted, #94a3b8);
+            color: var(--text-muted);
             font-size: 0.95rem;
         }
         .btn-join-banner {
-            background: var(--primary, #6366f1);
+            background: var(--primary);
             color: white;
             text-decoration: none;
             padding: 12px 20px;
@@ -157,17 +138,16 @@
             font-size: 0.95rem;
             white-space: nowrap;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
         }
         .btn-join-banner:hover {
-            background: #f59e0b;
+            background: var(--accent);
             color: #0f1020;
             transform: translateY(-2px);
         }
 
-        /* STYLES BANNIÈRE ÉMISSION 1ER OCTOBRE */
         .banner-event-octobre {
-            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(180, 83, 9, 0.3) 50%, rgba(30, 27, 75, 0.4) 100%);
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(180, 83, 9, 0.35) 50%, rgba(40, 23, 17, 0.5) 100%);
             border: 2px solid #f97316;
             border-radius: 16px;
             padding: 1.8rem;
@@ -209,12 +189,12 @@
             margin-bottom: 0.4rem;
         }
         .event-location {
-            color: #cbd5e1;
+            color: var(--text-muted);
             font-size: 0.95rem;
             margin: 0 0 1.2rem 0;
         }
         .event-program {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(249, 115, 22, 0.3);
             border-radius: 10px;
             padding: 1rem 1.2rem;
@@ -234,7 +214,7 @@
             gap: 0.5rem;
         }
         .event-program li {
-            color: #e2e8f0;
+            color: var(--text);
             font-size: 0.9rem;
             display: flex;
             align-items: center;
@@ -321,7 +301,6 @@
                     <a href="calendrier.html">🗓️ Calendrier</a>
                     <a href="instagram.html">Instagram</a>
                     
-                    <!-- CLOCHE DE NOTIFICATION ADMIN -->
                     <a href="notifications.html" id="lien-cloche" class="hidden" style="position: relative; text-decoration: none; margin-left: 0.5rem; display: inline-flex; align-items: center;" title="Voir les candidatures">
                         🔔 <span id="badge-notif" style="display: none; background: #ef4444; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 50%; position: absolute; top: -6px; right: -8px; font-weight: bold;">0</span>
                     </a>
@@ -335,7 +314,7 @@
             <div class="modal-content">
                 <span id="btn-login-close" class="close-modal">&times;</span>
                 <h3>Connexion Propriétaire</h3>
-                <p class="login-notice">⚠️ Cet espace est strictly réservé à l'équipe de la radio pour la gestion des fichiers.</p>
+                <p class="login-notice">⚠️ Cet espace est strictement réservé à l'équipe de la radio pour la gestion des fichiers.</p>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="username">Identifiant :</label>
@@ -352,7 +331,6 @@
         </div>
 
         <main>
-            <!-- BANNIÈRE ÉMISSION SPÉCIALE DU 1ER OCTOBRE -->
             <section class="banner-event-octobre">
                 <div class="event-badge">🍂 Émission Spéciale</div>
                 <h2>🎙️ Émission du Midi sur Radio 6</h2>
@@ -381,7 +359,6 @@
                 </div>
             </section>
 
-            <!-- BANNIÈRE D'INVITATION AU RECRUTEMENT -->
             <section class="banner-recrutement">
                 <div class="banner-text">
                     <h3>🎙️ Venez faire de la radio avec nous !</h3>
@@ -431,7 +408,6 @@
                 <audio id="main-audio-player"></audio>
                 
                 <div class="custom-player-bar">
-                    <!-- LIGNE DU HAUT : Play et Temps -->
                     <div class="player-top">
                         <button id="custom-play-btn" class="player-btn" disabled>▶</button>
                         <div class="progress-container">
@@ -443,7 +419,6 @@
                         </div>
                     </div>
 
-                    <!-- LIGNE DU BAS : Vitesses et Mute -->
                     <div class="player-bottom">
                         <div class="speed-controls">
                             <button class="speed-btn" data-speed="0.25">0,25x</button>
@@ -465,14 +440,12 @@
             <section class="podcast-section">
                 <h2>Liste des Rediffusions</h2>
                  
-                <!-- Barre de recherche instantanée -->
                 <div class="search-container" style="margin-bottom: 1.5rem;">
                     <input type="text" id="search-podcast" placeholder="🔍 Rechercher une émission par son titre ou sa description en tapant ici...">
                 </div>
 
                 <div class="folder-container">
 
-                    <!-- Loisir & Sport -->
                     <div class="folder-box" data-category="loisir-sport">
                         <div class="folder-header">
                             <h3><i class="fa-solid fa-basketball"></i> Loisir & Sport <span class="pod-count" id="count-loisir-sport">(0)</span></h3>
@@ -486,7 +459,6 @@
                         <div class="podcast-grid hidden" id="grid-loisir-sport"></div>
                     </div>
 
-                    <!-- En classe -->
                     <div class="folder-box" data-category="en-classe">
                         <div class="folder-header">
                             <h3><i class="fa-solid fa-chalkboard-user"></i> En classe <span class="pod-count" id="count-en-classe">(0)</span></h3>
@@ -500,7 +472,6 @@
                         <div class="podcast-grid hidden" id="grid-en-classe"></div>
                     </div>
 
-                    <!-- Portrait -->
                     <div class="folder-box" data-category="portrait">
                         <div class="folder-header">
                             <h3><i class="fa-solid fa-user"></i> Portrait <span class="pod-count" id="count-portrait">(0)</span></h3>
@@ -514,7 +485,6 @@
                         <div class="podcast-grid hidden" id="grid-portrait"></div>
                     </div>
 
-                    <!-- Minute Touristique -->
                     <div class="folder-box" data-category="touristique">
                         <div class="folder-header">
                             <h3><i class="fa-solid fa-camera-retro"></i> Minute Touristique <span class="pod-count" id="count-touristique">(0)</span></h3>
@@ -528,7 +498,6 @@
                         <div class="podcast-grid hidden" id="grid-touristique"></div>
                     </div>
 
-                    <!-- Actualités & Infos -->
                     <div class="folder-box" data-category="actualites-infos">
                         <div class="folder-header">
                             <h3><i class="fa-solid fa-newspaper"></i> Actualités & Infos <span class="pod-count" id="count-actualites-infos">(0)</span></h3>
@@ -542,7 +511,6 @@
                         <div class="podcast-grid hidden" id="grid-actualites-infos"></div>
                     </div>
 
-                    <!-- Culture -->
                     <div class="folder-box" data-category="culture">
                         <div class="folder-header">
                             <h3><i class="fa-solid fa-masks-theater"></i> Culture <span class="pod-count" id="count-culture">(0)</span></h3>
@@ -556,7 +524,6 @@
                         <div class="podcast-grid hidden" id="grid-culture"></div>
                     </div>
 
-                    <!-- Autres -->
                     <div class="folder-box" data-category="autres">
                         <div class="folder-header">
                             <h3><i class="fa-solid fa-folder-open"></i> Autres <span class="pod-count" id="count-autres">(0)</span></h3>
@@ -577,6 +544,7 @@
                 <div class="update-box last">
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
+                        <li>Ajout du mode saison Automne personnalisé par défaut sur l'ensemble du site.</li>
                         <li>Ajout de l'annonce d'émission spéciale du 1ᵉʳ octobre sur la page d'accueil.</li>
                         <li>Recherche instantanée et tri par dossier parfaitement opérationnels.</li>
                         <li>Mise à jour des horaires pour la saison 2026/2027 (le jeudi midi de 12h40 à 13h25).</li>
@@ -598,7 +566,6 @@
         </footer>
     </div>
 
-    <!-- Modals (Paramètres, Travaux, etc.) -->
     <div id="modal-travaux" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeParamModal('modal-travaux')">&times;</span>
@@ -611,7 +578,7 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeParamModal('modal-menu-param')">&times;</span>
             <h3 style="color: #2563eb; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-sliders"></i> Réglages Généraux</h3>
-            <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0 20px 0;">
+            <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 15px 0 20px 0;">
              
             <div class="param-row">
                 <label><i class="fa-solid fa-language"></i> Langue :</label>
@@ -625,7 +592,8 @@
             <div class="param-row">
                 <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
                 <select id="param-media">
-                    <option value="dark" selected>Mode Sombre (Par défaut)</option>
+                    <option value="season" selected>🍂 Mode Saison (Automne - Par défaut)</option>
+                    <option value="dark">Mode Sombre</option>
                     <option value="light">Mode Clair (Bleu Clair)</option>
                 </select>
             </div>
@@ -660,7 +628,6 @@
             const muteBtn = document.getElementById('custom-mute-btn');
             const muteIcon = document.getElementById('mute-icon');
 
-            // Gestion du son Mute/Unmute
             if (muteBtn && audioPlayer && muteIcon) {
                 muteBtn.addEventListener('click', () => {
                     audioPlayer.muted = !audioPlayer.muted;
@@ -674,7 +641,6 @@
                 });
             }
 
-            // --- RECHERCHE INSTANTANÉE ---
             const searchInput = document.getElementById('search-podcast');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -697,7 +663,6 @@
                 });
             }
 
-            // --- SYSTÈME DE TRI PAR CATÉGORIE ---
             document.querySelectorAll('.sort-select').forEach(select => {
                 select.addEventListener('change', (e) => {
                     const gridId = e.target.getAttribute('data-grid');
