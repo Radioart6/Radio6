@@ -173,7 +173,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentLang = localStorage.getItem('siteLang') || 'fr';
 
-    // --- APPLICATION ET GESTION DES THÈMES VISUELS ET LOGOS ---
+    // --- EFFETS ET ANIMATIONS DU MODE SAISON ---
+    function applySeasonEffects() {
+        let container = document.getElementById('season-effects');
+        
+        if (!document.body.classList.contains('season-mode')) {
+            if (container) container.remove();
+            return;
+        }
+
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'season-effects';
+            document.body.appendChild(container);
+        }
+        container.innerHTML = '';
+
+        const month = new Date().getMonth();
+        let particles = ['✨', '⭐'];
+
+        if (month >= 8 && month <= 10) {
+            particles = ['🍂', '🍁', '🌾', '🎃'];
+        } else if (month === 11 || month <= 1) {
+            particles = ['❄️', '✨', '🌨️'];
+        } else if (month >= 2 && month <= 4) {
+            particles = ['🌸', '🍃', '🌱'];
+        } else {
+            particles = ['✨', '☀️', '⭐'];
+        }
+
+        for (let i = 0; i < 22; i++) {
+            const p = document.createElement('span');
+            p.className = 'season-particle';
+            p.textContent = particles[Math.floor(Math.random() * particles.length)];
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (Math.random() * 6 + 6) + 's';
+            p.style.animationDelay = (Math.random() * 5) + 's';
+            p.style.fontSize = (Math.random() * 0.7 + 0.8) + 'rem';
+            container.appendChild(p);
+        }
+    }
+
+    // --- APPLICATION ET GESTION DES THÈMES VISUELS ---
     const savedTheme = localStorage.getItem('siteTheme') || 'season';
     applyTheme(savedTheme);
 
@@ -192,11 +233,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (splashLogo) splashLogo.src = 'logo.png';
             if (headerLogo) headerLogo.src = 'logo.png';
         } else {
-            // Mode saison (automne) par défaut
             document.body.classList.add('season-mode');
             if (splashLogo) splashLogo.src = 'LogoArt6automne.png';
             if (headerLogo) headerLogo.src = 'LogoArt6automne.png';
         }
+
+        applySeasonEffects();
     }
 
     const savedSize = localStorage.getItem('siteFontSize') || 'medium';
