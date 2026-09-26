@@ -52,7 +52,7 @@ function updateLiveBanner() {
 
     const pad = (num) => String(num).padStart(2, '0');
 
-    banner.innerHTML = `⏳ <strong>Prochain direct dans :</strong> ${d}j ${pad(h)}h ${pad(m)}min ${pad(s)}s (Jeudi à 12h40)`;
+    banner.innerHTML = `⏳ <strong>Prochain direct dans :</strong> ${d}j ${pad(h)}h ${pad(m)}min ${pad(s)}s (Jeudi à 13h00)`;
 }
 
 // ==========================================
