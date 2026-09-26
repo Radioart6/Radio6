@@ -6,11 +6,14 @@
     <meta name="description" content="Espace de rediffusion et podcasts de Radio 6, la radio officielle du Lycée Arcisse de Caumont à Bayeux.">
     <meta name="keywords" content="Radio 6, Lycée Arcisse de Caumont, Bayeux, podcast, rediffusion, radio lycee">
     <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://radioart6.github.io/Radio6/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="logo.png">
     <title>Radio 6 - La Radio d'Art 6</title>
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         .updates-container {
             display: grid;
@@ -265,6 +268,7 @@
 </head>
 <body>
 
+    <!-- Ecran d'accueil / Splash -->
     <div id="splash-screen" class="splash-container">
         <div class="splash-content">
             <div class="logo-wrapper">
@@ -276,6 +280,7 @@
         </div>
     </div>
     
+    <!-- Contenu Principal du site -->
     <div id="main-content" class="hidden">
         <header>
             <div class="logo-area">
@@ -309,11 +314,12 @@
             </nav>
         </header>
 
+        <!-- Fenêtre de connexion Admin -->
         <div id="login-modal" class="modal hidden">
             <div class="modal-content">
                 <span id="btn-login-close" class="close-modal">&times;</span>
                 <h3>Connexion Propriétaire</h3>
-                <p class="login-notice">⚠️ Cet espace est strictly réservé à l'équipe de la radio pour la gestion des fichiers.</p>
+                <p class="login-notice">⚠️ Cet espace est strictement réservé à l'équipe de la radio pour la gestion des fichiers.</p>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="username">Identifiant :</label>
@@ -330,6 +336,7 @@
         </div>
 
         <main>
+            <!-- Bannière Evénement -->
             <section class="banner-event-octobre">
                 <div class="event-badge">🍂 Émission Spéciale</div>
                 <h2>🎙️ Émission du Midi sur Radio 6</h2>
@@ -358,6 +365,7 @@
                 </div>
             </section>
 
+            <!-- Bannière Recrutement -->
             <section class="banner-recrutement">
                 <div class="banner-text">
                     <h3>🎙️ Venez faire de la radio avec nous !</h3>
@@ -366,6 +374,7 @@
                 <a href="rejoindre.html" class="btn-join-banner">S'inscrire à Radio 6 ➔</a>
             </section>
 
+            <!-- Panneau Admin -->
             <section id="admin-panel" class="admin-card hidden">
                 <h3>🛠️ Panneau de Gestion (Propriétaire)</h3>
                 <p>Ajouter une nouvelle rediffusion (sans limite de taille) :</p>
@@ -401,6 +410,7 @@
                 <button id="btn-logout" class="btn-logout" style="margin-top: 1.5rem;">Se déconnecter</button>
             </section>
 
+            <!-- Lecteur Audio -->
             <section class="player-card">
                 <div class="player-title" id="current-title">🎧 Choisissez une rediffusion ci-dessous</div>
                 <div class="player-status" id="player-status">PRÊT À L'ÉCOUTE</div>
@@ -436,6 +446,7 @@
                 </div>
             </section>
 
+            <!-- Liste des dossiers et podcasts -->
             <section class="podcast-section">
                 <h2>Liste des Rediffusions</h2>
                  
@@ -539,6 +550,7 @@
                 </div>
             </section>
 
+            <!-- Mises à jour -->
             <div class="updates-container">
                 <div class="update-box last">
                     <h4>✅ Dernière mise à jour</h4>
@@ -564,6 +576,7 @@
         </footer>
     </div>
 
+    <!-- Modals -->
     <div id="modal-travaux" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeParamModal('modal-travaux')">&times;</span>
@@ -617,11 +630,14 @@
         </div>
     </div>
 
+    <!-- Scripts Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="translate-pages.js"></script>
     <script src="script.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Gestion du bouton de sourdine du lecteur audio
             const audioPlayer = document.getElementById('main-audio-player');
             const muteBtn = document.getElementById('custom-mute-btn');
             const muteIcon = document.getElementById('mute-icon');
@@ -639,6 +655,7 @@
                 });
             }
 
+            // Gestion de la recherche dans la liste des podcasts
             const searchInput = document.getElementById('search-podcast');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -661,6 +678,7 @@
                 });
             }
 
+            // Tri dynamique des grilles de podcasts
             document.querySelectorAll('.sort-select').forEach(select => {
                 select.addEventListener('change', (e) => {
                     const gridId = e.target.getAttribute('data-grid');
