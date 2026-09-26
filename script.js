@@ -62,116 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- DICTIONNAIRE DE TRADUCTION ---
-    const translations = {
-        fr: {
-            splashBtn: "Entrer dans l'espace rediffusion",
-            navLogin: "Connexion",
-            navHome: "Accueil",
-            navTeam: "L'Équipe",
-            navJoin: "Rejoindre l'équipe",
-            navHelp: "Aide",
-            ready: "PRÊT À L'ÉCOUTE",
-            playing: "LECTURE EN COURS",
-            pause: "PAUSE",
-            choosePodcast: "🎧 Choisissez une rediffusion ci-dessous",
-            noPodcast: "Aucun podcast dans ce dossier.",
-            listenBtn: "Écouter la rediffusion",
-            confirmDelete: "Voulez-vous vraiment supprimer définitivement cette rediffusion ?",
-            sectionTitle: "Liste des Rediffusions",
-            adminTitle: "🛠️ Panneau de Gestion (Propriétaire)",
-            adminSubtitle: "Ajouter une nouvelle rediffusion (via lien Internet Archive) :",
-            lblTitle: "Titre de l'émission :",
-            lblInfo: "Date ou détails :",
-            lblFile: "Lien direct du MP3 :",
-            btnSubmit: "Ajouter le podcast",
-            uploadStatus: "Enregistrement du lien sur le serveur en cours...",
-            btnLogout: "Se déconnecter",
-            settingsTitle: "Réglages Généraux",
-            settingsLang: "Langue :",
-            settingsMedia: "Thème Visuel :",
-            settingsMediaSsn: "Mode Saison (par défaut)",
-            settingsMediaDft: "Mode Sombre",
-            settingsMediaEar: "Mode clair",
-            settingsFont: "Taille de la police :",
-            settingsFontSm: "Petite",
-            settingsFontMd: "Normale",
-            settingsFontLg: "Grande",
-            settingsSave: "Enregistrer les réglages"
-        },
-        en: {
-            splashBtn: "Enter the replay area",
-            navLogin: "Login",
-            navHome: "Home",
-            navTeam: "The Team",
-            navJoin: "Join the team",
-            navHelp: "Help",
-            ready: "READY TO LISTEN",
-            playing: "PLAYING",
-            pause: "PAUSED",
-            choosePodcast: "🎧 Choose a replay below",
-            noPodcast: "No podcasts in this folder.",
-            listenBtn: "Listen to the replay",
-            confirmDelete: "Are you sure you want to permanently delete this replay?",
-            sectionTitle: "Replay List",
-            adminTitle: "🛠️ Management Panel (Owner)",
-            adminSubtitle: "Add a new replay (via Internet Archive link):",
-            lblTitle: "Show title:",
-            lblInfo: "Date or details:",
-            lblFile: "Direct MP3 Link:",
-            btnSubmit: "Add podcast",
-            uploadStatus: "Saving link to server...",
-            btnLogout: "Log out",
-            settingsTitle: "General Settings",
-            settingsLang: "Language:",
-            settingsMedia: "Visual Theme:",
-            settingsMediaSsn: "Season Mode (default)",
-            settingsMediaDft: "Dark Mode",
-            settingsMediaEar: "Light mode",
-            settingsFont: "Font size:",
-            settingsFontSm: "Small",
-            settingsFontMd: "Normal",
-            settingsFontLg: "Large",
-            settingsSave: "Save settings"
-        },
-        es: {
-            splashBtn: "Entrar en el espacio de retransmisión",
-            navLogin: "Conexión",
-            navHome: "Inicio",
-            navTeam: "El Equipo",
-            navJoin: "Unirse al equipo",
-            navHelp: "Ayuda",
-            ready: "LISTO PARA ESCUCHAR",
-            playing: "REPRODUCIENDO",
-            pause: "PAUSA",
-            choosePodcast: "🎧 Elige una retransmisión abajo",
-            noPodcast: "No hay podcasts en esta carpeta.",
-            listenBtn: "Escuchar la retransmisión",
-            confirmDelete: "¿Estás seguro de que quieres eliminar permanentemente esta retransmisión?",
-            sectionTitle: "Lista de Retransmisiones",
-            adminTitle: "🛠️ Panel de Gestión (Propietario)",
-            adminSubtitle: "Añadir una nouvelle retransmisión (vía enlace de Internet Archive):",
-            lblTitle: "Título del programa:",
-            lblInfo: "Fecha o détails:",
-            lblFile: "Enlace directo MP3:",
-            btnSubmit: "Añadir podcast",
-            uploadStatus: "Guardando enlace en el servidor...",
-            btnLogout: "Cerrar sesión",
-            settingsTitle: "Ajustes Générales",
-            settingsLang: "Idioma:",
-            settingsMedia: "Tema Visual:",
-            settingsMediaSsn: "Modo Estación (por defecto)",
-            settingsMediaDft: "Modo Oscuro",
-            settingsMediaEar: "Modo Claro",
-            settingsFont: "Tamaño de fuente:",
-            settingsFontSm: "Pequeña",
-            settingsFontMd: "Normal",
-            settingsFontLg: "Grande",
-            settingsSave: "Guardar ajustes"
-        }
-    };
-
     let currentLang = localStorage.getItem('siteLang') || 'fr';
+
+    // Fonction helper pour récupérer le dictionnaire de traduction (de translate-pages.js)
+    function getTranslation(lang) {
+        const dict = window.translations || typeof translations !== 'undefined' ? translations : {};
+        return dict[lang] || dict['fr'] || {};
+    }
 
     // --- EFFETS ET ANIMATIONS DU MODE SAISON ---
     function applySeasonEffects() {
@@ -312,94 +209,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- TRADUCTIONS ---
     function applyTranslations(lang) {
-        const t = translations[lang];
-        if (!t) return;
+        const t = getTranslation(lang);
 
-        if (btnEnter) btnEnter.innerText = t.splashBtn;
-        if (btnLoginOpen) btnLoginOpen.innerText = t.navLogin;
+        if (btnEnter) btnEnter.innerText = t.splashBtn || "Entrer";
+        if (btnLoginOpen) btnLoginOpen.innerText = t.navLogin || "Connexion";
         
         if (mainNav) {
             const linkHome = mainNav.querySelector('a[href="index.html"]');
-            if (linkHome) linkHome.innerText = t.navHome;
+            if (linkHome) linkHome.innerText = t.navHome || "Accueil";
             
             const linkTeam = mainNav.querySelector('a[href="equipe.html"]');
-            if (linkTeam) linkTeam.innerText = t.navTeam;
+            if (linkTeam) linkTeam.innerText = t.navTeam || "L'Équipe";
 
             const linkJoin = mainNav.querySelector('a[href="rejoindre.html"]');
-            if (linkJoin) linkJoin.innerText = t.navJoin;
+            if (linkJoin) linkJoin.innerText = t.navJoin || "Rejoindre l'équipe";
 
             const linkHelp = mainNav.querySelector('a[href="aide.html"]');
-            if (linkHelp) linkHelp.innerText = t.navHelp;
+            if (linkHelp) linkHelp.innerText = t.navHelp || "Aide";
         }
 
         if (mainAudioPlayer && currentTitle && playerStatus) {
             if (mainAudioPlayer.paused && mainAudioPlayer.currentTime === 0) {
-                currentTitle.innerText = t.choosePodcast;
-                playerStatus.innerText = t.ready;
+                currentTitle.innerText = t.choosePodcast || "🎧 Choisissez une rediffusion ci-dessous";
+                playerStatus.innerText = t.ready || "PRÊT À L'ÉCOUTE";
             } else if (mainAudioPlayer.paused) {
-                playerStatus.innerText = t.pause;
+                playerStatus.innerText = t.pause || "PAUSE";
             } else {
-                playerStatus.innerText = t.playing;
+                playerStatus.innerText = t.playing || "LECTURE EN COURS";
             }
         }
 
         const sectionTitle = document.querySelector('.podcast-section h2');
-        if (sectionTitle) sectionTitle.innerText = t.sectionTitle;
+        if (sectionTitle) sectionTitle.innerText = t.sectionTitle || "Liste des Rediffusions";
 
         if (adminPanel) {
             const adminH3 = adminPanel.querySelector('h3');
-            if (adminH3) adminH3.innerText = t.adminTitle;
+            if (adminH3) adminH3.innerText = t.adminTitle || "🛠️ Panneau de Gestion";
             const adminP = adminPanel.querySelector('p');
-            if (adminP) adminP.innerText = t.adminSubtitle;
+            if (adminP) adminP.innerText = t.adminSubtitle || "";
             const labels = adminPanel.querySelectorAll('.form-group label');
             if (labels.length >= 3) {
-                labels[0].innerText = t.lblTitle;
-                labels[1].innerText = t.lblInfo;
-                labels[2].innerText = t.lblFile;
+                labels[0].innerText = t.lblTitle || "Titre de l'émission :";
+                labels[1].innerText = t.lblInfo || "Date ou détails :";
+                labels[2].innerText = t.lblFile || "Lien direct du MP3 :";
             }
         }
         
-        if (btnSubmitPodcast && !editPodcastId) btnSubmitPodcast.innerText = t.btnSubmit;
-        if (uploadStatus) uploadStatus.innerText = t.uploadStatus;
-        if (btnLogout) btnLogout.innerText = t.btnLogout;
+        if (btnSubmitPodcast && !editPodcastId) btnSubmitPodcast.innerText = t.btnSubmit || "Ajouter le podcast";
+        if (uploadStatus) uploadStatus.innerText = t.uploadStatus || "Enregistrement en cours...";
+        if (btnLogout) btnLogout.innerText = t.btnLogout || "Se déconnecter";
 
         if (modalMenuParam) {
             const settingsH3 = modalMenuParam.querySelector('h3');
-            if (settingsH3) settingsH3.innerHTML = `<i class="fa-solid fa-sliders"></i> ${t.settingsTitle}`;
+            if (settingsH3) settingsH3.innerHTML = `<i class="fa-solid fa-sliders"></i> ${t.settingsTitle || "Réglages Généraux"}`;
             const settingsLabels = modalMenuParam.querySelectorAll('.param-row label');
             if (settingsLabels.length >= 3) {
-                settingsLabels[0].innerHTML = `<i class="fa-solid fa-language"></i> ${t.settingsLang}`;
-                settingsLabels[1].innerHTML = `<i class="fa-solid fa-palette"></i> ${t.settingsMedia}`;
-                settingsLabels[2].innerHTML = `<i class="fa-solid fa-font"></i> ${t.settingsFont}`;
+                settingsLabels[0].innerHTML = `<i class="fa-solid fa-language"></i> ${t.settingsLang || "Langue :"}`;
+                settingsLabels[1].innerHTML = `<i class="fa-solid fa-palette"></i> ${t.settingsMedia || "Thème Visuel :"}`;
+                settingsLabels[2].innerHTML = `<i class="fa-solid fa-font"></i> ${t.settingsFont || "Taille de la police :"}`;
             }
             if (selectTheme && selectTheme.options.length >= 3) {
-                selectTheme.options[0].text = t.settingsMediaSsn;
-                selectTheme.options[1].text = t.settingsMediaDft;
-                selectTheme.options[2].text = t.settingsMediaEar;
+                selectTheme.options[0].text = t.settingsMediaSsn || "Mode Saison";
+                selectTheme.options[1].text = t.settingsMediaDft || "Mode Sombre";
+                selectTheme.options[2].text = t.settingsMediaEar || "Mode clair";
             }
             const saveBtn = modalMenuParam.querySelector('.btn-submit');
-            if (saveBtn) saveBtn.innerText = t.settingsSave;
+            if (saveBtn) saveBtn.innerText = t.settingsSave || "Enregistrer";
         }
 
         if (selectPolice && selectPolice.options.length >= 3) {
-            selectPolice.options[0].text = t.settingsFontSm;
-            selectPolice.options[1].text = t.settingsFontMd;
-            selectPolice.options[2].text = t.settingsFontLg;
+            selectPolice.options[0].text = t.settingsFontSm || "Petite";
+            selectPolice.options[1].text = t.settingsFontMd || "Normale";
+            selectPolice.options[2].text = t.settingsFontLg || "Grande";
         }
     }
 
     // --- BARRE AUDIO PERSONNALISÉE ---
     if (customPlayBtn && mainAudioPlayer) {
         customPlayBtn.addEventListener('click', () => {
-            const t = translations[currentLang];
+            const t = getTranslation(currentLang);
             if (mainAudioPlayer.paused) {
                 mainAudioPlayer.play().catch(err => console.log(err));
                 customPlayBtn.innerText = "⏸";
-                if (playerStatus) playerStatus.innerText = t.playing;
+                if (playerStatus) playerStatus.innerText = t.playing || "LECTURE EN COURS";
             } else {
                 mainAudioPlayer.pause();
                 customPlayBtn.innerText = "▶";
-                if (playerStatus) playerStatus.innerText = t.pause;
+                if (playerStatus) playerStatus.innerText = t.pause || "PAUSE";
             }
         });
 
@@ -420,8 +316,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         mainAudioPlayer.addEventListener('ended', () => {
+            const t = getTranslation(currentLang);
             customPlayBtn.innerText = "▶";
-            if (playerStatus) playerStatus.innerText = translations[currentLang].ready;
+            if (playerStatus) playerStatus.innerText = t.ready || "PRÊT À L'ÉCOUTE";
             if (progressBarFill) progressBarFill.style.width = "0%";
             if (currentTimeDisplay) currentTimeDisplay.innerText = "00:00";
         });
@@ -456,6 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const info = infoInput ? infoInput.value.trim() : "";
             const category = categorySelect ? categorySelect.value : "autres";
 
+            const t = getTranslation(currentLang);
+
             if (editPodcastId) {
                 const { error } = await SupabaseClient
                     .from('podcasts_ia')
@@ -469,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     editPodcastId = null;
                     addPodcastForm.reset();
                     if (btnSubmitPodcast) {
-                        btnSubmitPodcast.innerText = translations[currentLang].btnSubmit;
+                        btnSubmitPodcast.innerText = t.btnSubmit || "Ajouter le podcast";
                         btnSubmitPodcast.style.backgroundColor = "";
                     }
                     loadPodcastsFromSupabase();
@@ -494,6 +393,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadPodcastsFromSupabase() {
+        const t = getTranslation(currentLang);
+
         categoriesList.forEach(cat => {
             const grid = document.getElementById(`grid-${cat}`);
             if (grid) grid.innerHTML = "";
@@ -507,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (error || !podcasts || podcasts.length === 0) {
             categoriesList.forEach(cat => {
                 const grid = document.getElementById(`grid-${cat}`);
-                if (grid) grid.innerHTML = `<p style='color: var(--text-muted); text-align:center; padding:10px;'>${translations[currentLang].noPodcast}</p>`;
+                if (grid) grid.innerHTML = `<p style='color: var(--text-muted); text-align:center; padding:10px;'>${t.noPodcast || "Aucun podcast dans ce dossier."}</p>`;
             });
             rafraichirCompteurs();
             return;
@@ -533,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="podcast-actions-wrapper" style="display: flex; align-items: center;">
                         ${editBtnHtml}
-                        <button class="btn-play" data-url="${pod.url}" data-title="${pod.title}">${translations[currentLang].listenBtn}</button>
+                        <button class="btn-play" data-url="${pod.url}" data-title="${pod.title}">${t.listenBtn || "Écouter la rediffusion"}</button>
                         ${isAdmin ? `<button class="btn-delete" data-id="${pod.id}">&times;</button>` : ''}
                     </div>
                 `;
@@ -581,14 +482,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     mainAudioPlayer.play().catch(err => console.log(err));
                     if (customPlayBtn) customPlayBtn.innerText = "⏸";
                     if (currentTitle) currentTitle.innerText = `▶ ${title}`;
-                    if (playerStatus) playerStatus.innerText = translations[currentLang].playing;
+                    if (playerStatus) playerStatus.innerText = t.playing || "LECTURE EN COURS";
                 }
             });
         });
 
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', async () => {
-                if (confirm(translations[currentLang].confirmDelete)) {
+                if (confirm(t.confirmDelete || "Voulez-vous vraiment supprimer cette rediffusion ?")) {
                     const idToDelete = btn.getAttribute('data-id');
                     const { error } = await SupabaseClient
                         .from('podcasts_ia')
