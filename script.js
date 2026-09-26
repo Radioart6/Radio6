@@ -95,7 +95,7 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 3. BOUTON NOTIFICATIONS DYNAMIQUE (AU-DESSUS DU COMPTE À REBOURS)
+// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE)
 // ==========================================
 function initPushNotifications() {
     if (!('Notification' in window)) return;
@@ -124,19 +124,38 @@ function initPushNotifications() {
     notifBtn.addEventListener('mouseout', () => notifBtn.style.transform = 'translateY(0)');
 
     // Au clic sur le bouton, on demande la permission et on le fait disparaître
-    notifBtn.addEventListener('click', () => {
-        Notification.requestPermission().then((permission) => {
+    notifBtn.addEventListener('click', async () => {
+        try {
+            const permission = await Notification.requestPermission();
             localStorage.setItem('radio6_notif_choice', permission);
             
             if (permission === 'granted') {
-                new Notification("Radio 6", { body: "Merci ! Les notifications sont activées 📻" });
+                // Initialisation de Firebase Messaging si disponible pour récupérer le token
+                if (typeof firebase !== 'undefined' && firebase.messaging) {
+                    const messaging = firebase.messaging();
+                    const token = await messaging.getToken({
+                        vapidKey: "BKDoENEF8vJFkl3IKXpU2cciCI_FWQCfrxtHhxKFP0VF0HggUtNOt08fRlqM0AWBrNZy9yzT25q5grY3YhVeydU"
+                    });
+                    
+                    if (token) {
+                        console.log("Jeton d'appareil (Token FCM) :", token);
+                        // Optionnel : Envoi du token dans Supabase si tu souhaites centraliser les abonnés
+                        await SupabaseClient
+                            .from('tokens_fcm')
+                            .upsert([{ token: token }], { onConflict: 'token' });
+                    }
+                }
+                
+                new Notification("Radio 6", { body: "Merci ! Les notifications de direct sont activées 📻" });
             } else {
                 alert("⚠️ Notifications refusées. Tu pourras les réactiver plus tard dans les réglages de ton navigateur/appareil si tu changes d'avis.");
             }
             
             // Suppression immédiate du bouton après la réponse
             notifContainer.remove();
-        });
+        } catch (error) {
+            console.error("Erreur lors de l'activation des notifications :", error);
+        }
     });
 
     notifContainer.appendChild(notifBtn);
