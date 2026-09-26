@@ -656,15 +656,26 @@
         </div>
     </div>
 
-    <!-- SDK Firebase Compat (Indispensable pour firebase.messaging()) -->
+    <!-- SDK Firebase Compat -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 
-    <!-- Scripts Javascript avec paramètre anti-cache -->
+    <!-- Initialisation de Firebase obligatoire -->
+    <script>
+        firebase.initializeApp({
+          apiKey: "AIzaSyAYBWye8p-yu2l8u4hz4_vCjslA0m3kXxM",
+          authDomain: "radio6-notifications.firebaseapp.com",
+          projectId: "radio6-notifications",
+          storageBucket: "radio6-notifications.firebasestorage.app",
+          messagingSenderId: "58894611602",
+          appId: "1:58894611602:web:04627706b72d4701bee24b"
+        });
+    </script>
+
+    <!-- Scripts Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="translate-pages.js?v=1.5"></script>
     <script src="script.js?v=1.5"></script>
-    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Gestion du bouton de sourdine du lecteur audio
