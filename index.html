@@ -12,7 +12,8 @@
     <link rel="icon" type="image/png" href="logo.png">
     <title>Radio 6 - La Radio d'Art 6</title>
     
-    <link rel="stylesheet" href="style.css">
+    <!-- Ajout du paramètre anti-cache sur le CSS -->
+    <link rel="stylesheet" href="style.css?v=1.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -559,9 +560,9 @@
                 <div class="update-box last">
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
-                        <li>L'annonce de l'émission du 1er octobre a était rajouté sur le site.</li>
-                        <li>Le mode saison a était rajouté par défaut sur le site.</li>
-                        <li>Toute les langues européennes ont était rajouté sur le site.</li>
+                        <li>Ajout d'un vrai bouton interactif pour activer les notifications au-dessus du compte à rebours.</li>
+                        <li>Mise en place d'un système anti-cache pour forcer les mises à jour automatiques du site.</li>
+                        <li>Toutes les langues européennes sont disponibles dans les réglages.</li>
                     </ul>
                 </div>
 
@@ -598,31 +599,31 @@
             <div class="param-row">
                 <label><i class="fa-solid fa-language"></i> Langue :</label>
                 <select id="param-langue">
-    <option value="bg">Български</option>
-    <option value="cs">Čeština</option>
-    <option value="da">Dansk</option>
-    <option value="de">Deutsch</option>
-    <option value="et">Eesti</option>
-    <option value="en">English</option>
-    <option value="es">Español</option>
-    <option value="fr">Français</option>
-    <option value="ga">Gaeilge</option>
-    <option value="hr">Hrvatski</option>
-    <option value="it">Italiano</option>
-    <option value="lv">Latviešu</option>
-    <option value="lt">Lietuvių</option>
-    <option value="hu">Magyar</option>
-    <option value="mt">Malti</option>
-    <option value="nl">Nederlands</option>
-    <option value="pl">Polski</option>
-    <option value="pt">Português</option>
-    <option value="ro">Română</option>
-    <option value="sk">Slovenčina</option>
-    <option value="sl">Slovenščina</option>
-    <option value="fi">Suomi</option>
-    <option value="sv">Svenska</option>
-    <option value="el">Ελληνικά</option>
-</select>
+                    <option value="bg">Български</option>
+                    <option value="cs">Čeština</option>
+                    <option value="da">Dansk</option>
+                    <option value="de">Deutsch</option>
+                    <option value="et">Eesti</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="ga">Gaeilge</option>
+                    <option value="hr">Hrvatski</option>
+                    <option value="it">Italiano</option>
+                    <option value="lv">Latviešu</option>
+                    <option value="lt">Lietuvių</option>
+                    <option value="hu">Magyar</option>
+                    <option value="mt">Malti</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="pl">Polski</option>
+                    <option value="pt">Português</option>
+                    <option value="ro">Română</option>
+                    <option value="sk">Slovenčina</option>
+                    <option value="sl">Slovenščina</option>
+                    <option value="fi">Suomi</option>
+                    <option value="sv">Svenska</option>
+                    <option value="el">Ελληνικά</option>
+                </select>
             </div>
 
             <div class="param-row">
@@ -655,10 +656,10 @@
         </div>
     </div>
 
-    <!-- Scripts Javascript -->
+    <!-- Scripts Javascript avec paramètre anti-cache (?v=1.1) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="translate-pages.js"></script>
-    <script src="script.js"></script>
+    <script src="translate-pages.js?v=1.1"></script>
+    <script src="script.js?v=1.1"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -733,11 +734,11 @@
         });
     </script>
     <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log('PWA prête !'))
-      .catch((err) => console.error('Erreur PWA :', err));
-  }
-</script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log('PWA prête !'))
+          .catch((err) => console.error('Erreur PWA :', err));
+      }
+    </script>
 </body>
 </html>
