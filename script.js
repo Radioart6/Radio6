@@ -6,7 +6,100 @@ const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let editPodcastId = null;
 
+// ==========================================
+// 1. BANDEAU DYNAMIQUE EN DIRECT & COMPTE À REBOURS
+// ==========================================
+function updateLiveBanner() {
+    const banner = document.getElementById('live-banner');
+    if (!banner) return;
+
+    const now = new Date();
+    const day = now.getDay(); // 0 = Dimanche, 4 = Jeudi
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    // Plage horaire du direct : Jeudi de 12h40 (760 min) à 13h25 (805 min)
+    const isThursday = (day === 4);
+    const currentMinutesOfDay = hours * 60 + minutes;
+    const startLive = 12 * 60 + 40;
+    const endLive = 13 * 60 + 25;
+
+    // Pendant la diffusion en direct
+    if (isThursday && currentMinutesOfDay >= startLive && currentMinutesOfDay < endLive) {
+        banner.classList.add('is-live');
+        banner.innerHTML = '🔴 <strong>EN DIRECT EN CE MOMENT !</strong> Écoutez la radio dans le hall ou les foyers.';
+        return;
+    }
+
+    // Hors direct : compte à rebours jusqu'au prochain jeudi 12h40
+    banner.classList.remove('is-live');
+
+    let nextLive = new Date();
+    nextLive.setHours(12, 40, 0, 0);
+
+    let daysUntilThursday = (4 - day + 7) % 7;
+    if (daysUntilThursday === 0 && currentMinutesOfDay >= endLive) {
+        daysUntilThursday = 7;
+    }
+    nextLive.setDate(now.getDate() + daysUntilThursday);
+
+    const diff = nextLive - now;
+
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    const pad = (num) => String(num).padStart(2, '0');
+
+    banner.innerHTML = `⏳ <strong>Prochain direct dans :</strong> ${d}j ${pad(h)}h ${pad(m)}min ${pad(s)}s (Jeudi à 12h40)`;
+}
+
+// ==========================================
+// 2. RACCOURCIS CLAVIER POUR LE LECTEUR AUDIO
+// ==========================================
+function initKeyboardShortcuts() {
+    const audio = document.getElementById('main-audio-player');
+
+    document.addEventListener('keydown', (e) => {
+        const activeElem = document.activeElement;
+        const isInputField = activeElem && (
+            activeElem.tagName === 'INPUT' || 
+            activeElem.tagName === 'TEXTAREA' || 
+            activeElem.tagName === 'SELECT' ||
+            activeElem.isContentEditable
+        );
+
+        if (isInputField || !audio) return;
+
+        // Touche Espace : Play / Pause
+        if (e.code === 'Space') {
+            e.preventDefault();
+            if (audio.paused) {
+                audio.play().catch(err => console.log(err));
+            } else {
+                audio.pause();
+            }
+        } 
+        // Flèche Gauche : Reculer de 10s
+        else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            audio.currentTime = Math.max(0, audio.currentTime - 10);
+        } 
+        // Flèche Droite : Avancer de 10s
+        else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialisation du bandeau et des raccourcis
+    updateLiveBanner();
+    setInterval(updateLiveBanner, 1000);
+    initKeyboardShortcuts();
+
     // --- ÉLÉMENTS UI GLOBAUX ---
     const splashScreen = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
@@ -64,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentLang = localStorage.getItem('siteLang') || 'fr';
 
-    // Fonction helper pour récupérer le dictionnaire de traduction (de translate-pages.js)
+    // Fonction helper pour récupérer le dictionnaire de traduction
     function getTranslation(lang) {
         const dict = window.translations || typeof translations !== 'undefined' ? translations : {};
         return dict[lang] || dict['fr'] || {};
