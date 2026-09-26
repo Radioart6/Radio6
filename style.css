@@ -13,6 +13,59 @@
     --danger: #ef4444;
 }
 
+/* --- ANIMATION & NÉON MODE SAISON --- */
+body.season-mode {
+    background: linear-gradient(-45deg, #180d0a, #2a1208, #3b160b, #150906);
+    background-size: 400% 400%;
+    animation: seasonBgAnimation 16s ease infinite;
+}
+
+@keyframes seasonBgAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body.season-mode .admin-card,
+body.season-mode .player-card,
+body.season-mode .folder-box,
+body.season-mode .banner-recrutement,
+body.season-mode .banner-event-octobre {
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.12);
+}
+
+/* PARTICULES DE SAISON */
+#season-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.season-particle {
+    position: absolute;
+    top: -40px;
+    user-select: none;
+    animation: particleFall linear infinite;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes particleFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0.1;
+    }
+}
+
 /* --- MODE SOMBRE CLASSIQUE (BLEU NUIT / ARDOISE) --- */
 body.dark-mode {
     --bg-color: #0b0f19;
@@ -216,7 +269,6 @@ nav {
     align-items: center;
 }
 
-/* Bouton Burger : MASQUÉ PAR DÉFAUT SUR PC */
 .burger-btn {
     display: none;
     background: transparent;
@@ -227,7 +279,6 @@ nav {
     padding: 5px 10px;
 }
 
-/* Conteneur des liens sur PC */
 .nav-links-container {
     display: flex;
     align-items: center;
@@ -716,11 +767,11 @@ body.font-dyslexic {
 }
 
 /* ==========================================================================
-   12. RESPONSIVE MOBILE (ACTIVATION DU BURGER MENU UNIKEMENT SOUS 992PX)
+   12. RESPONSIVE MOBILE
    ========================================================================== */
 @media (max-width: 992px) {
     .burger-btn {
-        display: block; /* Affiche les 3 traits seulement sur écran étroit */
+        display: block;
     }
 
     .nav-links-container {
