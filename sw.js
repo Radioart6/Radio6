@@ -1,4 +1,4 @@
-const CACHE_NAME = 'radio6-v1.5';
+const CACHE_NAME = 'radio6-v1.6';
 const ASSETS = [
   './',
   './index.html',
@@ -32,11 +32,23 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Interception des requêtes
+// Interception des requêtes : Stratégie "Réseau d'abord" pour forcer les mises à jour auto
 self.addEventListener('fetch', (e) => {
+  // On ignore les requêtes qui ne sont pas en http/https (comme les extensions ou chrome-extension)
+  if (!e.request.url.startsWith('http')) return;
+
   e.respondWith(
-    caches.match(e.request).then((response) => {
-      return response || fetch(e.request);
-    })
+    fetch(e.request)
+      .then((response) => {
+        // Si Internet répond, on met à jour le cache en arrière-plan et on renvoie la nouvelle version fraîche
+        return caches.open(CACHE_NAME).then((cache) => {
+          cache.put(e.request, response.clone());
+          return response;
+        });
+      })
+      .catch(() => {
+        // Si le téléphone n'a plus de réseau du tout, on utilise le cache de secours
+        return caches.match(e.request);
+      })
   );
 });
