@@ -166,7 +166,7 @@ function initPushNotifications() {
             notifContainer.remove();
         } catch (error) {
             console.error("Erreur critique lors de l'activation des notifications :", error);
-            alert("Une erreur est survenue lors de l'activation. Regarde la console pour les détails.");
+            alert("Erreur exacte : " + error.message);
         }
     });
 
