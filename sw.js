@@ -1,4 +1,4 @@
-const CACHE_NAME = 'radio6-v1';
+const CACHE_NAME = 'radio6-v1.2';
 const ASSETS = [
   './',
   './index.html',
