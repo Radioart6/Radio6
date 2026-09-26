@@ -18,10 +18,10 @@ function updateLiveBanner() {
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    // Plage horaire du direct : Jeudi de 12h40 (760 min) à 13h25 (805 min)
+    // Plage horaire du direct : Jeudi de 13h00 (760 min) à 13h25 (805 min)
     const isThursday = (day === 4);
     const currentMinutesOfDay = hours * 60 + minutes;
-    const startLive = 13 * 60 + 00;
+    const startLive = 13 * 60;
     const endLive = 13 * 60 + 25;
 
     // Pendant la diffusion en direct
@@ -52,7 +52,7 @@ function updateLiveBanner() {
 
     const pad = (num) => String(num).padStart(2, '0');
 
-    banner.innerHTML = `⏳ <strong>Prochain direct dans :</strong> ${d}j ${pad(h)}h ${pad(m)}min ${pad(s)}s (Jeudi à 13h00)`;
+    banner.innerHTML = `⏳ <strong>Prochain direct dans :</strong> ${d}j ${pad(h)}h ${pad(m)}min ${pad(s)}s (Jeudi à 12h40)`;
 }
 
 // ==========================================
@@ -157,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentLang = localStorage.getItem('siteLang') || 'fr';
 
-    // Fonction helper pour récupérer le dictionnaire de traduction
     function getTranslation(lang) {
         const dict = window.translations || typeof translations !== 'undefined' ? translations : {};
         return dict[lang] || dict['fr'] || {};
@@ -240,12 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadPodcastsFromSupabase();
 
-    // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
-    document.querySelectorAll('.folder-box h3').forEach(header => {
-        header.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const folderBox = header.closest('.folder-box');
-            const grid = folderBox ? folderBox.querySelector('.podcast-grid') : null;
+    // --- ACCORDÉON DES DOSSIERS DE PODCASTS (CLIC SUR TOUTE LA ZONE) ---
+    document.querySelectorAll('.folder-box').forEach(folderBox => {
+        folderBox.addEventListener('click', (e) => {
+            // Éviter le pliage si l'utilisateur clique sur le filtre de tri ou dans les cartes de podcasts
+            if (e.target.closest('.sort-select') || e.target.closest('.podcast-card')) {
+                return;
+            }
+            const grid = folderBox.querySelector('.podcast-grid');
             if (grid) grid.classList.toggle('hidden');
         });
     });
