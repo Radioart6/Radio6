@@ -21,7 +21,7 @@ function updateLiveBanner() {
     // Plage horaire du direct : Jeudi de 12h40 (760 min) à 13h25 (805 min)
     const isThursday = (day === 4);
     const currentMinutesOfDay = hours * 60 + minutes;
-    const startLive = 12 * 60 + 40;
+    const startLive = 13 * 60 + 00;
     const endLive = 13 * 60 + 25;
 
     // Pendant la diffusion en direct
@@ -35,7 +35,7 @@ function updateLiveBanner() {
     banner.classList.remove('is-live');
 
     let nextLive = new Date();
-    nextLive.setHours(12, 40, 0, 0);
+    nextLive.setHours(13, 00, 0, 0);
 
     let daysUntilThursday = (4 - day + 7) % 7;
     if (daysUntilThursday === 0 && currentMinutesOfDay >= endLive) {
@@ -52,7 +52,7 @@ function updateLiveBanner() {
 
     const pad = (num) => String(num).padStart(2, '0');
 
-    banner.innerHTML = `⏳ <strong>Prochain direct dans :</strong> ${d}j ${pad(h)}h ${pad(m)}min ${pad(s)}s (Jeudi à 12h40)`;
+    banner.innerHTML = `⏳ <strong>Prochain direct dans :</strong> ${d}j ${pad(h)}h ${pad(m)}min ${pad(s)}s (Jeudi à 13h00)`;
 }
 
 // ==========================================
