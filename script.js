@@ -95,54 +95,56 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 3. GESTION INTELLIGENTE DES NOTIFICATIONS AVEC GUIDAGE
+// 3. BOUTON NOTIFICATIONS DYNAMIQUE (AU-DESSUS DU COMPTE À REBOURS)
 // ==========================================
 function initPushNotifications() {
     if (!('Notification' in window)) return;
 
     const notifStatus = localStorage.getItem('radio6_notif_choice');
+    const liveBanner = document.getElementById('live-banner');
 
-    // Si tout est déjà OK, on ne fait rien
-    if (notifStatus === 'granted' || Notification.permission === 'granted') {
-        localStorage.setItem('radio6_notif_choice', 'granted');
+    // Si l'utilisateur a déjà fait son choix ou que la permission est déjà accordée/bloquée, on ne met pas le bouton
+    if (notifStatus || Notification.permission === 'granted' || Notification.permission === 'denied') {
         return;
     }
 
-    // Si l'utilisateur a bloqué les notifications au niveau du navigateur/système
-    if (Notification.permission === 'denied') {
-        localStorage.setItem('radio6_notif_choice', 'denied');
-        
-        const hasSeenHelp = sessionStorage.getItem('radio6_help_seen');
-        if (!hasSeenHelp) {
-            setTimeout(() => {
-                alert("🔔 Les notifications sont actuellement bloquées pour Radio 6.\n\nPour ne rater aucun direct, va dans les paramètres de ton téléphone ou de ton navigateur pour les autoriser !");
-                sessionStorage.setItem('radio6_help_seen', 'true');
-            }, 4000);
-        }
-        return;
-    }
+    if (!liveBanner) return;
 
-    // Si aucun choix n'a encore été fait, on propose d'activer
-    if (!notifStatus || notifStatus === 'default') {
-        setTimeout(() => {
-            if (confirm("🔔 Veux-tu recevoir une notification lors des directs et des nouvelles émissions de Radio 6 ?")) {
-                Notification.requestPermission().then((permission) => {
-                    localStorage.setItem('radio6_notif_choice', permission);
-                    if (permission === 'granted') {
-                        new Notification("Radio 6", { body: "Merci ! Les notifications sont activées 📻" });
-                    } else if (permission === 'denied') {
-                        alert("⚠️ Tu as refusé les notifications. Pour changer d'avis plus tard, tu pourras les réactiver dans les paramètres de ton appareil.");
-                    }
-                });
+    // Création du conteneur du bouton juste au-dessus du bandeau du compte à rebours
+    const notifContainer = document.createElement('div');
+    notifContainer.id = 'notif-prompt-container';
+    notifContainer.style.cssText = 'text-align: center; margin-bottom: 1rem;';
+
+    const notifBtn = document.createElement('button');
+    notifBtn.id = 'btn-enable-notif';
+    notifBtn.innerHTML = '🔔 Activer les notifications de direct';
+    notifBtn.style.cssText = 'background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; border: none; padding: 10px 20px; font-size: 0.95rem; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); transition: transform 0.2s;';
+
+    notifBtn.addEventListener('mouseover', () => notifBtn.style.transform = 'translateY(-2px)');
+    notifBtn.addEventListener('mouseout', () => notifBtn.style.transform = 'translateY(0)');
+
+    // Au clic sur le bouton, on demande la permission et on le fait disparaître
+    notifBtn.addEventListener('click', () => {
+        Notification.requestPermission().then((permission) => {
+            localStorage.setItem('radio6_notif_choice', permission);
+            
+            if (permission === 'granted') {
+                new Notification("Radio 6", { body: "Merci ! Les notifications sont activées 📻" });
             } else {
-                localStorage.setItem('radio6_notif_choice', 'denied');
+                alert("⚠️ Notifications refusées. Tu pourras les réactiver plus tard dans les réglages de ton navigateur/appareil si tu changes d'avis.");
             }
-        }, 3000);
-    }
+            
+            // Suppression immédiate du bouton après la réponse
+            notifContainer.remove();
+        });
+    });
+
+    notifContainer.appendChild(notifBtn);
+    liveBanner.parentNode.insertBefore(notifContainer, liveBanner);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialisation du bandeau, des raccourcis et des notifications
+    // Initialisation du bandeau, des raccourcis et du bouton de notifications
     updateLiveBanner();
     setInterval(updateLiveBanner, 1000);
     initKeyboardShortcuts();
