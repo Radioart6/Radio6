@@ -18,7 +18,7 @@ function updateLiveBanner() {
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    // Plage horaire du direct : Jeudi de 13h00 (760 min) à 13h25 (805 min)
+    // Plage horaire du direct : Jeudi de 13h00 (780 min) à 13h25 (805 min)
     const isThursday = (day === 4);
     const currentMinutesOfDay = hours * 60 + minutes;
     const startLive = 13 * 60;
@@ -31,11 +31,11 @@ function updateLiveBanner() {
         return;
     }
 
-    // Hors direct : compte à rebours jusqu'au prochain jeudi 12h40
+    // Hors direct : compte à rebours jusqu'au prochain jeudi 13h00
     banner.classList.remove('is-live');
 
     let nextLive = new Date();
-    nextLive.setHours(13, 00, 0, 0);
+    nextLive.setHours(13, 0, 0, 0);
 
     let daysUntilThursday = (4 - day + 7) % 7;
     if (daysUntilThursday === 0 && currentMinutesOfDay >= endLive) {
@@ -94,11 +94,50 @@ function initKeyboardShortcuts() {
     });
 }
 
+// ==========================================
+// 3. GESTION INTELLIGENTE DES NOTIFICATIONS
+// ==========================================
+function initPushNotifications() {
+    if (!('Notification' in window)) return;
+
+    const notifStatus = localStorage.getItem('radio6_notif_choice');
+
+    // Si l'utilisateur a déjà accepté, on ne fait rien
+    if (notifStatus === 'granted' || Notification.permission === 'granted') {
+        localStorage.setItem('radio6_notif_choice', 'granted');
+        return;
+    }
+
+    // Si l'utilisateur a refusé, on vérifie si le navigateur a réinitialisé la permission
+    if (Notification.permission === 'denied') {
+        // S'il a redésactivé dans le navigateur, on met à jour le stockage pour pouvoir lui redemander
+        localStorage.setItem('radio6_notif_choice', 'denied');
+        return; // Le navigateur bloque de toute façon les demandes si c'est 'denied'
+    }
+
+    // Si aucun choix n'a été fait (ou si les compteurs ont été remis à zéro)
+    if (!notifStatus || notifStatus === 'default') {
+        setTimeout(() => {
+            if (confirm("🔔 Veux-tu recevoir une notification lors des directs et des nouvelles émissions de Radio 6 ?")) {
+                Notification.requestPermission().then((permission) => {
+                    localStorage.setItem('radio6_notif_choice', permission);
+                    if (permission === 'granted') {
+                        new Notification("Radio 6", { body: "Merci ! Les notifications sont activées 📻" });
+                    }
+                });
+            } else {
+                localStorage.setItem('radio6_notif_choice', 'denied');
+            }
+        }, 3000); // Demande affichée 3 secondes après l'arrivée
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialisation du bandeau et des raccourcis
+    // Initialisation du bandeau, des raccourcis et des notifications
     updateLiveBanner();
     setInterval(updateLiveBanner, 1000);
     initKeyboardShortcuts();
+    initPushNotifications();
 
     // --- ÉLÉMENTS UI GLOBAUX ---
     const splashScreen = document.getElementById('splash-screen');
@@ -242,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ACCORDÉON DES DOSSIERS DE PODCASTS (CLIC SUR TOUTE LA ZONE) ---
     document.querySelectorAll('.folder-box').forEach(folderBox => {
         folderBox.addEventListener('click', (e) => {
-            // Éviter le pliage si l'utilisateur clique sur le filtre de tri ou dans les cartes de podcasts
             if (e.target.closest('.sort-select') || e.target.closest('.podcast-card')) {
                 return;
             }
