@@ -95,19 +95,21 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE) - VERSION CORRIGÉE
+// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE) - SANS LOCALSTORAGE
 // ==========================================
 function initPushNotifications() {
     if (!('Notification' in window)) return;
 
-    const notifStatus = localStorage.getItem('radio6_notif_choice');
-    const liveBanner = document.getElementById('live-banner');
-
-    if (notifStatus || Notification.permission === 'granted' || Notification.permission === 'denied') {
-        return;
+    // On ne bloque plus par rapport au localStorage pour pouvoir tester à l'infini
+    if (Notification.permission === 'granted' && localStorage.getItem('token_saved') === 'true') {
+        return; // Si déjà autorisé ET token déjà sauvegardé, on cache le bouton
     }
 
+    const liveBanner = document.getElementById('live-banner');
     if (!liveBanner) return;
+
+    // Éviter de dupliquer le bouton s'il existe déjà
+    if (document.getElementById('notif-prompt-container')) return;
 
     const notifContainer = document.createElement('div');
     notifContainer.id = 'notif-prompt-container';
@@ -122,7 +124,6 @@ function initPushNotifications() {
         try {
             console.log("Demande de permission des notifications...");
             const permission = await Notification.requestPermission();
-            localStorage.setItem('radio6_notif_choice', permission);
             
             if (permission === 'granted') {
                 console.log("Permission accordée ! Récupération du token Firebase...");
@@ -130,7 +131,6 @@ function initPushNotifications() {
                 if (typeof firebase !== 'undefined' && firebase.messaging) {
                     const messaging = firebase.messaging();
                     
-                    // S'assurer que le service worker est bien prêt
                     const registration = await navigator.serviceWorker.ready;
                     
                     const token = await messaging.getToken({
@@ -141,31 +141,30 @@ function initPushNotifications() {
                     if (token) {
                         console.log("Jeton d'appareil (Token FCM) récupéré avec succès :", token);
                         
-                        // Envoi du token dans Supabase
                         const { error } = await SupabaseClient
                             .from('tokens_fcm')
                             .upsert([{ token: token }], { onConflict: 'token' });
                             
                         if (error) {
-                            console.error("Erreur lors de l'enregistrement du token dans Supabase :", error);
+                            console.error("Erreur Supabase :", error);
+                            alert("Erreur Supabase : " + error.message);
                         } else {
                             console.log("Token enregistré dans Supabase avec succès !");
+                            localStorage.setItem('token_saved', 'true');
+                            notifContainer.remove();
+                            alert("Succès ! Le token est enregistré dans Supabase 📻");
                         }
                     } else {
-                        console.warn("Aucun token FCM n'a été généré.");
+                        alert("Avertissement : Aucun token FCM n'a été généré.");
                     }
                 } else {
-                    console.error("Firebase Messaging n'est pas disponible.");
+                    alert("Erreur : Firebase Messaging n'est pas disponible.");
                 }
-                
-                new Notification("Radio 6", { body: "Merci ! Les notifications de direct sont activées 📻" });
             } else {
-                alert("⚠️ Notifications refusées.");
+                alert("⚠️ Notifications refusées par l'appareil.");
             }
-            
-            notifContainer.remove();
         } catch (error) {
-            console.error("Erreur critique lors de l'activation des notifications :", error);
+            console.error("Erreur critique :", error);
             alert("Erreur exacte : " + error.message);
         }
     });
