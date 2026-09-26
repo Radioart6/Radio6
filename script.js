@@ -95,7 +95,7 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE)
+// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE) - VERSION CORRIGÉE
 // ==========================================
 function initPushNotifications() {
     if (!('Notification' in window)) return;
@@ -103,14 +103,12 @@ function initPushNotifications() {
     const notifStatus = localStorage.getItem('radio6_notif_choice');
     const liveBanner = document.getElementById('live-banner');
 
-    // Si l'utilisateur a déjà fait son choix ou que la permission est déjà accordée/bloquée, on ne met pas le bouton
     if (notifStatus || Notification.permission === 'granted' || Notification.permission === 'denied') {
         return;
     }
 
     if (!liveBanner) return;
 
-    // Création du conteneur du bouton juste au-dessus du bandeau du compte à rebours
     const notifContainer = document.createElement('div');
     notifContainer.id = 'notif-prompt-container';
     notifContainer.style.cssText = 'text-align: center; margin-bottom: 1rem;';
@@ -120,48 +118,61 @@ function initPushNotifications() {
     notifBtn.innerHTML = '🔔 Activer les notifications de direct';
     notifBtn.style.cssText = 'background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; border: none; padding: 10px 20px; font-size: 0.95rem; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); transition: transform 0.2s;';
 
-    notifBtn.addEventListener('mouseover', () => notifBtn.style.transform = 'translateY(-2px)');
-    notifBtn.addEventListener('mouseout', () => notifBtn.style.transform = 'translateY(0)');
-
-    // Au clic sur le bouton, on demande la permission et on le fait disparaître
     notifBtn.addEventListener('click', async () => {
         try {
+            console.log("Demande de permission des notifications...");
             const permission = await Notification.requestPermission();
             localStorage.setItem('radio6_notif_choice', permission);
             
             if (permission === 'granted') {
-                // Initialisation de Firebase Messaging si disponible pour récupérer le token
+                console.log("Permission accordée ! Récupération du token Firebase...");
+                
                 if (typeof firebase !== 'undefined' && firebase.messaging) {
                     const messaging = firebase.messaging();
+                    
+                    // S'assurer que le service worker est bien prêt
+                    const registration = await navigator.serviceWorker.ready;
+                    
                     const token = await messaging.getToken({
-                        vapidKey: "BKDoENEF8vJFkl3IKXpU2cciCI_FWQCfrxtHhxKFP0VF0HggUtNOt08fRlqM0AWBrNZy9yzT25q5grY3YhVeydU"
+                        vapidKey: "BKDoENEF8vJFkl3IKXpU2cciCI_FWQCfrxtHhxKFP0VF0HggUtNOt08fRlqM0AWBrNZy9yzT25q5grY3YhVeydU",
+                        serviceWorkerRegistration: registration
                     });
                     
                     if (token) {
-                        console.log("Jeton d'appareil (Token FCM) :", token);
-                        // Optionnel : Envoi du token dans Supabase si tu souhaites centraliser les abonnés
-                        await SupabaseClient
+                        console.log("Jeton d'appareil (Token FCM) récupéré avec succès :", token);
+                        
+                        // Envoi du token dans Supabase
+                        const { error } = await SupabaseClient
                             .from('tokens_fcm')
                             .upsert([{ token: token }], { onConflict: 'token' });
+                            
+                        if (error) {
+                            console.error("Erreur lors de l'enregistrement du token dans Supabase :", error);
+                        } else {
+                            console.log("Token enregistré dans Supabase avec succès !");
+                        }
+                    } else {
+                        console.warn("Aucun token FCM n'a été généré.");
                     }
+                } else {
+                    console.error("Firebase Messaging n'est pas disponible.");
                 }
                 
                 new Notification("Radio 6", { body: "Merci ! Les notifications de direct sont activées 📻" });
             } else {
-                alert("⚠️ Notifications refusées. Tu pourras les réactiver plus tard dans les réglages de ton navigateur/appareil si tu changes d'avis.");
+                alert("⚠️ Notifications refusées.");
             }
             
-            // Suppression immédiate du bouton après la réponse
             notifContainer.remove();
         } catch (error) {
-            console.error("Erreur lors de l'activation des notifications :", error);
+            console.error("Erreur critique lors de l'activation des notifications :", error);
+            alert("Une erreur est survenue lors de l'activation. Regarde la console pour les détails.");
         }
     });
 
     notifContainer.appendChild(notifBtn);
     liveBanner.parentNode.insertBefore(notifContainer, liveBanner);
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     // Initialisation du bandeau, des raccourcis et du bouton de notifications
     updateLiveBanner();
