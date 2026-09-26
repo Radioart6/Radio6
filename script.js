@@ -18,7 +18,7 @@ function updateLiveBanner() {
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    // Plage horaire du direct : Jeudi de 13h00 (780 min) à 13h25 (805 min)
+    // Plage horaire du direct : Jeudi de 13h00 (760 min) à 13h25 (805 min)
     const isThursday = (day === 4);
     const currentMinutesOfDay = hours * 60 + minutes;
     const startLive = 13 * 60;
@@ -95,27 +95,34 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 3. GESTION INTELLIGENTE DES NOTIFICATIONS
+// 3. GESTION INTELLIGENTE DES NOTIFICATIONS AVEC GUIDAGE
 // ==========================================
 function initPushNotifications() {
     if (!('Notification' in window)) return;
 
     const notifStatus = localStorage.getItem('radio6_notif_choice');
 
-    // Si l'utilisateur a déjà accepté, on ne fait rien
+    // Si tout est déjà OK, on ne fait rien
     if (notifStatus === 'granted' || Notification.permission === 'granted') {
         localStorage.setItem('radio6_notif_choice', 'granted');
         return;
     }
 
-    // Si l'utilisateur a refusé, on vérifie si le navigateur a réinitialisé la permission
+    // Si l'utilisateur a bloqué les notifications au niveau du navigateur/système
     if (Notification.permission === 'denied') {
-        // S'il a redésactivé dans le navigateur, on met à jour le stockage pour pouvoir lui redemander
         localStorage.setItem('radio6_notif_choice', 'denied');
-        return; // Le navigateur bloque de toute façon les demandes si c'est 'denied'
+        
+        const hasSeenHelp = sessionStorage.getItem('radio6_help_seen');
+        if (!hasSeenHelp) {
+            setTimeout(() => {
+                alert("🔔 Les notifications sont actuellement bloquées pour Radio 6.\n\nPour ne rater aucun direct, va dans les paramètres de ton téléphone ou de ton navigateur pour les autoriser !");
+                sessionStorage.setItem('radio6_help_seen', 'true');
+            }, 4000);
+        }
+        return;
     }
 
-    // Si aucun choix n'a été fait (ou si les compteurs ont été remis à zéro)
+    // Si aucun choix n'a encore été fait, on propose d'activer
     if (!notifStatus || notifStatus === 'default') {
         setTimeout(() => {
             if (confirm("🔔 Veux-tu recevoir une notification lors des directs et des nouvelles émissions de Radio 6 ?")) {
@@ -123,12 +130,14 @@ function initPushNotifications() {
                     localStorage.setItem('radio6_notif_choice', permission);
                     if (permission === 'granted') {
                         new Notification("Radio 6", { body: "Merci ! Les notifications sont activées 📻" });
+                    } else if (permission === 'denied') {
+                        alert("⚠️ Tu as refusé les notifications. Pour changer d'avis plus tard, tu pourras les réactiver dans les paramètres de ton appareil.");
                     }
                 });
             } else {
                 localStorage.setItem('radio6_notif_choice', 'denied');
             }
-        }, 3000); // Demande affichée 3 secondes après l'arrivée
+        }, 3000);
     }
 }
 
