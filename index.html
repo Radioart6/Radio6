@@ -12,8 +12,8 @@
     <link rel="icon" type="image/png" href="logo.png">
     <title>Radio 6 - La Radio d'Art 6</title>
     
-    <!-- Ajout du paramètre anti-cache sur le CSS -->
-    <link rel="stylesheet" href="style.css?v=1.5">
+    <!-- Paramètre anti-cache CSS -->
+    <link rel="stylesheet" href="style.css?v=1.6">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -321,7 +321,7 @@
             <div class="modal-content">
                 <span id="btn-login-close" class="close-modal">&times;</span>
                 <h3>Connexion Propriétaire</h3>
-                <p class="login-notice">⚠️ Cet espace est strictly réservé à l'équipe de la radio pour la gestion des fichiers.</p>
+                <p class="login-notice">⚠️ Cet espace est strictement réservé à l'équipe de la radio pour la gestion des fichiers.</p>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="username">Identifiant :</label>
@@ -456,7 +456,7 @@
                 <h2>Liste des Rediffusions</h2>
                  
                 <div class="search-container" style="margin-bottom: 1.5rem;">
-                    <input type="text" id="search-podcast" placeholder="🔍 Rechercher une émission par son titre ou sa description en tapant ici...">
+                    <input type="text" id="search-podcast" placeholder="🔍 Rechercher une émission par son titre ou sa description...">
                 </div>
 
                 <div class="folder-container">
@@ -560,16 +560,16 @@
                 <div class="update-box last">
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
-                        <li>Ajout d'un vrai bouton interactif pour activer les notifications au-dessus du compte à rebours.</li>
-                        <li>On a maintenant une application pour la Radio.</li>
-                        <li>Toutes les langues européennes sont disponibles dans les réglages.</li>
+                        <li>Recherche dynamique instantanée sans avoir besoin d'ouvrir les dossiers.</li>
+                        <li>Ajout d'un bouton interactif pour activer les notifications de direct.</li>
+                        <li>Application web (PWA) prête à être installée.</li>
                     </ul>
                 </div>
 
                 <div class="update-box next">
                     <h4>🚀 Prochaine mise à jour</h4>
                     <ul>
-                        <li>On aimerais envoyer des notification.</li>
+                        <li>Amélioration de l'espace de messagerie et de dédicaces pour les directs.</li>
                     </ul>
                 </div>
             </div>
@@ -586,7 +586,7 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeParamModal('modal-travaux')">&times;</span>
             <h3 style="color: #f59e0b; font-size: 1.4rem; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> Zone en travaux</h3>
-            <p class="param-notice">Cette section est actuellement en cours de développement ou nécessite des privilèges élevés pour être pleinement fonctionnelle.</p>
+            <p class="param-notice">Cette section est actuellement en cours de développement.</p>
         </div>
     </div>
 
@@ -660,7 +660,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 
-    <!-- Initialisation de Firebase obligatoire -->
+    <!-- Initialisation Firebase -->
     <script>
         firebase.initializeApp({
           apiKey: "AIzaSyAYBWye8p-yu2l8u4hz4_vCjslA0m3kXxM",
@@ -674,11 +674,11 @@
 
     <!-- Scripts Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="translate-pages.js?v=1.5"></script>
-    <script src="script.js?v=1.5"></script>
+    <script src="translate-pages.js?v=1.6"></script>
+    <script src="script.js?v=1.6"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Gestion du bouton de sourdine du lecteur audio
+            // Gestion de la sourdine
             const audioPlayer = document.getElementById('main-audio-player');
             const muteBtn = document.getElementById('custom-mute-btn');
             const muteIcon = document.getElementById('mute-icon');
@@ -696,30 +696,7 @@
                 });
             }
 
-            // Gestion de la recherche dans la liste des podcasts
-            const searchInput = document.getElementById('search-podcast');
-            if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    const query = e.target.value.toLowerCase().trim();
-                    const podcastCards = document.querySelectorAll('.podcast-card');
-
-                    podcastCards.forEach(card => {
-                        const titleEl = card.querySelector('h3') || card.querySelector('.podcast-title');
-                        const infoEl = card.querySelector('p') || card.querySelector('.podcast-info');
-                        
-                        const title = titleEl ? titleEl.textContent.toLowerCase() : '';
-                        const info = infoEl ? infoEl.textContent.toLowerCase() : '';
-                        
-                        if (title.includes(query) || info.includes(query)) {
-                            card.style.display = 'flex';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            }
-
-            // Tri dynamique des grilles de podcasts
+            // Tri dynamique des grilles
             document.querySelectorAll('.sort-select').forEach(select => {
                 select.addEventListener('change', (e) => {
                     const gridId = e.target.getAttribute('data-grid');
@@ -747,13 +724,12 @@
                 });
             });
         });
-    </script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log('PWA prête !'))
-          .catch((err) => console.error('Erreur PWA :', err));
-      }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+              .then(() => console.log('PWA prête !'))
+              .catch((err) => console.error('Erreur PWA :', err));
+        }
     </script>
 </body>
 </html>
