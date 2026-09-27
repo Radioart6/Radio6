@@ -6,6 +6,34 @@ const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let editPodcastId = null;
 
+
+// ==========================================
+// HORLOGE EN TEMPS RÉEL (DATE ET HEURE)
+// ==========================================
+function initHeaderClock() {
+    const logoArea = document.querySelector('.logo-area');
+    if (!logoArea || document.getElementById('header-datetime')) return;
+
+    const clockContainer = document.createElement('div');
+    clockContainer.id = 'header-datetime';
+    clockContainer.className = 'header-datetime';
+    logoArea.appendChild(clockContainer);
+
+    function updateClock() {
+        const now = new Date();
+        const optionsDate = { weekday: 'short', day: 'numeric', month: 'short' };
+        const dateStr = now.toLocaleDateString('fr-FR', optionsDate);
+        const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        clockContainer.innerHTML = `
+            <span class="dt-date">${dateStr}</span>
+            <span class="dt-time">${timeStr}</span>
+        `;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+}
 // ==========================================
 // 1. BANDEAU DYNAMIQUE EN DIRECT & COMPTE À REBOURS
 // ==========================================
@@ -173,6 +201,7 @@ function initPushNotifications() {
     liveBanner.parentNode.insertBefore(notifContainer, liveBanner);
 }
 document.addEventListener('DOMContentLoaded', () => {
+    initHeaderClock();
     // Initialisation du bandeau, des raccourcis et du bouton de notifications
     updateLiveBanner();
     setInterval(updateLiveBanner, 1000);
