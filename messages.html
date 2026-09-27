@@ -6,66 +6,196 @@
     <title>Chat & Messages - Radio 6</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* STYLES DU CHAT & COMPTE À REBOURS */
+        .chat-countdown-card {
+            background: linear-gradient(135deg, rgba(40, 23, 17, 0.9) 0%, rgba(24, 13, 10, 0.95) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(234, 88, 12, 0.15);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            max-width: 650px;
+            margin: 2rem auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem auto;
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: var(--accent);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+
+        .countdown-grid {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .time-block {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            min-width: 75px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .time-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent);
+            font-family: monospace, monospace;
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 6px;
+        }
+
+        .date-badge {
+            display: inline-block;
+            background: rgba(234, 88, 12, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .chat-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .chat-messages {
+            height: 350px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
 </head>
-<body>
+<body class="season-mode">
 
     <header>
-            <div class="logo-area">
-                <img src="logo.png" alt="Radio 6" class="header-logo">
-                <div>
-                    <strong class="site-title">RADIO 6</strong><br>
-                    <small class="site-subtitle">Lycée Arcisse de Caumont</small>
-                </div>
+        <div class="logo-area">
+            <img src="LogoArt6automne.png" alt="Radio 6" class="header-logo">
+            <div>
+                <strong class="site-title">RADIO 6</strong><br>
+                <small class="site-subtitle">Lycée Arcisse de Caumont</small>
             </div>
-            
-            <nav id="main-nav">
-                <button id="burger-menu-btn" class="burger-btn" title="Menu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
+        </div>
+        
+        <nav id="main-nav">
+            <button id="burger-menu-btn" class="burger-btn" title="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
-                <div id="nav-links" class="nav-links-container">
-                    <button id="btn-login-open" class="btn-nav-login">Connexion</button>
-                    <a href="index.html">Accueil</a>
-                    <a href="equipe.html">L'Équipe</a>
-                    <a href="rejoindre.html">Rejoindre l'équipe</a>
-                    <a href="aide.html">Aide</a>
-                    <a href="calendrier.html">🗓️ Calendrier</a>
-                    <a href="messages.html"class="active"> Chat d'émission</a>
-                    <a href="instagram.html">Instagram</a>
-                    
-                    <a href="notifications.html" id="lien-cloche" class="hidden" style="position: relative; text-decoration: none; display: inline-flex; align-items: center;" title="Voir les candidatures">
-                        🔔 <span id="badge-notif" style="display: none; background: #ef4444; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 50%; position: absolute; top: -6px; right: -8px; font-weight: bold;">0</span>
-                    </a>
+            <div id="nav-links" class="nav-links-container">
+                <button id="btn-login-open" class="btn-nav-login">Connexion</button>
+                <a href="index.html">Accueil</a>
+                <a href="equipe.html">L'Équipe</a>
+                <a href="rejoindre.html">Rejoindre l'équipe</a>
+                <a href="aide.html">Aide</a>
+                <a href="calendrier.html">🗓️ Calendrier</a>
+                <a href="messages.html" class="active">Chat d'émission</a>
+                <a href="instagram.html">Instagram</a>
+                
+                <a href="notifications.html" id="lien-cloche" class="hidden" style="position: relative; text-decoration: none; display: inline-flex; align-items: center;" title="Voir les candidatures">
+                    🔔 <span id="badge-notif" style="display: none; background: #ef4444; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 50%; position: absolute; top: -6px; right: -8px; font-weight: bold;">0</span>
+                </a>
 
-                    <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
-                </div>
-            </nav>
-        </header>
+                <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </nav>
+    </header>
 
     <main>
-        <!-- MESSAGE POUR LES VISITEURS NON CONNECTÉS -->
-        <div id="access-blocked" class="admin-card" style="text-align: center; padding: 3rem 1.5rem; margin-top: 2rem;">
-            <i class="fa-solid fa-clock" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;"></i>
-            <h2>Espace Chat & Messages</h2>
-            <p style="font-size: 1.2rem; font-weight: bold; color: var(--text); margin-top: 1rem;">
-                Cette page sera disponible le jeudi 1er octobre à 12h45.
+        <!-- CARTE AVEC TIMER POUR LES VISITEURS NON CONNECTÉS -->
+        <div id="access-blocked" class="chat-countdown-card">
+            <div class="chat-icon-wrapper">
+                <i class="fa-solid fa-comments"></i>
+            </div>
+            <h2 style="font-size: 1.8rem; margin: 0 0 0.5rem 0; color: var(--text);">Espace Chat d'Émission</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+                Le salon de discussion ouvrira ses portes en direct très bientôt !
+            </p>
+
+            <div class="date-badge">
+                <i class="fa-regular fa-calendar-check"></i> Ouverture : Jeudi 1er octobre à 12h45
+            </div>
+
+            <!-- BLOCS DU COMPTE À REBOURS -->
+            <div class="countdown-grid">
+                <div class="time-block">
+                    <div id="cd-days" class="time-number">00</div>
+                    <div class="time-label">Jours</div>
+                </div>
+                <div class="time-block">
+                    <div id="cd-hours" class="time-number">00</div>
+                    <div class="time-label">Heures</div>
+                </div>
+                <div class="time-block">
+                    <div id="cd-minutes" class="time-number">00</div>
+                    <div class="time-label">Min</div>
+                </div>
+                <div class="time-block">
+                    <div id="cd-seconds" class="time-number">00</div>
+                    <div class="time-label">Sec</div>
+                </div>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                Connectez-vous en tant qu'administrateur pour accéder au panneau d'aperçu.
             </p>
         </div>
 
-        <!-- CONTENU DU CHAT (VISIBLE UNIQUEMENT SI CONNECTÉ) -->
+        <!-- CONTENU DU CHAT (AUTORISÉ UNIQUEMENT SI CONNECTÉ) -->
         <div id="access-granted" class="hidden">
-            <div class="admin-card">
-                <h2><i class="fa-solid fa-comments"></i> Espace Chat en Direct</h2>
-                <p>Bienvenue dans l'espace de discussion de la station.</p>
-                <hr style="border-color: rgba(255,255,255,0.1); margin: 1.5rem 0;">
-                
-                <div id="chat-box" style="height: 300px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">
-                    <p style="color: var(--text-muted); text-align: center;">Début de la conversation...</p>
+            <div class="chat-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 style="margin: 0; font-size: 1.4rem;"><i class="fa-solid fa-comments" style="color: var(--accent);"></i> Salon de Discussion en Direct</h2>
+                    <span style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                        🟢 Aperçu Admin
+                    </span>
+                </div>
+
+                <div id="chat-box" class="chat-messages">
+                    <div style="text-align: center; color: var(--text-muted); margin-top: 3rem;">
+                        <i class="fa-solid fa-lock-open" style="font-size: 2.2rem; margin-bottom: 0.8rem; color: var(--accent);"></i>
+                        <p style="margin: 0;">Bienvenue dans le salon de discussion ! Les messages des auditeurs s'afficheront ici lors du direct.</p>
+                    </div>
                 </div>
 
                 <form id="chat-form" style="display: flex; gap: 10px;">
-                    <input type="text" id="chat-input" placeholder="Écrivez votre message..." style="flex: 1; padding: 0.8rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: var(--bg-color); color: var(--text);" required>
-                    <button type="submit" class="btn-admin-action" style="align-self: center;">Envoyer</button>
+                    <input type="text" id="chat-input" placeholder="Écrivez un message..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: var(--bg-color); color: var(--text);" required>
+                    <button type="submit" class="btn-admin-action" style="padding: 0 1.5rem; align-self: stretch;">Envoyer</button>
                 </form>
             </div>
         </div>
@@ -78,8 +208,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
     <script>
-        // Vérification de la connexion de l'administrateur
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. Vérification du mode admin
             const isAdmin = sessionStorage.getItem('adminMode') === 'true';
             const blockedDiv = document.getElementById('access-blocked');
             const grantedDiv = document.getElementById('access-granted');
@@ -88,6 +218,48 @@
                 if (blockedDiv) blockedDiv.classList.add('hidden');
                 if (grantedDiv) grantedDiv.classList.remove('hidden');
             }
+
+            // 2. Gestion du compte à rebours dynamique
+            // Cible : Jeudi 1er octobre à 12h45
+            const targetDate = new Date();
+            targetDate.setFullYear(2026, 9, 1); // 9 = Octobre
+            targetDate.setHours(12, 45, 0, 0);
+
+            function updateCountdown() {
+                const now = new Date();
+                const diff = targetDate - now;
+
+                if (diff <= 0) {
+                    if (blockedDiv) {
+                        blockedDiv.innerHTML = `
+                            <div class="chat-icon-wrapper"><i class="fa-solid fa-door-open"></i></div>
+                            <h2 style="color: var(--text);">Le Chat est ouvert !</h2>
+                            <p style="color: var(--text-muted);">Rechargez la page pour participer à la discussion.</p>
+                        `;
+                    }
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                const pad = (n) => String(n).padStart(2, '0');
+
+                const elDays = document.getElementById('cd-days');
+                const elHours = document.getElementById('cd-hours');
+                const elMin = document.getElementById('cd-minutes');
+                const elSec = document.getElementById('cd-seconds');
+
+                if (elDays) elDays.textContent = pad(days);
+                if (elHours) elHours.textContent = pad(hours);
+                if (elMin) elMin.textContent = pad(minutes);
+                if (elSec) elSec.textContent = pad(seconds);
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
         });
     </script>
 </body>
