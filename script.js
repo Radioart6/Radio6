@@ -5,131 +5,33 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let editPodcastId = null;
-const categoriesList = ['loisir-sport', 'touristique', 'actualites-infos', 'en-classe', 'culture', 'portrait', 'autres'];
 
 // ==========================================
-// 1. HORLOGE EN TEMPS RÉEL (DATE ET HEURE)
-// ==========================================
-function initHeaderClock() {
-    const logoArea = document.querySelector('.logo-area');
-    if (!logoArea || document.getElementById('header-datetime')) return;
-
-    const clockContainer = document.createElement('div');
-    clockContainer.id = 'header-datetime';
-    clockContainer.className = 'header-datetime';
-    logoArea.appendChild(clockContainer);
-
-    function updateClock() {
-        const now = new Date();
-        const optionsDate = { weekday: 'short', day: 'numeric', month: 'short' };
-        const dateStr = now.toLocaleDateString('fr-FR', optionsDate);
-        const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-        clockContainer.innerHTML = `
-            <span class="dt-date">${dateStr}</span>
-            <span class="dt-time">${timeStr}</span>
-        `;
-    }
-
-    updateClock();
-    setInterval(updateClock, 1000);
-}
-
-// ==========================================
-// 2. LECTEUR PERSISTANT ET NAVIGATION FLUIDE (SPA)
-// ==========================================
-function makePlayerPersistent() {
-    const playerCard = document.querySelector('.player-card');
-    if (playerCard && playerCard.parentElement !== document.body) {
-        document.body.appendChild(playerCard);
-    }
-}
-
-function initSeamlessNavigation() {
-    document.addEventListener('click', async (e) => {
-        const link = e.target.closest('a');
-        if (!link) return;
-
-        const href = link.getAttribute('href');
-
-        if (href && href.endsWith('.html') && !href.startsWith('http') && !link.hasAttribute('target')) {
-            e.preventDefault();
-
-            if (window.location.pathname.endsWith(href)) return;
-
-            try {
-                const response = await fetch(href);
-                if (!response.ok) throw new Error("Page non trouvée");
-                const htmlText = await response.text();
-                const parser = new DOMParser();
-                const newDoc = parser.parseFromString(htmlText, 'text/html');
-
-                const newMain = newDoc.querySelector('main');
-                const currentMain = document.querySelector('main');
-
-                if (newMain && currentMain) {
-                    currentMain.innerHTML = newMain.innerHTML;
-                    window.history.pushState({}, '', href);
-
-                    document.querySelectorAll('#nav-links a').forEach(a => {
-                        if (a.getAttribute('href') === href) {
-                            a.classList.add('active');
-                        } else {
-                            a.classList.remove('active');
-                        }
-                    });
-
-                    window.scrollTo(0, 0);
-                    reinitPageModules();
-                }
-            } catch (err) {
-                window.location.href = href;
-            }
-        }
-    });
-
-    window.addEventListener('popstate', () => {
-        location.reload();
-    });
-}
-
-function reinitPageModules() {
-    initFolderAccordions();
-    initSearchFilter();
-    initSpeedControls();
-    updateLiveBanner();
-    
-    const currentLang = localStorage.getItem('siteLang') || 'fr';
-    applyTranslations(currentLang);
-
-    if (document.querySelector('.podcast-section')) {
-        loadPodcastsFromSupabase();
-    }
-}
-
-// ==========================================
-// 3. BANDEAU DYNAMIQUE EN DIRECT & COMPTE À REBOURS
+// 1. BANDEAU DYNAMIQUE EN DIRECT & COMPTE À REBOURS
 // ==========================================
 function updateLiveBanner() {
     const banner = document.getElementById('live-banner');
     if (!banner) return;
 
     const now = new Date();
-    const day = now.getDay();
+    const day = now.getDay(); // 0 = Dimanche, 4 = Jeudi
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
+    // Plage horaire du direct : Jeudi de 13h00 (760 min) à 13h25 (805 min)
     const isThursday = (day === 4);
     const currentMinutesOfDay = hours * 60 + minutes;
     const startLive = 13 * 60;
     const endLive = 13 * 60 + 25;
 
+    // Pendant la diffusion en direct
     if (isThursday && currentMinutesOfDay >= startLive && currentMinutesOfDay < endLive) {
         banner.classList.add('is-live');
         banner.innerHTML = '🔴 <strong>EN DIRECT EN CE MOMENT !</strong> Écoutez la radio dans le hall ou les foyers.';
         return;
     }
 
+    // Hors direct : compte à rebours jusqu'au prochain jeudi 13h00
     banner.classList.remove('is-live');
 
     let nextLive = new Date();
@@ -154,7 +56,7 @@ function updateLiveBanner() {
 }
 
 // ==========================================
-// 4. RACCOURCIS CLAVIER
+// 2. RACCOURCIS CLAVIER POUR LE LECTEUR AUDIO
 // ==========================================
 function initKeyboardShortcuts() {
     const audio = document.getElementById('main-audio-player');
@@ -170,6 +72,7 @@ function initKeyboardShortcuts() {
 
         if (isInputField || !audio) return;
 
+        // Touche Espace : Play / Pause
         if (e.code === 'Space') {
             e.preventDefault();
             if (audio.paused) {
@@ -178,10 +81,12 @@ function initKeyboardShortcuts() {
                 audio.pause();
             }
         } 
+        // Flèche Gauche : Reculer de 10s
         else if (e.key === 'ArrowLeft') {
             e.preventDefault();
             audio.currentTime = Math.max(0, audio.currentTime - 10);
         } 
+        // Flèche Droite : Avancer de 10s
         else if (e.key === 'ArrowRight') {
             e.preventDefault();
             audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
@@ -190,17 +95,21 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 5. NOTIFICATIONS PUSH
+// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE) - SANS LOCALSTORAGE
 // ==========================================
 function initPushNotifications() {
-    if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+    if (!('Notification' in window)) return;
 
+    // On ne bloque plus par rapport au localStorage pour pouvoir tester à l'infini
     if (Notification.permission === 'granted' && localStorage.getItem('token_saved') === 'true') {
-        return;
+        return; // Si déjà autorisé ET token déjà sauvegardé, on cache le bouton
     }
 
     const liveBanner = document.getElementById('live-banner');
-    if (!liveBanner || document.getElementById('notif-prompt-container')) return;
+    if (!liveBanner) return;
+
+    // Éviter de dupliquer le bouton s'il existe déjà
+    if (document.getElementById('notif-prompt-container')) return;
 
     const notifContainer = document.createElement('div');
     notifContainer.id = 'notif-prompt-container';
@@ -213,129 +122,62 @@ function initPushNotifications() {
 
     notifBtn.addEventListener('click', async () => {
         try {
+            console.log("Demande de permission des notifications...");
             const permission = await Notification.requestPermission();
+            
             if (permission === 'granted') {
-                const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
-                await navigator.serviceWorker.ready;
+                console.log("Permission accordée ! Récupération du token Firebase...");
                 
                 if (typeof firebase !== 'undefined' && firebase.messaging) {
                     const messaging = firebase.messaging();
+                    
+                    const registration = await navigator.serviceWorker.ready;
+                    
                     const token = await messaging.getToken({
                         vapidKey: "BKDoENEF8vJFkl3IKXpU2cciCI_FWQCfrxtHhxKFP0VF0HggUtNOt08fRlqM0AWBrNZy9yzT25q5grY3YhVeydU",
                         serviceWorkerRegistration: registration
                     });
                     
                     if (token) {
+                        console.log("Jeton d'appareil (Token FCM) récupéré avec succès :", token);
+                        
                         const { error } = await SupabaseClient
                             .from('tokens_fcm')
                             .upsert([{ token: token }], { onConflict: 'token' });
                             
                         if (error) {
+                            console.error("Erreur Supabase :", error);
                             alert("Erreur Supabase : " + error.message);
                         } else {
+                            console.log("Token enregistré dans Supabase avec succès !");
                             localStorage.setItem('token_saved', 'true');
                             notifContainer.remove();
-                            alert("Succès ! Ton téléphone est enregistré pour recevoir les directs 📻");
+                            alert("Succès ! Le token est enregistré dans Supabase 📻");
                         }
+                    } else {
+                        alert("Avertissement : Aucun token FCM n'a été généré.");
                     }
+                } else {
+                    alert("Erreur : Firebase Messaging n'est pas disponible.");
                 }
+            } else {
+                alert("⚠️ Notifications refusées par l'appareil.");
             }
         } catch (error) {
-            console.error("Erreur notifications :", error);
+            console.error("Erreur critique :", error);
+            alert("Erreur exacte : " + error.message);
         }
     });
 
     notifContainer.appendChild(notifBtn);
     liveBanner.parentNode.insertBefore(notifContainer, liveBanner);
 }
-
-// ==========================================
-// 6. DOSSIERS, RECHERCHE & VITESSE
-// ==========================================
-function initFolderAccordions() {
-    document.querySelectorAll('.folder-box').forEach(folderBox => {
-        folderBox.onclick = (e) => {
-            if (e.target.closest('.sort-select') || e.target.closest('.podcast-card')) {
-                return;
-            }
-            const grid = folderBox.querySelector('.podcast-grid');
-            if (grid) grid.classList.toggle('hidden');
-        };
-    });
-}
-
-function initSearchFilter() {
-    const searchInput = document.getElementById('search-podcast');
-    if (!searchInput) return;
-
-    searchInput.oninput = (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        const folderBoxes = document.querySelectorAll('.folder-box');
-
-        folderBoxes.forEach(folder => {
-            const header = folder.querySelector('.folder-header');
-            const grid = folder.querySelector('.podcast-grid');
-            const cards = folder.querySelectorAll('.podcast-card');
-
-            if (query === '') {
-                if (header) header.style.display = 'flex';
-                if (grid) grid.classList.add('hidden');
-                folder.style.display = 'block';
-                cards.forEach(card => card.style.display = 'flex');
-            } else {
-                if (header) header.style.display = 'none';
-                if (grid) grid.classList.remove('hidden');
-
-                let visibleCount = 0;
-                cards.forEach(card => {
-                    const titleEl = card.querySelector('h3');
-                    const infoEl = card.querySelector('p');
-                    const title = titleEl ? titleEl.textContent.toLowerCase() : '';
-                    const info = infoEl ? infoEl.textContent.toLowerCase() : '';
-
-                    if (title.includes(query) || info.includes(query)) {
-                        card.style.display = 'flex';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-                folder.style.display = (visibleCount > 0) ? 'block' : 'none';
-            }
-        });
-    };
-}
-
-function initSpeedControls() {
-    document.querySelectorAll('.speed-btn').forEach(btn => {
-        btn.onclick = (e) => {
-            const speed = parseFloat(e.target.getAttribute('data-speed'));
-            const mainAudio = document.getElementById('main-audio-player');
-            if (mainAudio) mainAudio.playbackRate = speed;
-
-            const container = e.target.closest('.speed-controls');
-            if (container) {
-                container.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-        };
-    });
-}
-
-// ==========================================
-// 7. INITIALISATION DU SCRIPT AU CHARGEMENT
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    makePlayerPersistent();
-    initHeaderClock();
-    initSeamlessNavigation();
+    // Initialisation du bandeau, des raccourcis et du bouton de notifications
     updateLiveBanner();
     setInterval(updateLiveBanner, 1000);
     initKeyboardShortcuts();
     initPushNotifications();
-    initFolderAccordions();
-    initSearchFilter();
-    initSpeedControls();
 
     // --- ÉLÉMENTS UI GLOBAUX ---
     const splashScreen = document.getElementById('splash-screen');
@@ -351,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addPodcastForm = document.getElementById('add-podcast-form');
     const btnSubmitPodcast = document.getElementById('btn-submit-podcast');
     const uploadStatus = document.getElementById('upload-status');
+    const mainNav = document.getElementById('main-nav');
 
     // Réglages
     const paramBtn = document.getElementById('param-btn');
@@ -370,6 +213,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalDurationDisplay = document.getElementById('total-duration');
     const currentTitle = document.getElementById('current-title');
     const playerStatus = document.getElementById('player-status');
+
+    const categoriesList = ['loisir-sport', 'touristique', 'actualites-infos', 'en-classe', 'culture', 'portrait', 'autres'];
 
     // --- MENU BURGER MOBILE ---
     const burgerMenuBtn = document.getElementById('burger-menu-btn');
@@ -391,9 +236,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentLang = localStorage.getItem('siteLang') || 'fr';
 
-    // --- EFFETS MODE SAISON ---
+    function getTranslation(lang) {
+        const dict = window.translations || typeof translations !== 'undefined' ? translations : {};
+        return dict[lang] || dict['fr'] || {};
+    }
+
+// --- EFFETS ET ANIMATIONS DU MODE SAISON (AMÉLIORÉ) ---
     function applySeasonEffects() {
         let container = document.getElementById('season-effects');
+        
         if (!document.body.classList.contains('season-mode')) {
             if (container) container.remove();
             return;
@@ -409,34 +260,50 @@ document.addEventListener('DOMContentLoaded', () => {
         const month = new Date().getMonth();
         let particles = ['✨'];
 
-        if (month >= 8 && month <= 10) particles = ['🍂', '🍁'];
-        else if (month === 11 || month <= 1) particles = ['❄️', '❅', '❆'];
-        else if (month >= 2 && month <= 4) particles = ['🌸', '💮'];
-        else particles = ['✨', '🫧'];
+        // Des icônes plus épurées selon les saisons
+        if (month >= 8 && month <= 10) {
+            particles = ['🍂', '🍁']; // Uniquement de jolies feuilles d'automne
+        } else if (month === 11 || month <= 1) {
+            particles = ['❄️', '❅', '❆'];
+        } else if (month >= 2 && month <= 4) {
+            particles = ['🌸', '💮'];
+        } else {
+            particles = ['✨', '🫧'];
+        }
 
+        // On crée plus d'éléments (35) mais plus subtils
         for (let i = 0; i < 35; i++) {
             const p = document.createElement('span');
             p.className = 'season-particle';
             p.textContent = particles[Math.floor(Math.random() * particles.length)];
+            
+            // Position de départ horizontale aléatoire
             p.style.left = Math.random() * 100 + 'vw';
             
-            const fallDuration = Math.random() * 8 + 8;
-            const swayDuration = Math.random() * 3 + 2;
+            // Deux durées : une pour la chute, une pour le balancement au vent
+            const fallDuration = Math.random() * 8 + 8; // Entre 8s et 16s (plus lent)
+            const swayDuration = Math.random() * 3 + 2; // Balancement entre 2s et 5s
             
             p.style.animationDuration = `${fallDuration}s, ${swayDuration}s`;
             p.style.animationDelay = `${Math.random() * 5}s, 0s`;
+            
+            // Tailles différentes pour un effet 3D (profondeur)
             p.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
+            
+            // Opacités différentes pour ne pas surcharger la vue
             p.style.opacity = (Math.random() * 0.5 + 0.2);
             
             container.appendChild(p);
         }
     }
 
+    // --- APPLICATION ET GESTION DES THÈMES VISUELS ---
     const savedTheme = localStorage.getItem('siteTheme') || 'season';
     applyTheme(savedTheme);
 
     function applyTheme(theme) {
         document.body.classList.remove('light-mode', 'dark-mode', 'season-mode');
+        
         const splashLogo = document.querySelector('.splash-logo');
         const headerLogo = document.querySelector('.header-logo');
         
@@ -453,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (splashLogo) splashLogo.src = 'LogoArt6automne.png';
             if (headerLogo) headerLogo.src = 'LogoArt6automne.png';
         }
+
         applySeasonEffects();
     }
 
@@ -463,9 +331,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedFont = localStorage.getItem('siteFont') || 'normal';
     if (savedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
 
-    if (document.querySelector('.podcast-section')) {
-        loadPodcastsFromSupabase();
-    }
+    loadPodcastsFromSupabase();
+
+    // --- ACCORDÉON DES DOSSIERS DE PODCASTS (CLIC SUR TOUTE LA ZONE) ---
+    document.querySelectorAll('.folder-box').forEach(folderBox => {
+        folderBox.addEventListener('click', (e) => {
+            if (e.target.closest('.sort-select') || e.target.closest('.podcast-card')) {
+                return;
+            }
+            const grid = folderBox.querySelector('.podcast-grid');
+            if (grid) grid.classList.toggle('hidden');
+        });
+    });
 
     // --- PARAMÈTRES INTERFACE ---
     if (paramBtn) {
@@ -479,8 +356,11 @@ document.addEventListener('DOMContentLoaded', () => {
         selectPolice.addEventListener('change', (e) => {
             const selectedFont = e.target.value;
             localStorage.setItem('siteFont', selectedFont);
-            if (selectedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
-            else document.body.classList.remove('font-dyslexic');
+            if (selectedFont === 'dyslexic') {
+                document.body.classList.add('font-dyslexic');
+            } else {
+                document.body.classList.remove('font-dyslexic');
+            }
         });
     }
 
@@ -501,9 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLang = e.target.value;
             localStorage.setItem('siteLang', currentLang);
             applyTranslations(currentLang);
-            if (document.querySelector('.podcast-section')) {
-                loadPodcastsFromSupabase();
-            }
+            loadPodcastsFromSupabase(); 
         });
     }
 
@@ -516,7 +394,84 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CONTRÔLES DU LECTEUR AUDIO ---
+    // --- TRADUCTIONS ---
+    function applyTranslations(lang) {
+        const t = getTranslation(lang);
+
+        if (btnEnter) btnEnter.innerText = t.splashBtn || "Entrer";
+        if (btnLoginOpen) btnLoginOpen.innerText = t.navLogin || "Connexion";
+        
+        if (mainNav) {
+            const linkHome = mainNav.querySelector('a[href="index.html"]');
+            if (linkHome) linkHome.innerText = t.navHome || "Accueil";
+            
+            const linkTeam = mainNav.querySelector('a[href="equipe.html"]');
+            if (linkTeam) linkTeam.innerText = t.navTeam || "L'Équipe";
+
+            const linkJoin = mainNav.querySelector('a[href="rejoindre.html"]');
+            if (linkJoin) linkJoin.innerText = t.navJoin || "Rejoindre l'équipe";
+
+            const linkHelp = mainNav.querySelector('a[href="aide.html"]');
+            if (linkHelp) linkHelp.innerText = t.navHelp || "Aide";
+        }
+
+        if (mainAudioPlayer && currentTitle && playerStatus) {
+            if (mainAudioPlayer.paused && mainAudioPlayer.currentTime === 0) {
+                currentTitle.innerText = t.choosePodcast || "🎧 Choisissez une rediffusion ci-dessous";
+                playerStatus.innerText = t.ready || "PRÊT À L'ÉCOUTE";
+            } else if (mainAudioPlayer.paused) {
+                playerStatus.innerText = t.pause || "PAUSE";
+            } else {
+                playerStatus.innerText = t.playing || "LECTURE EN COURS";
+            }
+        }
+
+        const sectionTitle = document.querySelector('.podcast-section h2');
+        if (sectionTitle) sectionTitle.innerText = t.sectionTitle || "Liste des Rediffusions";
+
+        if (adminPanel) {
+            const adminH3 = adminPanel.querySelector('h3');
+            if (adminH3) adminH3.innerText = t.adminTitle || "🛠️ Panneau de Gestion";
+            const adminP = adminPanel.querySelector('p');
+            if (adminP) adminP.innerText = t.adminSubtitle || "";
+            const labels = adminPanel.querySelectorAll('.form-group label');
+            if (labels.length >= 3) {
+                labels[0].innerText = t.lblTitle || "Titre de l'émission :";
+                labels[1].innerText = t.lblInfo || "Date ou détails :";
+                labels[2].innerText = t.lblFile || "Lien direct du MP3 :";
+            }
+        }
+        
+        if (btnSubmitPodcast && !editPodcastId) btnSubmitPodcast.innerText = t.btnSubmit || "Ajouter le podcast";
+        if (uploadStatus) uploadStatus.innerText = t.uploadStatus || "Enregistrement en cours...";
+        if (btnLogout) btnLogout.innerText = t.btnLogout || "Se déconnecter";
+
+        if (modalMenuParam) {
+            const settingsH3 = modalMenuParam.querySelector('h3');
+            if (settingsH3) settingsH3.innerHTML = `<i class="fa-solid fa-sliders"></i> ${t.settingsTitle || "Réglages Généraux"}`;
+            const settingsLabels = modalMenuParam.querySelectorAll('.param-row label');
+            if (settingsLabels.length >= 3) {
+                settingsLabels[0].innerHTML = `<i class="fa-solid fa-language"></i> ${t.settingsLang || "Langue :"}`;
+                settingsLabels[1].innerHTML = `<i class="fa-solid fa-palette"></i> ${t.settingsMedia || "Thème Visuel :"}`;
+                settingsLabels[2].innerHTML = `<i class="fa-solid fa-font"></i> ${t.settingsFont || "Taille de la police :"}`;
+            }
+            if (selectTheme && selectTheme.options.length >= 3) {
+                selectTheme.options[0].text = t.settingsMediaSsn || "Mode Saison";
+                selectTheme.options[1].text = t.settingsMediaDft || "Mode Sombre";
+                selectTheme.options[2].text = t.settingsMediaEar || "Mode clair";
+            }
+            const saveBtn = modalMenuParam.querySelector('.btn-submit');
+            if (saveBtn) saveBtn.innerText = t.settingsSave || "Enregistrer";
+        }
+
+        if (selectPolice && selectPolice.options.length >= 3) {
+            selectPolice.options[0].text = t.settingsFontSm || "Petite";
+            selectPolice.options[1].text = t.settingsFontMd || "Normale";
+            selectPolice.options[2].text = t.settingsFontLg || "Grande";
+        }
+    }
+
+    // --- BARRE AUDIO PERSONNALISÉE ---
     if (customPlayBtn && mainAudioPlayer) {
         customPlayBtn.addEventListener('click', () => {
             const t = getTranslation(currentLang);
@@ -534,6 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mainAudioPlayer.addEventListener('timeupdate', () => {
             const current = mainAudioPlayer.currentTime;
             const duration = mainAudioPlayer.duration;
+            
             if (duration && progressBarFill) {
                 const percentage = (current / duration) * 100;
                 progressBarFill.style.width = `${percentage}%`;
@@ -565,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- FORMULAIRE D'AJOUT PODCAST ---
+    // --- ENREGISTRER OU MODIFIER UN PODCAST DANS SUPABASE ---
     if (addPodcastForm) {
         addPodcastForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -583,6 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = titleInput ? titleInput.value.trim() : "Sans titre";
             const info = infoInput ? infoInput.value.trim() : "";
             const category = categorySelect ? categorySelect.value : "autres";
+
             const t = getTranslation(currentLang);
 
             if (editPodcastId) {
@@ -591,7 +548,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     .update({ title, info, category, url: audioUrl })
                     .eq('id', editPodcastId);
 
-                if (!error) {
+                if (error) {
+                    console.error("Erreur lors de la modification :", error);
+                    alert("Erreur lors de la modification du podcast.");
+                } else {
                     editPodcastId = null;
                     addPodcastForm.reset();
                     if (btnSubmitPodcast) {
@@ -605,7 +565,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     .from('podcasts_ia')
                     .insert([{ title, info, category, url: audioUrl }]);
 
-                if (!error) {
+                if (error) {
+                    console.error("Erreur lors de l'envoi :", error);
+                    alert("Erreur lors de la sauvegarde du podcast.");
+                } else {
                     addPodcastForm.reset();
                     loadPodcastsFromSupabase();
                 }
@@ -616,7 +579,162 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ACCÈS SPLASH SCREEN & ADMIN ---
+    async function loadPodcastsFromSupabase() {
+        const t = getTranslation(currentLang);
+
+        categoriesList.forEach(cat => {
+            const grid = document.getElementById(`grid-${cat}`);
+            if (grid) grid.innerHTML = "";
+        });
+
+        const { data: podcasts, error } = await SupabaseClient
+            .from('podcasts_ia')
+            .select('*')
+            .order('id', { ascending: false });
+
+        if (error || !podcasts || podcasts.length === 0) {
+            categoriesList.forEach(cat => {
+                const grid = document.getElementById(`grid-${cat}`);
+                if (grid) grid.innerHTML = `<p style='color: var(--text-muted); text-align:center; padding:10px;'>${t.noPodcast || "Aucun podcast dans ce dossier."}</p>`;
+            });
+            rafraichirCompteurs();
+            return;
+        }
+
+        const isAdmin = sessionStorage.getItem('adminMode') === 'true';
+
+        podcasts.forEach(pod => {
+            const targetGrid = document.getElementById(`grid-${pod.category}`) || document.getElementById('grid-autres');
+
+            if (targetGrid) {
+                const card = document.createElement('div');
+                card.className = 'podcast-card';
+
+                const editBtnHtml = isAdmin 
+                    ? `<button class="btn-edit" data-id="${pod.id}" style="background-color: #f59e0b; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-weight: bold; font-size: 0.85rem; transition: transform 0.2s;">✏️ Modifier</button>` 
+                    : '';
+
+                card.innerHTML = `
+                    <div class="podcast-info">
+                        <h3>${pod.title}</h3>
+                        <p>${pod.info}</p>
+                    </div>
+                    <div class="podcast-actions-wrapper" style="display: flex; align-items: center;">
+                        ${editBtnHtml}
+                        <button class="btn-play" data-url="${pod.url}" data-title="${pod.title}">${t.listenBtn || "Écouter la rediffusion"}</button>
+                        ${isAdmin ? `<button class="btn-delete" data-id="${pod.id}">&times;</button>` : ''}
+                    </div>
+                `;
+                targetGrid.appendChild(card);
+            }
+        });
+
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const podId = btn.getAttribute('data-id');
+                const pod = podcasts.find(p => p.id == podId);
+                if (!pod) return;
+
+                editPodcastId = pod.id;
+
+                const titleInput = document.getElementById('pod-title');
+                const infoInput = document.getElementById('pod-info');
+                const urlInput = document.getElementById('pod-url');
+                const categorySelect = document.getElementById('pod-category');
+
+                if (titleInput) titleInput.value = pod.title || '';
+                if (infoInput) infoInput.value = pod.info || '';
+                if (urlInput) urlInput.value = pod.url || '';
+                if (categorySelect) categorySelect.value = pod.category || 'autres';
+
+                const btnSubmit = document.getElementById('btn-submit-podcast');
+                if (btnSubmit) {
+                    btnSubmit.innerText = "💾 Enregistrer les modifications";
+                    btnSubmit.style.backgroundColor = "#f59e0b";
+                }
+
+                const adminCard = document.getElementById('admin-panel');
+                if (adminCard) {
+                    adminCard.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-play').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const audioUrl = btn.getAttribute('data-url');
+                const title = btn.getAttribute('data-title');
+                if (mainAudioPlayer) {
+                    mainAudioPlayer.src = audioUrl;
+                    mainAudioPlayer.play().catch(err => console.log(err));
+                    if (customPlayBtn) customPlayBtn.innerText = "⏸";
+                    if (currentTitle) currentTitle.innerText = `▶ ${title}`;
+                    if (playerStatus) playerStatus.innerText = t.playing || "LECTURE EN COURS";
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (confirm(t.confirmDelete || "Voulez-vous vraiment supprimer cette rediffusion ?")) {
+                    const idToDelete = btn.getAttribute('data-id');
+                    const { error } = await SupabaseClient
+                        .from('podcasts_ia')
+                        .delete()
+                        .eq('id', idToDelete);
+
+                    if (error) {
+                        console.error("Erreur de suppression :", error);
+                        alert("Impossible de supprimer la rediffusion.");
+                    } else {
+                        loadPodcastsFromSupabase();
+                    }
+                }
+            });
+        });
+
+        rafraichirCompteurs();
+    }
+
+    function rafraichirCompteurs() {
+        categoriesList.forEach(cat => {
+            const grid = document.getElementById(`grid-${cat}`);
+            const badge = document.getElementById(`count-${cat}`);
+            if (grid && badge) {
+                const count = grid.querySelectorAll('.podcast-card').length;
+                badge.textContent = `(${count})`;
+            }
+        });
+    }
+
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return "00:00";
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+        const mStr = m < 10 ? "0" + m : m;
+        const sStr = s < 10 ? "0" + s : s;
+        return h > 0 ? `${h}:${mStr}:${sStr}` : `${mStr}:${sStr}`;
+    }
+
+    function injectIALink() {
+        if (!mainNav || document.getElementById('nav-ia-admin')) return;
+        const iaLink = document.createElement('a');
+        iaLink.href = 'ia-aide.html';
+        iaLink.id = 'nav-ia-admin';
+        iaLink.className = 'ia-link';
+        iaLink.innerText = 'Aide 2.0';
+        const instaLink = mainNav.querySelector('a[href*="instagram.com"]');
+        if (instaLink) instaLink.parentNode.insertBefore(iaLink, instaLink);
+        else mainNav.appendChild(iaLink);
+    }
+
+    function removeIALink() {
+        const iaLink = document.getElementById('nav-ia-admin');
+        if (iaLink) iaLink.remove();
+    }
+
+    // --- ACCÈS DIRECT ET ÉCRANS SPLASH ---
     if (sessionStorage.getItem('enteredSite') === 'true') {
         if (splashScreen) splashScreen.classList.add('hidden');
         if (mainContent) mainContent.classList.remove('hidden');
@@ -626,8 +744,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (adminPanel) adminPanel.classList.remove('hidden');
         if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
         document.body.classList.add('admin-mode');
-        const lienCloche = document.getElementById('lien-cloche');
-        if (lienCloche) lienCloche.classList.remove('hidden');
+        document.getElementById('lien-cloche').classList.remove('hidden');
         injectIALink();
     }
 
@@ -642,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- MODAL DE CONNEXION ---
+    // --- POPUP DE CONNEXION ---
     if (btnLoginOpen) {
         btnLoginOpen.addEventListener('click', () => {
             if (loginModal) loginModal.classList.remove('hidden');
@@ -669,6 +786,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const userField = document.getElementById('username');
             const passField = document.getElementById('password');
+            
             if (!userField || !passField) return;
 
             const usernameInput = userField.value.trim();
@@ -686,14 +804,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (btnLoginOpen) btnLoginOpen.classList.add('hidden');
                 document.body.classList.add('admin-mode');
                 sessionStorage.setItem('adminMode', 'true');
-                const lienCloche = document.getElementById('lien-cloche');
-                if (lienCloche) lienCloche.classList.remove('hidden');
+                document.getElementById('lien-cloche').classList.remove('hidden');
                 injectIALink();
                 loginForm.reset();
                 applyTranslations(currentLang);
-                if (document.querySelector('.podcast-section')) {
-                    loadPodcastsFromSupabase();
-                }
+                loadPodcastsFromSupabase();
             } else {
                 if (loginError) loginError.classList.remove('hidden');
             }
@@ -706,273 +821,32 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btnLoginOpen) btnLoginOpen.classList.remove('hidden');
             document.body.classList.remove('admin-mode');
             sessionStorage.setItem('adminMode', 'false');
-            const lienCloche = document.getElementById('lien-cloche');
-            if (lienCloche) lienCloche.classList.add('hidden');
+            document.getElementById('lien-cloche').classList.add('hidden');
             removeIALink();
             applyTranslations(currentLang);
-            if (document.querySelector('.podcast-section')) {
-                loadPodcastsFromSupabase();
-            }
+            loadPodcastsFromSupabase();
         });
     }
 });
 
-// ==========================================
-// 8. FONCTIONS AUXILIAIRES ET TRADUCTIONS
-// ==========================================
-function getTranslation(lang) {
-    const dict = window.translations || typeof translations !== 'undefined' ? translations : {};
-    return dict[lang] || dict['fr'] || {};
-}
-
-function applyTranslations(lang) {
-    const t = getTranslation(lang);
-
-    const btnEnter = document.getElementById('btn-enter');
-    const btnLoginOpen = document.getElementById('btn-login-open');
-    const mainNav = document.getElementById('main-nav');
-    const mainAudioPlayer = document.getElementById('main-audio-player');
-    const currentTitle = document.getElementById('current-title');
-    const playerStatus = document.getElementById('player-status');
-    const adminPanel = document.getElementById('admin-panel');
-    const btnSubmitPodcast = document.getElementById('btn-submit-podcast');
-    const uploadStatus = document.getElementById('upload-status');
-    const btnLogout = document.getElementById('btn-logout');
-    const modalMenuParam = document.getElementById('modal-menu-param');
-    const selectTheme = document.getElementById('param-media');
-    const selectPolice = document.getElementById('param-police');
-
-    if (btnEnter) btnEnter.innerText = t.splashBtn || "Entrer";
-    if (btnLoginOpen) btnLoginOpen.innerText = t.navLogin || "Connexion";
-    
-    if (mainNav) {
-        const linkHome = mainNav.querySelector('a[href="index.html"]');
-        if (linkHome) linkHome.innerText = t.navHome || "Accueil";
-        const linkTeam = mainNav.querySelector('a[href="equipe.html"]');
-        if (linkTeam) linkTeam.innerText = t.navTeam || "L'Équipe";
-        const linkJoin = mainNav.querySelector('a[href="rejoindre.html"]');
-        if (linkJoin) linkJoin.innerText = t.navJoin || "Rejoindre l'équipe";
-        const linkHelp = mainNav.querySelector('a[href="aide.html"]');
-        if (linkHelp) linkHelp.innerText = t.navHelp || "Aide";
-    }
-
-    if (mainAudioPlayer && currentTitle && playerStatus) {
-        if (mainAudioPlayer.paused && mainAudioPlayer.currentTime === 0) {
-            if (document.querySelector('.podcast-section')) {
-                currentTitle.innerText = t.choosePodcast || "🎧 Choisissez une rediffusion ci-dessous";
-            } else {
-                currentTitle.innerText = "🎧 Radio 6 — Aucun morceau en cours";
-            }
-            playerStatus.innerText = t.ready || "PRÊT À L'ÉCOUTE";
-        } else if (mainAudioPlayer.paused) {
-            playerStatus.innerText = t.pause || "PAUSE";
-        } else {
-            playerStatus.innerText = t.playing || "LECTURE EN COURS";
-        }
-    }
-
-    const sectionTitle = document.querySelector('.podcast-section h2');
-    if (sectionTitle) sectionTitle.innerText = t.sectionTitle || "Liste des Rediffusions";
-
-    if (adminPanel) {
-        const adminH3 = adminPanel.querySelector('h3');
-        if (adminH3) adminH3.innerText = t.adminTitle || "🛠️ Panneau de Gestion";
-        const adminP = adminPanel.querySelector('p');
-        if (adminP) adminP.innerText = t.adminSubtitle || "";
-        const labels = adminPanel.querySelectorAll('.form-group label');
-        if (labels.length >= 3) {
-            labels[0].innerText = t.lblTitle || "Titre de l'émission :";
-            labels[1].innerText = t.lblInfo || "Date ou détails :";
-            labels[2].innerText = t.lblFile || "Lien direct du MP3 :";
-        }
-    }
-    
-    if (btnSubmitPodcast && !editPodcastId) btnSubmitPodcast.innerText = t.btnSubmit || "Ajouter le podcast";
-    if (uploadStatus) uploadStatus.innerText = t.uploadStatus || "Enregistrement en cours...";
-    if (btnLogout) btnLogout.innerText = t.btnLogout || "Se déconnecter";
-
-    if (modalMenuParam) {
-        const settingsH3 = modalMenuParam.querySelector('h3');
-        if (settingsH3) settingsH3.innerHTML = `<i class="fa-solid fa-sliders"></i> ${t.settingsTitle || "Réglages Généraux"}`;
-        const settingsLabels = modalMenuParam.querySelectorAll('.param-row label');
-        if (settingsLabels.length >= 3) {
-            settingsLabels[0].innerHTML = `<i class="fa-solid fa-language"></i> ${t.settingsLang || "Langue :"}`;
-            settingsLabels[1].innerHTML = `<i class="fa-solid fa-palette"></i> ${t.settingsMedia || "Thème Visuel :"}`;
-            settingsLabels[2].innerHTML = `<i class="fa-solid fa-font"></i> ${t.settingsFont || "Taille de la police :"}`;
-        }
-        if (selectTheme && selectTheme.options.length >= 3) {
-            selectTheme.options[0].text = t.settingsMediaSsn || "Mode Saison";
-            selectTheme.options[1].text = t.settingsMediaDft || "Mode Sombre";
-            selectTheme.options[2].text = t.settingsMediaEar || "Mode clair";
-        }
-        const saveBtn = modalMenuParam.querySelector('.btn-submit');
-        if (saveBtn) saveBtn.innerText = t.settingsSave || "Enregistrer";
-    }
-
-    if (selectPolice && selectPolice.options.length >= 3) {
-        selectPolice.options[0].text = t.settingsFontSm || "Petite";
-        selectPolice.options[1].text = t.settingsFontMd || "Normale";
-        selectPolice.options[2].text = t.settingsFontLg || "Grande";
-    }
-}
-
-async function loadPodcastsFromSupabase() {
-    const currentLang = localStorage.getItem('siteLang') || 'fr';
-    const t = getTranslation(currentLang);
-
-    categoriesList.forEach(cat => {
-        const grid = document.getElementById(`grid-${cat}`);
-        if (grid) grid.innerHTML = "";
-    });
-
-    const { data: podcasts, error } = await SupabaseClient
-        .from('podcasts_ia')
-        .select('*')
-        .order('id', { ascending: false });
-
-    if (error || !podcasts || podcasts.length === 0) {
-        categoriesList.forEach(cat => {
-            const grid = document.getElementById(`grid-${cat}`);
-            if (grid) grid.innerHTML = `<p style='color: var(--text-muted); text-align:center; padding:10px;'>${t.noPodcast || "Aucun podcast dans ce dossier."}</p>`;
-        });
-        rafraichirCompteurs();
-        return;
-    }
-
-    const isAdmin = sessionStorage.getItem('adminMode') === 'true';
-
-    podcasts.forEach(pod => {
-        const targetGrid = document.getElementById(`grid-${pod.category}`) || document.getElementById('grid-autres');
-
-        if (targetGrid) {
-            const card = document.createElement('div');
-            card.className = 'podcast-card';
-
-            const editBtnHtml = isAdmin 
-                ? `<button class="btn-edit" data-id="${pod.id}" style="background-color: #f59e0b; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-weight: bold; font-size: 0.85rem; transition: transform 0.2s;">✏️ Modifier</button>` 
-                : '';
-
-            card.innerHTML = `
-                <div class="podcast-info">
-                    <h3>${pod.title}</h3>
-                    <p>${pod.info}</p>
-                </div>
-                <div class="podcast-actions-wrapper" style="display: flex; align-items: center;">
-                    ${editBtnHtml}
-                    <button class="btn-play" data-url="${pod.url}" data-title="${pod.title}">${t.listenBtn || "Écouter la rediffusion"}</button>
-                    ${isAdmin ? `<button class="btn-delete" data-id="${pod.id}">&times;</button>` : ''}
-                </div>
-            `;
-            targetGrid.appendChild(card);
-        }
-    });
-
-    document.querySelectorAll('.btn-edit').forEach(btn => {
-        btn.onclick = () => {
-            const podId = btn.getAttribute('data-id');
-            const pod = podcasts.find(p => p.id == podId);
-            if (!pod) return;
-
-            editPodcastId = pod.id;
-            const titleInput = document.getElementById('pod-title');
-            const infoInput = document.getElementById('pod-info');
-            const urlInput = document.getElementById('pod-url');
-            const categorySelect = document.getElementById('pod-category');
-
-            if (titleInput) titleInput.value = pod.title || '';
-            if (infoInput) infoInput.value = pod.info || '';
-            if (urlInput) urlInput.value = pod.url || '';
-            if (categorySelect) categorySelect.value = pod.category || 'autres';
-
-            const btnSubmit = document.getElementById('btn-submit-podcast');
-            if (btnSubmit) {
-                btnSubmit.innerText = "💾 Enregistrer les modifications";
-                btnSubmit.style.backgroundColor = "#f59e0b";
-            }
-
-            const adminCard = document.getElementById('admin-panel');
-            if (adminCard) adminCard.scrollIntoView({ behavior: 'smooth' });
-        };
-    });
-
-    document.querySelectorAll('.btn-play').forEach(btn => {
-        btn.onclick = () => {
-            const audioUrl = btn.getAttribute('data-url');
-            const title = btn.getAttribute('data-title');
-            const mainAudioPlayer = document.getElementById('main-audio-player');
-            const customPlayBtn = document.getElementById('custom-play-btn');
-            const currentTitle = document.getElementById('current-title');
-            const playerStatus = document.getElementById('player-status');
-
-            if (mainAudioPlayer) {
-                mainAudioPlayer.src = audioUrl;
-                mainAudioPlayer.play().catch(err => console.log(err));
-                if (customPlayBtn) customPlayBtn.innerText = "⏸";
-                if (currentTitle) currentTitle.innerText = `▶ ${title}`;
-                if (playerStatus) playerStatus.innerText = t.playing || "LECTURE EN COURS";
-            }
-        };
-    });
-
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-        btn.onclick = async () => {
-            if (confirm(t.confirmDelete || "Voulez-vous vraiment supprimer cette rediffusion ?")) {
-                const idToDelete = btn.getAttribute('data-id');
-                const { error } = await SupabaseClient
-                    .from('podcasts_ia')
-                    .delete()
-                    .eq('id', idToDelete);
-
-                if (!error) {
-                    loadPodcastsFromSupabase();
-                }
-            }
-        };
-    });
-
-    rafraichirCompteurs();
-}
-
-function rafraichirCompteurs() {
-    categoriesList.forEach(cat => {
-        const grid = document.getElementById(`grid-${cat}`);
-        const badge = document.getElementById(`count-${cat}`);
-        if (grid && badge) {
-            const count = grid.querySelectorAll('.podcast-card').length;
-            badge.textContent = `(${count})`;
-        }
-    });
-}
-
-function formatTime(seconds) {
-    if (isNaN(seconds)) return "00:00";
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    const mStr = m < 10 ? "0" + m : m;
-    const sStr = s < 10 ? "0" + s : s;
-    return h > 0 ? `${h}:${mStr}:${sStr}` : `${mStr}:${sStr}`;
-}
-
-function injectIALink() {
-    const mainNav = document.getElementById('main-nav');
-    if (!mainNav || document.getElementById('nav-ia-admin')) return;
-    const iaLink = document.createElement('a');
-    iaLink.href = 'ia-aide.html';
-    iaLink.id = 'nav-ia-admin';
-    iaLink.className = 'ia-link';
-    iaLink.innerText = 'Aide 2.0';
-    const instaLink = mainNav.querySelector('a[href*="instagram.com"]');
-    if (instaLink) instaLink.parentNode.insertBefore(iaLink, instaLink);
-    else mainNav.appendChild(iaLink);
-}
-
-function removeIALink() {
-    const iaLink = document.getElementById('nav-ia-admin');
-    if (iaLink) iaLink.remove();
-}
-
 window.closeParamModal = function(modalId) {
     const targetModal = document.getElementById(modalId);
-    if (targetModal) targetModal.classList.add('hidden');
+    if (targetModal) {
+        targetModal.classList.add('hidden');
+    }
 };
+
+// --- VITESSE DU LECTEUR ---
+document.querySelectorAll('.speed-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const speed = parseFloat(e.target.getAttribute('data-speed'));
+        const mainAudio = document.querySelector('audio');
+        if (mainAudio) {
+            mainAudio.playbackRate = speed;
+        }
+
+        const container = e.target.closest('.speed-controls');
+        container.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+    });
+});
