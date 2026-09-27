@@ -95,21 +95,17 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE) - SANS LOCALSTORAGE
+// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE)
 // ==========================================
 function initPushNotifications() {
-    if (!('Notification' in window)) return;
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
 
-    // On ne bloque plus par rapport au localStorage pour pouvoir tester à l'infini
     if (Notification.permission === 'granted' && localStorage.getItem('token_saved') === 'true') {
-        return; // Si déjà autorisé ET token déjà sauvegardé, on cache le bouton
+        return;
     }
 
     const liveBanner = document.getElementById('live-banner');
-    if (!liveBanner) return;
-
-    // Éviter de dupliquer le bouton s'il existe déjà
-    if (document.getElementById('notif-prompt-container')) return;
+    if (!liveBanner || document.getElementById('notif-prompt-container')) return;
 
     const notifContainer = document.createElement('div');
     notifContainer.id = 'notif-prompt-container';
@@ -126,12 +122,14 @@ function initPushNotifications() {
             const permission = await Notification.requestPermission();
             
             if (permission === 'granted') {
-                console.log("Permission accordée ! Récupération du token Firebase...");
+                console.log("Permission accordée ! Enregistrement du Service Worker...");
+                
+                // Enregistrement explicite du fichier Service Worker
+                const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+                await navigator.serviceWorker.ready;
                 
                 if (typeof firebase !== 'undefined' && firebase.messaging) {
                     const messaging = firebase.messaging();
-                    
-                    const registration = await navigator.serviceWorker.ready;
                     
                     const token = await messaging.getToken({
                         vapidKey: "BKDoENEF8vJFkl3IKXpU2cciCI_FWQCfrxtHhxKFP0VF0HggUtNOt08fRlqM0AWBrNZy9yzT25q5grY3YhVeydU",
@@ -139,7 +137,7 @@ function initPushNotifications() {
                     });
                     
                     if (token) {
-                        console.log("Jeton d'appareil (Token FCM) récupéré avec succès :", token);
+                        console.log("Jeton FCM récupéré :", token);
                         
                         const { error } = await SupabaseClient
                             .from('tokens_fcm')
@@ -149,23 +147,22 @@ function initPushNotifications() {
                             console.error("Erreur Supabase :", error);
                             alert("Erreur Supabase : " + error.message);
                         } else {
-                            console.log("Token enregistré dans Supabase avec succès !");
                             localStorage.setItem('token_saved', 'true');
                             notifContainer.remove();
-                            alert("Succès ! Le token est enregistré dans Supabase 📻");
+                            alert("Succès ! Ton téléphone est enregistré pour recevoir les directs 📻");
                         }
                     } else {
-                        alert("Avertissement : Aucun token FCM n'a été généré.");
+                        alert("Aucun token n'a pu être généré.");
                     }
                 } else {
-                    alert("Erreur : Firebase Messaging n'est pas disponible.");
+                    alert("Erreur : Firebase Messaging n'est pas chargé sur la page.");
                 }
             } else {
-                alert("⚠️ Notifications refusées par l'appareil.");
+                alert("⚠️ Notifications refusées dans les paramètres du navigateur.");
             }
         } catch (error) {
             console.error("Erreur critique :", error);
-            alert("Erreur exacte : " + error.message);
+            alert("Erreur : " + error.message);
         }
     });
 
