@@ -18,20 +18,18 @@ function updateLiveBanner() {
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    // Plage horaire du direct : Jeudi de 13h00 (760 min) à 13h25 (805 min)
+    // Plage horaire du direct : Jeudi de 13h00 à 13h25
     const isThursday = (day === 4);
     const currentMinutesOfDay = hours * 60 + minutes;
     const startLive = 13 * 60;
     const endLive = 13 * 60 + 25;
 
-    // Pendant la diffusion en direct
     if (isThursday && currentMinutesOfDay >= startLive && currentMinutesOfDay < endLive) {
         banner.classList.add('is-live');
         banner.innerHTML = '🔴 <strong>EN DIRECT EN CE MOMENT !</strong> Écoutez la radio dans le hall ou les foyers.';
         return;
     }
 
-    // Hors direct : compte à rebours jusqu'au prochain jeudi 13h00
     banner.classList.remove('is-live');
 
     let nextLive = new Date();
@@ -56,7 +54,7 @@ function updateLiveBanner() {
 }
 
 // ==========================================
-// 2. RACCOURCIS CLAVIER POUR LE LECTEUR AUDIO
+// 2. RACCOURCIS CLAVIER
 // ==========================================
 function initKeyboardShortcuts() {
     const audio = document.getElementById('main-audio-player');
@@ -72,7 +70,6 @@ function initKeyboardShortcuts() {
 
         if (isInputField || !audio) return;
 
-        // Touche Espace : Play / Pause
         if (e.code === 'Space') {
             e.preventDefault();
             if (audio.paused) {
@@ -81,12 +78,10 @@ function initKeyboardShortcuts() {
                 audio.pause();
             }
         } 
-        // Flèche Gauche : Reculer de 10s
         else if (e.key === 'ArrowLeft') {
             e.preventDefault();
             audio.currentTime = Math.max(0, audio.currentTime - 10);
         } 
-        // Flèche Droite : Avancer de 10s
         else if (e.key === 'ArrowRight') {
             e.preventDefault();
             audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
@@ -95,7 +90,7 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE)
+// 3. BOUTON NOTIFICATIONS PUSH
 // ==========================================
 function initPushNotifications() {
     if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
@@ -122,9 +117,6 @@ function initPushNotifications() {
             const permission = await Notification.requestPermission();
             
             if (permission === 'granted') {
-                console.log("Permission accordée ! Enregistrement du Service Worker...");
-                
-                // Enregistrement explicite du fichier Service Worker
                 const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
                 await navigator.serviceWorker.ready;
                 
@@ -137,14 +129,11 @@ function initPushNotifications() {
                     });
                     
                     if (token) {
-                        console.log("Jeton FCM récupéré :", token);
-                        
                         const { error } = await SupabaseClient
                             .from('tokens_fcm')
                             .upsert([{ token: token }], { onConflict: 'token' });
                             
                         if (error) {
-                            console.error("Erreur Supabase :", error);
                             alert("Erreur Supabase : " + error.message);
                         } else {
                             localStorage.setItem('token_saved', 'true');
@@ -169,8 +158,8 @@ function initPushNotifications() {
     notifContainer.appendChild(notifBtn);
     liveBanner.parentNode.insertBefore(notifContainer, liveBanner);
 }
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialisation du bandeau, des raccourcis et du bouton de notifications
     updateLiveBanner();
     setInterval(updateLiveBanner, 1000);
     initKeyboardShortcuts();
@@ -238,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return dict[lang] || dict['fr'] || {};
     }
 
-// --- EFFETS ET ANIMATIONS DU MODE SAISON (AMÉLIORÉ) ---
+    // --- EFFETS MODE SAISON ---
     function applySeasonEffects() {
         let container = document.getElementById('season-effects');
         
@@ -257,9 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const month = new Date().getMonth();
         let particles = ['✨'];
 
-        // Des icônes plus épurées selon les saisons
         if (month >= 8 && month <= 10) {
-            particles = ['🍂', '🍁']; // Uniquement de jolies feuilles d'automne
+            particles = ['🍂', '🍁'];
         } else if (month === 11 || month <= 1) {
             particles = ['❄️', '❅', '❆'];
         } else if (month >= 2 && month <= 4) {
@@ -268,33 +256,24 @@ document.addEventListener('DOMContentLoaded', () => {
             particles = ['✨', '🫧'];
         }
 
-        // On crée plus d'éléments (35) mais plus subtils
         for (let i = 0; i < 35; i++) {
             const p = document.createElement('span');
             p.className = 'season-particle';
             p.textContent = particles[Math.floor(Math.random() * particles.length)];
-            
-            // Position de départ horizontale aléatoire
             p.style.left = Math.random() * 100 + 'vw';
             
-            // Deux durées : une pour la chute, une pour le balancement au vent
-            const fallDuration = Math.random() * 8 + 8; // Entre 8s et 16s (plus lent)
-            const swayDuration = Math.random() * 3 + 2; // Balancement entre 2s et 5s
+            const fallDuration = Math.random() * 8 + 8;
+            const swayDuration = Math.random() * 3 + 2;
             
             p.style.animationDuration = `${fallDuration}s, ${swayDuration}s`;
             p.style.animationDelay = `${Math.random() * 5}s, 0s`;
-            
-            // Tailles différentes pour un effet 3D (profondeur)
             p.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
-            
-            // Opacités différentes pour ne pas surcharger la vue
             p.style.opacity = (Math.random() * 0.5 + 0.2);
             
             container.appendChild(p);
         }
     }
 
-    // --- APPLICATION ET GESTION DES THÈMES VISUELS ---
     const savedTheme = localStorage.getItem('siteTheme') || 'season';
     applyTheme(savedTheme);
 
@@ -330,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadPodcastsFromSupabase();
 
-    // --- ACCORDÉON DES DOSSIERS DE PODCASTS (CLIC SUR TOUTE LA ZONE) ---
+    // --- ACCORDÉON DES DOSSIERS ---
     document.querySelectorAll('.folder-box').forEach(folderBox => {
         folderBox.addEventListener('click', (e) => {
             if (e.target.closest('.sort-select') || e.target.closest('.podcast-card')) {
@@ -340,6 +319,53 @@ document.addEventListener('DOMContentLoaded', () => {
             if (grid) grid.classList.toggle('hidden');
         });
     });
+
+    // --- RECHERCHE DYNAMIQUE AVEC MASQUAGE AUTOMATIQUE DES DOSSIERS ---
+    const searchInput = document.getElementById('search-podcast');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const folderBoxes = document.querySelectorAll('.folder-box');
+
+            folderBoxes.forEach(folder => {
+                const header = folder.querySelector('.folder-header');
+                const grid = folder.querySelector('.podcast-grid');
+                const cards = folder.querySelectorAll('.podcast-card');
+
+                if (query === '') {
+                    // Remise à zéro
+                    if (header) header.style.display = 'flex';
+                    if (grid) grid.classList.add('hidden');
+                    folder.style.display = 'block';
+                    cards.forEach(card => card.style.display = 'flex');
+                } else {
+                    // Mode Recherche actif
+                    if (header) header.style.display = 'none';
+                    if (grid) grid.classList.remove('hidden');
+
+                    let visibleCount = 0;
+
+                    cards.forEach(card => {
+                        const titleEl = card.querySelector('h3');
+                        const infoEl = card.querySelector('p');
+
+                        const title = titleEl ? titleEl.textContent.toLowerCase() : '';
+                        const info = infoEl ? infoEl.textContent.toLowerCase() : '';
+
+                        if (title.includes(query) || info.includes(query)) {
+                            card.style.display = 'flex';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    // Cacher entièrement le bloc si 0 résultat dans ce dossier
+                    folder.style.display = (visibleCount > 0) ? 'block' : 'none';
+                }
+            });
+        });
+    }
 
     // --- PARAMÈTRES INTERFACE ---
     if (paramBtn) {
@@ -518,7 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ENREGISTRER OU MODIFIER UN PODCAST DANS SUPABASE ---
+    // --- ENREGISTRER / MODIFIER PODCAST ---
     if (addPodcastForm) {
         addPodcastForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -546,7 +572,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     .eq('id', editPodcastId);
 
                 if (error) {
-                    console.error("Erreur lors de la modification :", error);
                     alert("Erreur lors de la modification du podcast.");
                 } else {
                     editPodcastId = null;
@@ -563,7 +588,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     .insert([{ title, info, category, url: audioUrl }]);
 
                 if (error) {
-                    console.error("Erreur lors de l'envoi :", error);
                     alert("Erreur lors de la sauvegarde du podcast.");
                 } else {
                     addPodcastForm.reset();
@@ -681,7 +705,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         .eq('id', idToDelete);
 
                     if (error) {
-                        console.error("Erreur de suppression :", error);
                         alert("Impossible de supprimer la rediffusion.");
                     } else {
                         loadPodcastsFromSupabase();
@@ -731,7 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (iaLink) iaLink.remove();
     }
 
-    // --- ACCÈS DIRECT ET ÉCRANS SPLASH ---
+    // --- ACCÈS SPLASH SCREEN & ADMIN ---
     if (sessionStorage.getItem('enteredSite') === 'true') {
         if (splashScreen) splashScreen.classList.add('hidden');
         if (mainContent) mainContent.classList.remove('hidden');
@@ -756,7 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- POPUP DE CONNEXION ---
+    // --- MODAL DE CONNEXION ---
     if (btnLoginOpen) {
         btnLoginOpen.addEventListener('click', () => {
             if (loginModal) loginModal.classList.remove('hidden');
@@ -833,7 +856,7 @@ window.closeParamModal = function(modalId) {
     }
 };
 
-// --- VITESSE DU LECTEUR ---
+// --- CONTRÔLE VITESSE AUDIO ---
 document.querySelectorAll('.speed-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const speed = parseFloat(e.target.getAttribute('data-speed'));
