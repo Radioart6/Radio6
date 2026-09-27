@@ -372,7 +372,46 @@ document.addEventListener('DOMContentLoaded', () => {
             if (grid) grid.classList.toggle('hidden');
         });
     });
+// --- BARRE DE RECHERCHE DYNAMIQUE ---
+const searchInput = document.getElementById('search-podcast');
 
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+
+        document.querySelectorAll('.folder-box').forEach(folder => {
+            const grid = folder.querySelector('.podcast-grid');
+            const cards = folder.querySelectorAll('.podcast-card');
+            let matchCount = 0;
+
+            cards.forEach(card => {
+                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                const info = card.querySelector('p')?.textContent.toLowerCase() || '';
+
+                if (title.includes(query) || info.includes(query)) {
+                    card.style.display = '';
+                    matchCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Si l'utilisateur tape quelque chose
+            if (query.length > 0) {
+                if (matchCount > 0) {
+                    folder.style.display = '';
+                    if (grid) grid.classList.remove('hidden'); // Ouvre le dossier automatiquement
+                } else {
+                    folder.style.display = 'none'; // Masque les dossiers sans résultat
+                }
+            } else {
+                // Quand le champ est vide, on réinitialise l'affichage
+                folder.style.display = '';
+                if (grid) grid.classList.add('hidden');
+            }
+        });
+    });
+}
     // --- PARAMÈTRES INTERFACE ---
     if (paramBtn) {
         paramBtn.addEventListener('click', () => {
