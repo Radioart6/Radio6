@@ -10,24 +10,37 @@
 <body>
 
     <header>
-        <div class="logo-area">
-            <img src="LogoArt6automne.png" alt="Logo Radio 6" class="header-logo">
-            <div>
-                <span class="site-title">RADIO 6</span>
+            <div class="logo-area">
+                <img src="logo.png" alt="Radio 6" class="header-logo">
+                <div>
+                    <strong class="site-title">RADIO 6</strong><br>
+                    <small class="site-subtitle">Lycée Arcisse de Caumont</small>
+                </div>
             </div>
-        </div>
-        <nav id="main-nav">
-            <button class="burger-btn" id="burger-menu-btn"><i class="fa-solid fa-bars"></i></button>
-            <div class="nav-links-container" id="nav-links">
-                <a href="index.html">Accueil</a>
-                <a href="calendrier.html">Calendrier</a>
-                <a href="messages.html" class="active">Chat</a>
-                <a href="equipe.html">L'Équipe</a>
-                <a href="rejoindre.html">Rejoindre l'équipe</a>
-                <a href="aide.html">Aide</a>
-            </div>
-        </nav>
-    </header>
+            
+            <nav id="main-nav">
+                <button id="burger-menu-btn" class="burger-btn" title="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div id="nav-links" class="nav-links-container">
+                    <button id="btn-login-open" class="btn-nav-login">Connexion</button>
+                    <a href="index.html" class="active">Accueil</a>
+                    <a href="equipe.html">L'Équipe</a>
+                    <a href="rejoindre.html">Rejoindre l'équipe</a>
+                    <a href="aide.html">Aide</a>
+                    <a href="calendrier.html">🗓️ Calendrier</a>
+                    <a href="messages.html"> Chat d'émission</a>
+                    <a href="instagram.html">Instagram</a>
+                    
+                    <a href="notifications.html" id="lien-cloche" class="hidden" style="position: relative; text-decoration: none; display: inline-flex; align-items: center;" title="Voir les candidatures">
+                        🔔 <span id="badge-notif" style="display: none; background: #ef4444; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 50%; position: absolute; top: -6px; right: -8px; font-weight: bold;">0</span>
+                    </a>
+
+                    <button id="param-btn" class="btn-nav-param" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </nav>
+        </header>
 
     <main>
         <!-- MESSAGE POUR LES VISITEURS NON CONNECTÉS -->
