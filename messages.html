@@ -208,8 +208,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Vérification du mode admin
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Détection du rôle Admin
             const isAdmin = sessionStorage.getItem('adminMode') === 'true';
             const blockedDiv = document.getElementById('access-blocked');
             const grantedDiv = document.getElementById('access-granted');
@@ -219,8 +219,7 @@
                 if (grantedDiv) grantedDiv.classList.remove('hidden');
             }
 
-            // 2. Gestion du compte à rebours dynamique
-            // Cible : Jeudi 1er octobre à 12h45
+            // 2. Compte à rebours dynamique (Jeudi 1er octobre à 12h45)
             const targetDate = new Date();
             targetDate.setFullYear(2026, 9, 1); // 9 = Octobre
             targetDate.setHours(12, 45, 0, 0);
@@ -234,7 +233,7 @@
                         blockedDiv.innerHTML = `
                             <div class="chat-icon-wrapper"><i class="fa-solid fa-door-open"></i></div>
                             <h2 style="color: var(--text);">Le Chat est ouvert !</h2>
-                            <p style="color: var(--text-muted);">Rechargez la page pour participer à la discussion.</p>
+                            <p style="color: var(--text-muted);">Rechargez la page pour accéder à la discussion.</p>
                         `;
                     }
                     return;
@@ -260,6 +259,73 @@
 
             updateCountdown();
             setInterval(updateCountdown, 1000);
+
+            // 3. Connexion Chat Supabase en temps réel
+            if (typeof db !== 'undefined') {
+                const chatBox = document.getElementById('chat-box');
+                const chatForm = document.getElementById('chat-form');
+                const chatInput = document.getElementById('chat-input');
+
+                // Fonction d'affichage d'un message
+                function appendMessage(msg) {
+                    const placeholder = chatBox.querySelector('i.fa-lock-open');
+                    if (placeholder) chatBox.innerHTML = '';
+
+                    const msgDiv = document.createElement('div');
+                    msgDiv.style.cssText = 'margin-bottom: 0.8rem; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);';
+                    
+                    const dateObj = new Date(msg.created_at);
+                    const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    msgDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                            <strong style="color: var(--accent); font-size: 0.85rem;">${msg.pseudo || 'Auditeur'}</strong>
+                            <small style="color: var(--text-muted); font-size: 0.75rem;">${time}</small>
+                        </div>
+                        <p style="margin: 0; color: var(--text); font-size: 0.95rem;">${msg.content}</p>
+                    `;
+                    chatBox.appendChild(msgDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+
+                // Charger les derniers messages enregistrés
+                const { data: messages } = await db
+                    .from('messages')
+                    .select('*')
+                    .order('created_at', { ascending: true })
+                    .limit(50);
+
+                if (messages && messages.length > 0) {
+                    chatBox.innerHTML = '';
+                    messages.forEach(msg => appendMessage(msg));
+                }
+
+                // Écouter l'arrivée des NOUVEAUX messages en direct
+                db.channel('public:messages')
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+                        appendMessage(payload.new);
+                    })
+                    .subscribe();
+
+                // Gestion de l'envoi du formulaire
+                chatForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const text = chatInput.value.trim();
+                    if (!text) return;
+
+                    const userPseudo = isAdmin ? 'Animateur Radio 6 🎙️' : 'Auditeur';
+
+                    const { error } = await db
+                        .from('messages')
+                        .insert([{ content: text, pseudo: userPseudo }]);
+
+                    if (error) {
+                        alert("Erreur d'envoi du message.");
+                    } else {
+                        chatInput.value = '';
+                    }
+                });
+            }
         });
     </script>
 </body>
