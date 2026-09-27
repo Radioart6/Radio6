@@ -884,36 +884,20 @@ body.font-dyslexic {
     }
 }
 
-/* --- LECTEUR AUDIO FIXE EN BAS DE PAGE --- */
+/* ==========================================
+   LECTEUR AUDIO COMPACT, THIN & TRANSPARENT
+   ========================================== */
+
+/* Espace sous le contenu pour éviter que le lecteur ne masque le bas des pages */
 body {
-    padding-bottom: 110px !important; /* Dégage du vide en bas pour que le contenu ne soit pas masqué */
+    padding-bottom: 120px !important;
 }
 
-.player-card {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    z-index: 3000 !important;
-    margin-bottom: 0 !important;
-    border-radius: 16px 16px 0 0 !important;
-    background-color: var(--card-bg) !important;
-    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.5) !important;
-    padding: 0.8rem 1.5rem !important;
-    box-sizing: border-box !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-.custom-player-bar {
-    max-width: 1000px;
-    margin: 0 auto;
-}
-/* Ajoute une marge sous le contenu principal pour éviter le chevauchement */
 main {
-    padding-bottom: 150px !important;
+    padding-bottom: 40px !important;
 }
 
-/* Fixe le lecteur tout en bas de la fenêtre */
+/* Conteneur principal du lecteur fixe en bas */
 .player-card {
     position: fixed !important;
     bottom: 0 !important;
@@ -922,7 +906,60 @@ main {
     width: 100% !important;
     z-index: 9999 !important;
     margin: 0 !important;
+    padding: 8px 16px !important; /* Hauteur fortement réduite */
     border-radius: 16px 16px 0 0 !important;
-    background-color: var(--card-bg) !important;
-    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.6) !important;
+    
+    /* Effet semi-transparent et flou d'arrière-plan */
+    background: rgba(24, 13, 10, 0.82) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    
+    border-top: 1px solid rgba(245, 158, 11, 0.3) !important;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Transparence adaptée selon le thème actif */
+body.dark-mode .player-card {
+    background: rgba(15, 23, 42, 0.85) !important;
+}
+
+body.light-mode .player-card {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border-top: 1px solid rgba(2, 132, 199, 0.3) !important;
+}
+
+/* Réduction des textes d'information */
+.player-title {
+    font-size: 0.92rem !important;
+    margin: 0 0 2px 0 !important;
+}
+
+.player-status {
+    font-size: 0.72rem !important;
+    margin-bottom: 6px !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Barre de commandes compacte */
+.custom-player-bar {
+    padding: 4px 12px !important;
+    gap: 0.8rem !important;
+    background: rgba(0, 0, 0, 0.25) !important;
+    border-radius: 30px !important;
+    max-width: 850px !important;
+}
+
+.player-btn {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 0.9rem !important;
+}
+
+.speed-controls {
+    margin-left: 0 !important;
+}
+
+.speed-btn {
+    padding: 2px 5px !important;
+    font-size: 0.7rem !important;
 }
