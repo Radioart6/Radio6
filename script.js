@@ -6,7 +6,6 @@ const SupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let editPodcastId = null;
 
-
 // ==========================================
 // HORLOGE EN TEMPS RÉEL (DATE ET HEURE)
 // ==========================================
@@ -34,6 +33,7 @@ function initHeaderClock() {
     updateClock();
     setInterval(updateClock, 1000);
 }
+
 // ==========================================
 // 1. BANDEAU DYNAMIQUE EN DIRECT & COMPTE À REBOURS
 // ==========================================
@@ -46,20 +46,17 @@ function updateLiveBanner() {
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    // Plage horaire du direct : Jeudi de 13h00 (760 min) à 13h25 (805 min)
     const isThursday = (day === 4);
     const currentMinutesOfDay = hours * 60 + minutes;
     const startLive = 13 * 60;
     const endLive = 13 * 60 + 25;
 
-    // Pendant la diffusion en direct
     if (isThursday && currentMinutesOfDay >= startLive && currentMinutesOfDay < endLive) {
         banner.classList.add('is-live');
         banner.innerHTML = '🔴 <strong>EN DIRECT EN CE MOMENT !</strong> Écoutez la radio dans le hall ou les foyers.';
         return;
     }
 
-    // Hors direct : compte à rebours jusqu'au prochain jeudi 13h00
     banner.classList.remove('is-live');
 
     let nextLive = new Date();
@@ -100,7 +97,6 @@ function initKeyboardShortcuts() {
 
         if (isInputField || !audio) return;
 
-        // Touche Espace : Play / Pause
         if (e.code === 'Space') {
             e.preventDefault();
             if (audio.paused) {
@@ -108,14 +104,10 @@ function initKeyboardShortcuts() {
             } else {
                 audio.pause();
             }
-        } 
-        // Flèche Gauche : Reculer de 10s
-        else if (e.key === 'ArrowLeft') {
+        } else if (e.key === 'ArrowLeft') {
             e.preventDefault();
             audio.currentTime = Math.max(0, audio.currentTime - 10);
-        } 
-        // Flèche Droite : Avancer de 10s
-        else if (e.key === 'ArrowRight') {
+        } else if (e.key === 'ArrowRight') {
             e.preventDefault();
             audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
         }
@@ -123,20 +115,18 @@ function initKeyboardShortcuts() {
 }
 
 // ==========================================
-// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE) - SANS LOCALSTORAGE
+// 3. BOUTON NOTIFICATIONS PUSH (FIREBASE)
 // ==========================================
 function initPushNotifications() {
     if (!('Notification' in window)) return;
 
-    // On ne bloque plus par rapport au localStorage pour pouvoir tester à l'infini
     if (Notification.permission === 'granted' && localStorage.getItem('token_saved') === 'true') {
-        return; // Si déjà autorisé ET token déjà sauvegardé, on cache le bouton
+        return;
     }
 
     const liveBanner = document.getElementById('live-banner');
     if (!liveBanner) return;
 
-    // Éviter de dupliquer le bouton s'il existe déjà
     if (document.getElementById('notif-prompt-container')) return;
 
     const notifContainer = document.createElement('div');
@@ -158,7 +148,6 @@ function initPushNotifications() {
                 
                 if (typeof firebase !== 'undefined' && firebase.messaging) {
                     const messaging = firebase.messaging();
-                    
                     const registration = await navigator.serviceWorker.ready;
                     
                     const token = await messaging.getToken({
@@ -167,8 +156,6 @@ function initPushNotifications() {
                     });
                     
                     if (token) {
-                        console.log("Jeton d'appareil (Token FCM) récupéré avec succès :", token);
-                        
                         const { error } = await SupabaseClient
                             .from('tokens_fcm')
                             .upsert([{ token: token }], { onConflict: 'token' });
@@ -177,7 +164,6 @@ function initPushNotifications() {
                             console.error("Erreur Supabase :", error);
                             alert("Erreur Supabase : " + error.message);
                         } else {
-                            console.log("Token enregistré dans Supabase avec succès !");
                             localStorage.setItem('token_saved', 'true');
                             notifContainer.remove();
                             alert("Succès ! Le token est enregistré dans Supabase 📻");
@@ -200,9 +186,9 @@ function initPushNotifications() {
     notifContainer.appendChild(notifBtn);
     liveBanner.parentNode.insertBefore(notifContainer, liveBanner);
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     initHeaderClock();
-    // Initialisation du bandeau, des raccourcis et du bouton de notifications
     updateLiveBanner();
     setInterval(updateLiveBanner, 1000);
     initKeyboardShortcuts();
@@ -270,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return dict[lang] || dict['fr'] || {};
     }
 
-// --- EFFETS ET ANIMATIONS DU MODE SAISON (AMÉLIORÉ) ---
+    // --- EFFETS ET ANIMATIONS DU MODE SAISON (AMÉLIORÉ) ---
     function applySeasonEffects() {
         let container = document.getElementById('season-effects');
         
@@ -287,11 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
 
         const month = new Date().getMonth();
-        let particles = ['✨'];
+        let particles = ['🍂', '🍁'];
 
-        // Des icônes plus épurées selon les saisons
         if (month >= 8 && month <= 10) {
-            particles = ['🍂', '🍁']; // Uniquement de jolies feuilles d'automne
+            particles = ['🍂', '🍁', '🌰'];
         } else if (month === 11 || month <= 1) {
             particles = ['❄️', '❅', '❆'];
         } else if (month >= 2 && month <= 4) {
@@ -300,27 +285,19 @@ document.addEventListener('DOMContentLoaded', () => {
             particles = ['✨', '🫧'];
         }
 
-        // On crée plus d'éléments (35) mais plus subtils
-        for (let i = 0; i < 35; i++) {
+        for (let i = 0; i < 30; i++) {
             const p = document.createElement('span');
             p.className = 'season-particle';
             p.textContent = particles[Math.floor(Math.random() * particles.length)];
             
-            // Position de départ horizontale aléatoire
             p.style.left = Math.random() * 100 + 'vw';
             
-            // Deux durées : une pour la chute, une pour le balancement au vent
-            const fallDuration = Math.random() * 8 + 8; // Entre 8s et 16s (plus lent)
-            const swayDuration = Math.random() * 3 + 2; // Balancement entre 2s et 5s
+            const fallDuration = Math.random() * 9 + 7;
+            p.style.animationDuration = `${fallDuration}s`;
+            p.style.animationDelay = `${Math.random() * 6}s`;
             
-            p.style.animationDuration = `${fallDuration}s, ${swayDuration}s`;
-            p.style.animationDelay = `${Math.random() * 5}s, 0s`;
-            
-            // Tailles différentes pour un effet 3D (profondeur)
-            p.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
-            
-            // Opacités différentes pour ne pas surcharger la vue
-            p.style.opacity = (Math.random() * 0.5 + 0.2);
+            p.style.fontSize = (Math.random() * 1.1 + 0.7) + 'rem';
+            p.style.opacity = (Math.random() * 0.55 + 0.25);
             
             container.appendChild(p);
         }
@@ -362,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadPodcastsFromSupabase();
 
-    // --- ACCORDÉON DES DOSSIERS DE PODCASTS (CLIC SUR TOUTE LA ZONE) ---
+    // --- ACCORDÉON DES DOSSIERS DE PODCASTS ---
     document.querySelectorAll('.folder-box').forEach(folderBox => {
         folderBox.addEventListener('click', (e) => {
             if (e.target.closest('.sort-select') || e.target.closest('.podcast-card')) {
@@ -372,46 +349,46 @@ document.addEventListener('DOMContentLoaded', () => {
             if (grid) grid.classList.toggle('hidden');
         });
     });
-// --- BARRE DE RECHERCHE DYNAMIQUE ---
-const searchInput = document.getElementById('search-podcast');
 
-if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
+    // --- BARRE DE RECHERCHE DYNAMIQUE ---
+    const searchInput = document.getElementById('search-podcast');
 
-        document.querySelectorAll('.folder-box').forEach(folder => {
-            const grid = folder.querySelector('.podcast-grid');
-            const cards = folder.querySelectorAll('.podcast-card');
-            let matchCount = 0;
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
 
-            cards.forEach(card => {
-                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                const info = card.querySelector('p')?.textContent.toLowerCase() || '';
+            document.querySelectorAll('.folder-box').forEach(folder => {
+                const grid = folder.querySelector('.podcast-grid');
+                const cards = folder.querySelectorAll('.podcast-card');
+                let matchCount = 0;
 
-                if (title.includes(query) || info.includes(query)) {
-                    card.style.display = '';
-                    matchCount++;
+                cards.forEach(card => {
+                    const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                    const info = card.querySelector('p')?.textContent.toLowerCase() || '';
+
+                    if (title.includes(query) || info.includes(query)) {
+                        card.style.display = '';
+                        matchCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (query.length > 0) {
+                    if (matchCount > 0) {
+                        folder.style.display = '';
+                        if (grid) grid.classList.remove('hidden');
+                    } else {
+                        folder.style.display = 'none';
+                    }
                 } else {
-                    card.style.display = 'none';
+                    folder.style.display = '';
+                    if (grid) grid.classList.add('hidden');
                 }
             });
-
-            // Si l'utilisateur tape quelque chose
-            if (query.length > 0) {
-                if (matchCount > 0) {
-                    folder.style.display = '';
-                    if (grid) grid.classList.remove('hidden'); // Ouvre le dossier automatiquement
-                } else {
-                    folder.style.display = 'none'; // Masque les dossiers sans résultat
-                }
-            } else {
-                // Quand le champ est vide, on réinitialise l'affichage
-                folder.style.display = '';
-                if (grid) grid.classList.add('hidden');
-            }
         });
-    });
-}
+    }
+
     // --- PARAMÈTRES INTERFACE ---
     if (paramBtn) {
         paramBtn.addEventListener('click', () => {
