@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return dict[lang] || dict['fr'] || {};
     }
 
-    // --- EFFETS ET ANIMATIONS DU MODE SAISON ---
+// --- EFFETS ET ANIMATIONS DU MODE SAISON (AMÉLIORÉ) ---
     function applySeasonEffects() {
         let container = document.getElementById('season-effects');
         
@@ -258,26 +258,41 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
 
         const month = new Date().getMonth();
-        let particles = ['✨', '⭐'];
+        let particles = ['✨'];
 
+        // Des icônes plus épurées selon les saisons
         if (month >= 8 && month <= 10) {
-            particles = ['🍂', '🍁', '🌾', '🎃'];
+            particles = ['🍂', '🍁']; // Uniquement de jolies feuilles d'automne
         } else if (month === 11 || month <= 1) {
-            particles = ['❄️', '✨', '🌨️'];
+            particles = ['❄️', '❅', '❆'];
         } else if (month >= 2 && month <= 4) {
-            particles = ['🌸', '🍃', '🌱'];
+            particles = ['🌸', '💮'];
         } else {
-            particles = ['✨', '☀️', '⭐'];
+            particles = ['✨', '🫧'];
         }
 
-        for (let i = 0; i < 22; i++) {
+        // On crée plus d'éléments (35) mais plus subtils
+        for (let i = 0; i < 35; i++) {
             const p = document.createElement('span');
             p.className = 'season-particle';
             p.textContent = particles[Math.floor(Math.random() * particles.length)];
+            
+            // Position de départ horizontale aléatoire
             p.style.left = Math.random() * 100 + 'vw';
-            p.style.animationDuration = (Math.random() * 6 + 6) + 's';
-            p.style.animationDelay = (Math.random() * 5) + 's';
-            p.style.fontSize = (Math.random() * 0.7 + 0.8) + 'rem';
+            
+            // Deux durées : une pour la chute, une pour le balancement au vent
+            const fallDuration = Math.random() * 8 + 8; // Entre 8s et 16s (plus lent)
+            const swayDuration = Math.random() * 3 + 2; // Balancement entre 2s et 5s
+            
+            p.style.animationDuration = `${fallDuration}s, ${swayDuration}s`;
+            p.style.animationDelay = `${Math.random() * 5}s, 0s`;
+            
+            // Tailles différentes pour un effet 3D (profondeur)
+            p.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
+            
+            // Opacités différentes pour ne pas surcharger la vue
+            p.style.opacity = (Math.random() * 0.5 + 0.2);
+            
             container.appendChild(p);
         }
     }
