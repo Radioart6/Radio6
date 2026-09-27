@@ -40,14 +40,8 @@ function initHeaderClock() {
 // ==========================================
 function makePlayerPersistent() {
     const playerCard = document.querySelector('.player-card');
-    const mainContent = document.getElementById('main-content');
-    if (playerCard && mainContent && playerCard.parentElement !== mainContent) {
-        const footer = mainContent.querySelector('footer');
-        if (footer) {
-            mainContent.insertBefore(playerCard, footer);
-        } else {
-            mainContent.appendChild(playerCard);
-        }
+    if (playerCard && playerCard.parentElement !== document.body) {
+        document.body.appendChild(playerCard);
     }
 }
 
@@ -102,6 +96,7 @@ function initSeamlessNavigation() {
 function reinitPageModules() {
     initFolderAccordions();
     initSearchFilter();
+    initSpeedControls();
     updateLiveBanner();
     
     const currentLang = localStorage.getItem('siteLang') || 'fr';
@@ -255,7 +250,7 @@ function initPushNotifications() {
 }
 
 // ==========================================
-// 6. DOSSIERS ET RECHERCHE
+// 6. DOSSIERS, RECHERCHE & VITESSE
 // ==========================================
 function initFolderAccordions() {
     document.querySelectorAll('.folder-box').forEach(folderBox => {
@@ -311,12 +306,28 @@ function initSearchFilter() {
     };
 }
 
+function initSpeedControls() {
+    document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.onclick = (e) => {
+            const speed = parseFloat(e.target.getAttribute('data-speed'));
+            const mainAudio = document.getElementById('main-audio-player');
+            if (mainAudio) mainAudio.playbackRate = speed;
+
+            const container = e.target.closest('.speed-controls');
+            if (container) {
+                container.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+        };
+    });
+}
+
 // ==========================================
 // 7. INITIALISATION DU SCRIPT AU CHARGEMENT
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    initHeaderClock();
     makePlayerPersistent();
+    initHeaderClock();
     initSeamlessNavigation();
     updateLiveBanner();
     setInterval(updateLiveBanner, 1000);
@@ -324,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPushNotifications();
     initFolderAccordions();
     initSearchFilter();
+    initSpeedControls();
 
     // --- ÉLÉMENTS UI GLOBAUX ---
     const splashScreen = document.getElementById('splash-screen');
@@ -339,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const addPodcastForm = document.getElementById('add-podcast-form');
     const btnSubmitPodcast = document.getElementById('btn-submit-podcast');
     const uploadStatus = document.getElementById('upload-status');
-    const mainNav = document.getElementById('main-nav');
 
     // Réglages
     const paramBtn = document.getElementById('param-btn');
@@ -452,7 +463,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedFont = localStorage.getItem('siteFont') || 'normal';
     if (savedFont === 'dyslexic') document.body.classList.add('font-dyslexic');
 
-    loadPodcastsFromSupabase();
+    if (document.querySelector('.podcast-section')) {
+        loadPodcastsFromSupabase();
+    }
 
     // --- PARAMÈTRES INTERFACE ---
     if (paramBtn) {
@@ -488,7 +501,9 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLang = e.target.value;
             localStorage.setItem('siteLang', currentLang);
             applyTranslations(currentLang);
-            loadPodcastsFromSupabase(); 
+            if (document.querySelector('.podcast-section')) {
+                loadPodcastsFromSupabase();
+            }
         });
     }
 
@@ -501,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CONTROLES DU LECTEUR AUDIO ---
+    // --- CONTRÔLES DU LECTEUR AUDIO ---
     if (customPlayBtn && mainAudioPlayer) {
         customPlayBtn.addEventListener('click', () => {
             const t = getTranslation(currentLang);
@@ -676,7 +691,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 injectIALink();
                 loginForm.reset();
                 applyTranslations(currentLang);
-                loadPodcastsFromSupabase();
+                if (document.querySelector('.podcast-section')) {
+                    loadPodcastsFromSupabase();
+                }
             } else {
                 if (loginError) loginError.classList.remove('hidden');
             }
@@ -693,13 +710,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lienCloche) lienCloche.classList.add('hidden');
             removeIALink();
             applyTranslations(currentLang);
-            loadPodcastsFromSupabase();
+            if (document.querySelector('.podcast-section')) {
+                loadPodcastsFromSupabase();
+            }
         });
     }
 });
 
 // ==========================================
-// 8. FONCTIONS AUXILIAIRES
+// 8. FONCTIONS AUXILIAIRES ET TRADUCTIONS
 // ==========================================
 function getTranslation(lang) {
     const dict = window.translations || typeof translations !== 'undefined' ? translations : {};
@@ -739,7 +758,11 @@ function applyTranslations(lang) {
 
     if (mainAudioPlayer && currentTitle && playerStatus) {
         if (mainAudioPlayer.paused && mainAudioPlayer.currentTime === 0) {
-            currentTitle.innerText = t.choosePodcast || "🎧 Choisissez une rediffusion ci-dessous";
+            if (document.querySelector('.podcast-section')) {
+                currentTitle.innerText = t.choosePodcast || "🎧 Choisissez une rediffusion ci-dessous";
+            } else {
+                currentTitle.innerText = "🎧 Radio 6 — Aucun morceau en cours";
+            }
             playerStatus.innerText = t.ready || "PRÊT À L'ÉCOUTE";
         } else if (mainAudioPlayer.paused) {
             playerStatus.innerText = t.pause || "PAUSE";
@@ -953,18 +976,3 @@ window.closeParamModal = function(modalId) {
     const targetModal = document.getElementById(modalId);
     if (targetModal) targetModal.classList.add('hidden');
 };
-
-// --- CONTRÔLE VITESSE AUDIO ---
-document.querySelectorAll('.speed-btn').forEach(btn => {
-    btn.onclick = (e) => {
-        const speed = parseFloat(e.target.getAttribute('data-speed'));
-        const mainAudio = document.querySelector('audio');
-        if (mainAudio) mainAudio.playbackRate = speed;
-
-        const container = e.target.closest('.speed-controls');
-        if (container) {
-            container.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-        }
-    };
-});
