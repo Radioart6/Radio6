@@ -846,3 +846,29 @@ body.font-dyslexic {
         gap: 1rem;
     }
 }
+/* ==========================================
+   DATE ET HEURE DANS L'EN-TÊTE
+   ========================================== */
+.header-datetime {
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.3;
+}
+
+.header-datetime .dt-time {
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 650px) {
+    .header-datetime {
+        display: none; /* Masqué sur petit écran pour ne pas surcharger l'en-tête */
+    }
+}
