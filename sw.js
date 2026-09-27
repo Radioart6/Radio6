@@ -4,7 +4,7 @@ const ASSETS = [
   './index.html',
   './style.css',
   './script.js',
-  './LogoArt6automne.png'
+  './logo.png'
 ];
 
 // Installation et mise en cache immédiate
