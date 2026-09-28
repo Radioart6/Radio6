@@ -97,7 +97,7 @@
     </header>
 
     <main>
-        <!-- CONTENU DU CHAT PUBLIC (OUVERT POUR LES TESTES) -->
+        <!-- CONTENU DU CHAT PUBLIC -->
         <div class="chat-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 style="margin: 0; font-size: 1.4rem;"><i class="fa-solid fa-comments" style="color: var(--accent);"></i> Salon de Discussion en Direct</h2>
@@ -114,7 +114,6 @@
             </div>
 
             <form id="chat-form">
-                <!-- Saisie de l'identité (Prénom, Nom, Classe) -->
                 <div id="identity-box" class="user-info-inputs">
                     <input type="text" id="user-prenom" placeholder="Prénom *" required>
                     <input type="text" id="user-nom" placeholder="Nom *" required>
@@ -139,18 +138,15 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const isAdmin = sessionStorage.getItem('adminMode') === 'true';
 
-            // Masquer le formulaire d'identité pour les admins
             if (isAdmin) {
                 const idBox = document.getElementById('identity-box');
                 if (idBox) idBox.style.display = 'none';
             } else {
-                // Pré-remplir les champs identité si déjà enregistrés
                 document.getElementById('user-prenom').value = localStorage.getItem('chat_prenom') || '';
                 document.getElementById('user-nom').value = localStorage.getItem('chat_nom') || '';
                 document.getElementById('user-classe').value = localStorage.getItem('chat_classe') || '';
             }
 
-            // Connexion Chat Supabase
             if (typeof db !== 'undefined') {
                 const chatBox = document.getElementById('chat-box');
                 const chatForm = document.getElementById('chat-form');
@@ -203,17 +199,14 @@
                     chatBox.scrollTop = chatBox.scrollHeight;
                 }
 
-                // Supprimer un message (Admin)
                 window.deleteMessage = async (id) => {
                     if (confirm("Voulez-vous vraiment supprimer ce message ?")) {
                         const { error } = await db.from('messages').update({ is_deleted: true }).eq('id', id);
-                        if (error) {
-                            alert("Erreur lors de la suppression : " + error.message);
-                        }
+                        if (error) alert("Erreur de suppression : " + error.message);
                     }
                 };
 
-                // Charger l'historique des messages
+                // Charger l'historique
                 const { data: messages, error: selectError } = await db
                     .from('messages')
                     .select('*')
@@ -221,21 +214,17 @@
                     .limit(50);
 
                 if (!selectError && messages && messages.length > 0) {
-                    const welcomeMsg = document.getElementById('chat-welcome');
-                    if (welcomeMsg) welcomeMsg.remove();
                     messages.forEach(msg => renderMessage(msg));
                 }
 
-                // Écouter les messages en temps réel
+                // Temps réel
                 db.channel('public:messages')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
-                        if (payload.new) {
-                            renderMessage(payload.new);
-                        }
+                        if (payload.new) renderMessage(payload.new);
                     })
                     .subscribe();
 
-                // Soumission du message
+                // Soumission
                 chatForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const text = chatInput.value.trim();
@@ -249,7 +238,7 @@
                         const classe = document.getElementById('user-classe').value.trim();
 
                         if (!prenom || !nom || !classe) {
-                            alert("Merci de remplir votre prénom, nom et classe.");
+                            alert("Merci de remplir tous les champs d'identité.");
                             return;
                         }
 
@@ -260,18 +249,14 @@
                         pseudoFinal = `${prenom} ${nom} (${classe})`;
                     }
 
-                    const { data, error } = await db
+                    const { error } = await db
                         .from('messages')
-                        .insert([{ content: text, pseudo: pseudoFinal, is_deleted: false }])
-                        .select();
+                        .insert([{ content: text, pseudo: pseudoFinal, is_deleted: false }]);
 
                     if (error) {
                         alert("Erreur d'envoi : " + error.message);
                     } else {
                         chatInput.value = '';
-                        if (data && data[0]) {
-                            renderMessage(data[0]);
-                        }
                     }
                 });
             }
