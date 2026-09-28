@@ -2,8 +2,10 @@
 const SUPABASE_URL = "https://cbaiwrlsuqyxhosnigkf.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiYWl3cmxzdXF5eGhvc25pZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NDkxNjIsImV4cCI6MjA5NjEyNTE2Mn0.u-mA4YEDwiZQ5qkGc9vDssUh_wDRUYrXtEO9be5gYfg";
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const SupabaseClient = db; // Garde la compatibilité avec le reste du site
+// Initialisation globale accessible partout
+window.db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const db = window.db;
+const SupabaseClient = window.db;
 let editPodcastId = null;
 
 // ==========================================
