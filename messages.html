@@ -97,7 +97,7 @@
     </header>
 
     <main>
-        <!-- CONTENU DU CHAT PUBLIC -->
+        <!-- CONTENU DU CHAT PUBLIC (OUVERT POUR LES TESTES) -->
         <div class="chat-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 style="margin: 0; font-size: 1.4rem;"><i class="fa-solid fa-comments" style="color: var(--accent);"></i> Salon de Discussion en Direct</h2>
@@ -107,7 +107,7 @@
             </div>
 
             <div id="chat-box" class="chat-messages">
-                <div id="chat-placeholder" style="text-align: center; color: var(--text-muted); margin-top: 3rem;">
+                <div id="chat-welcome" style="text-align: center; color: var(--text-muted); margin-top: 3rem;">
                     <i class="fa-solid fa-comments" style="font-size: 2.2rem; margin-bottom: 0.8rem; color: var(--accent);"></i>
                     <p style="margin: 0;">Bienvenue ! Le chat est actuellement ouvert pour les tests.</p>
                 </div>
@@ -123,7 +123,7 @@
 
                 <div style="display: flex; gap: 10px;">
                     <input type="text" id="chat-input" placeholder="Écrivez votre message..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: var(--bg-color); color: var(--text);" required>
-                    <button type="submit" id="chat-send-btn" class="btn-admin-action" style="padding: 0 1.5rem; align-self: stretch;">Envoyer</button>
+                    <button type="submit" class="btn-admin-action" style="padding: 0 1.5rem; align-self: stretch;">Envoyer</button>
                 </div>
             </form>
         </div>
@@ -139,25 +139,26 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const isAdmin = sessionStorage.getItem('adminMode') === 'true';
 
-            // Masquer la saisie d'identité pour l'administrateur
+            // Masquer le formulaire d'identité pour les admins
             if (isAdmin) {
                 const idBox = document.getElementById('identity-box');
                 if (idBox) idBox.style.display = 'none';
             } else {
-                // Remplissage automatique depuis le stockage local
+                // Pré-remplir les champs identité si déjà enregistrés
                 document.getElementById('user-prenom').value = localStorage.getItem('chat_prenom') || '';
                 document.getElementById('user-nom').value = localStorage.getItem('chat_nom') || '';
                 document.getElementById('user-classe').value = localStorage.getItem('chat_classe') || '';
             }
 
+            // Connexion Chat Supabase
             if (typeof db !== 'undefined') {
                 const chatBox = document.getElementById('chat-box');
                 const chatForm = document.getElementById('chat-form');
                 const chatInput = document.getElementById('chat-input');
 
                 function renderMessage(msg) {
-                    const placeholder = document.getElementById('chat-placeholder');
-                    if (placeholder) placeholder.remove();
+                    const welcomeMsg = document.getElementById('chat-welcome');
+                    if (welcomeMsg) welcomeMsg.remove();
 
                     let existingDiv = document.getElementById(`msg-${msg.id}`);
 
@@ -202,7 +203,7 @@
                     chatBox.scrollTop = chatBox.scrollHeight;
                 }
 
-                // Action de suppression
+                // Supprimer un message (Admin)
                 window.deleteMessage = async (id) => {
                     if (confirm("Voulez-vous vraiment supprimer ce message ?")) {
                         const { error } = await db.from('messages').update({ is_deleted: true }).eq('id', id);
@@ -212,7 +213,7 @@
                     }
                 };
 
-                // Chargement initial des 50 derniers messages
+                // Charger l'historique des messages
                 const { data: messages, error: selectError } = await db
                     .from('messages')
                     .select('*')
@@ -220,10 +221,12 @@
                     .limit(50);
 
                 if (!selectError && messages && messages.length > 0) {
+                    const welcomeMsg = document.getElementById('chat-welcome');
+                    if (welcomeMsg) welcomeMsg.remove();
                     messages.forEach(msg => renderMessage(msg));
                 }
 
-                // Abonnement aux changements en direct
+                // Écouter les messages en temps réel
                 db.channel('public:messages')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
                         if (payload.new) {
@@ -232,7 +235,7 @@
                     })
                     .subscribe();
 
-                // Soumission sécurisée du formulaire
+                // Soumission du message
                 chatForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const text = chatInput.value.trim();
@@ -246,7 +249,7 @@
                         const classe = document.getElementById('user-classe').value.trim();
 
                         if (!prenom || !nom || !classe) {
-                            alert("Merci de compléter les champs Prénom, Nom et Classe.");
+                            alert("Merci de remplir votre prénom, nom et classe.");
                             return;
                         }
 
@@ -257,14 +260,13 @@
                         pseudoFinal = `${prenom} ${nom} (${classe})`;
                     }
 
-                    // Tentative d'insertion
                     const { data, error } = await db
                         .from('messages')
                         .insert([{ content: text, pseudo: pseudoFinal, is_deleted: false }])
                         .select();
 
                     if (error) {
-                        alert("Erreur lors de l'envoi : " + error.message);
+                        alert("Erreur d'envoi : " + error.message);
                     } else {
                         chatInput.value = '';
                         if (data && data[0]) {
