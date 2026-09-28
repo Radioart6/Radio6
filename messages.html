@@ -42,22 +42,15 @@
             opacity: 1;
         }
 
-        .user-info-inputs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        .user-info-inputs input {
-            flex: 1;
-            min-width: 110px;
-            padding: 0.6rem;
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(0,0,0,0.3);
-            color: var(--text);
-            font-size: 0.85rem;
+        .chat-closed-notice {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -100,30 +93,21 @@
         <div class="chat-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 style="margin: 0; font-size: 1.4rem;"><i class="fa-solid fa-comments" style="color: var(--accent);"></i> Salon de Discussion en Direct</h2>
-                <span id="chat-status-badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
-                    🟢 Mode Test Ouvert
+                <span id="chat-status-badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                    🔴 Chat Fermé
                 </span>
             </div>
 
             <div id="chat-box" class="chat-messages">
                 <div id="chat-welcome" style="text-align: center; color: var(--text-muted); margin-top: 3rem;">
                     <i class="fa-solid fa-comments" style="font-size: 2.2rem; margin-bottom: 0.8rem; color: var(--accent);"></i>
-                    <p style="margin: 0;">Bienvenue ! Le chat est actuellement ouvert pour les tests.</p>
+                    <p style="margin: 0;">Le chat est actuellement fermé. RDV lors de la prochaine émission !</p>
                 </div>
             </div>
 
-            <form id="chat-form">
-                <div id="identity-box" class="user-info-inputs">
-                    <input type="text" id="user-prenom" placeholder="Prénom *" required>
-                    <input type="text" id="user-nom" placeholder="Nom *" required>
-                    <input type="text" id="user-classe" placeholder="Classe (ex: 2nde C) *" required>
-                </div>
-
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="chat-input" placeholder="Écrivez votre message..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: var(--bg-color); color: var(--text);" required>
-                    <button type="submit" class="btn-admin-action" style="padding: 0 1.5rem; align-self: stretch;">Envoyer</button>
-                </div>
-            </form>
+            <div class="chat-closed-notice">
+                <i class="fa-solid fa-lock"></i> Les envois de messages sont suspendus pour le moment. Rendez-vous au prochain direct !
+            </div>
         </div>
     </main>
 
@@ -136,22 +120,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const isAdmin = sessionStorage.getItem('adminMode') === 'true';
-
-            if (isAdmin) {
-                const idBox = document.getElementById('identity-box');
-                if (idBox) idBox.style.display = 'none';
-            } else {
-                document.getElementById('user-prenom').value = localStorage.getItem('chat_prenom') || '';
-                document.getElementById('user-nom').value = localStorage.getItem('chat_nom') || '';
-                document.getElementById('user-classe').value = localStorage.getItem('chat_classe') || '';
-            }
-
             const client = window.db || window.SupabaseClient;
 
             if (client) {
                 const chatBox = document.getElementById('chat-box');
-                const chatForm = document.getElementById('chat-form');
-                const chatInput = document.getElementById('chat-input');
 
                 function renderMessage(msg) {
                     const welcomeMsg = document.getElementById('chat-welcome');
@@ -207,7 +179,7 @@
                     }
                 };
 
-                // Charger l'historique
+                // Charger l'historique des anciens messages
                 const { data: messages, error } = await client
                     .from('messages')
                     .select('*')
@@ -218,48 +190,12 @@
                     messages.forEach(msg => renderMessage(msg));
                 }
 
-                // Temps réel
+                // Écoute en temps réel (si un message est supprimé par un admin par exemple)
                 client.channel('public:messages')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
                         if (payload.new) renderMessage(payload.new);
                     })
                     .subscribe();
-
-                // Soumission du formulaire
-                chatForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const text = chatInput.value.trim();
-                    if (!text) return;
-
-                    let pseudoFinal = 'Animateur Radio 6 🎙️';
-
-                    if (!isAdmin) {
-                        const prenom = document.getElementById('user-prenom').value.trim();
-                        const nom = document.getElementById('user-nom').value.trim();
-                        const classe = document.getElementById('user-classe').value.trim();
-
-                        if (!prenom || !nom || !classe) {
-                            alert("Merci de remplir votre prénom, nom et classe.");
-                            return;
-                        }
-
-                        localStorage.setItem('chat_prenom', prenom);
-                        localStorage.setItem('chat_nom', nom);
-                        localStorage.setItem('chat_classe', classe);
-
-                        pseudoFinal = `${prenom} ${nom} (${classe})`;
-                    }
-
-                    const { error: sendError } = await client
-                        .from('messages')
-                        .insert([{ content: text, pseudo: pseudoFinal, is_deleted: false }]);
-
-                    if (sendError) {
-                        alert("Erreur Supabase : " + sendError.message);
-                    } else {
-                        chatInput.value = '';
-                    }
-                });
             } else {
                 alert("Erreur de chargement du client Supabase.");
             }
