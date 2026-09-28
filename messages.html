@@ -97,7 +97,6 @@
     </header>
 
     <main>
-        <!-- CONTENU DU CHAT PUBLIC -->
         <div class="chat-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 style="margin: 0; font-size: 1.4rem;"><i class="fa-solid fa-comments" style="color: var(--accent);"></i> Salon de Discussion en Direct</h2>
@@ -147,7 +146,9 @@
                 document.getElementById('user-classe').value = localStorage.getItem('chat_classe') || '';
             }
 
-            if (typeof db !== 'undefined') {
+            const client = window.db || window.SupabaseClient;
+
+            if (client) {
                 const chatBox = document.getElementById('chat-box');
                 const chatForm = document.getElementById('chat-form');
                 const chatInput = document.getElementById('chat-input');
@@ -201,30 +202,30 @@
 
                 window.deleteMessage = async (id) => {
                     if (confirm("Voulez-vous vraiment supprimer ce message ?")) {
-                        const { error } = await db.from('messages').update({ is_deleted: true }).eq('id', id);
-                        if (error) alert("Erreur de suppression : " + error.message);
+                        const { error } = await client.from('messages').update({ is_deleted: true }).eq('id', id);
+                        if (error) alert("Erreur : " + error.message);
                     }
                 };
 
                 // Charger l'historique
-                const { data: messages, error: selectError } = await db
+                const { data: messages, error } = await client
                     .from('messages')
                     .select('*')
                     .order('created_at', { ascending: true })
                     .limit(50);
 
-                if (!selectError && messages && messages.length > 0) {
+                if (!error && messages && messages.length > 0) {
                     messages.forEach(msg => renderMessage(msg));
                 }
 
                 // Temps réel
-                db.channel('public:messages')
+                client.channel('public:messages')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
                         if (payload.new) renderMessage(payload.new);
                     })
                     .subscribe();
 
-                // Soumission
+                // Soumission du formulaire
                 chatForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const text = chatInput.value.trim();
@@ -238,7 +239,7 @@
                         const classe = document.getElementById('user-classe').value.trim();
 
                         if (!prenom || !nom || !classe) {
-                            alert("Merci de remplir tous les champs d'identité.");
+                            alert("Merci de remplir votre prénom, nom et classe.");
                             return;
                         }
 
@@ -249,16 +250,18 @@
                         pseudoFinal = `${prenom} ${nom} (${classe})`;
                     }
 
-                    const { error } = await db
+                    const { error: sendError } = await client
                         .from('messages')
                         .insert([{ content: text, pseudo: pseudoFinal, is_deleted: false }]);
 
-                    if (error) {
-                        alert("Erreur d'envoi : " + error.message);
+                    if (sendError) {
+                        alert("Erreur Supabase : " + sendError.message);
                     } else {
                         chatInput.value = '';
                     }
                 });
+            } else {
+                alert("Erreur de chargement du client Supabase.");
             }
         });
     </script>
