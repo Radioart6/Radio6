@@ -7,78 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .chat-countdown-card {
-            background: linear-gradient(135deg, rgba(40, 23, 17, 0.9) 0%, rgba(24, 13, 10, 0.95) 100%);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(234, 88, 12, 0.15);
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            text-align: center;
-            max-width: 650px;
-            margin: 2rem auto;
-            backdrop-filter: blur(10px);
-        }
-
-        .chat-icon-wrapper {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem auto;
-            background: linear-gradient(135deg, rgba(234, 88, 12, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
-            border: 1px solid rgba(245, 158, 11, 0.5);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.2rem;
-            color: var(--accent);
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
-        }
-
-        .countdown-grid {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-
-        .time-block {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            border-radius: 12px;
-            padding: 12px 16px;
-            min-width: 75px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
-        }
-
-        .time-number {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--accent);
-            font-family: monospace, monospace;
-            line-height: 1;
-        }
-
-        .time-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 6px;
-        }
-
-        .date-badge {
-            display: inline-block;
-            background: rgba(234, 88, 12, 0.15);
-            color: var(--accent);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
-
         .chat-container {
             background: var(--card-bg);
             border-radius: 16px;
@@ -169,76 +97,35 @@
     </header>
 
     <main>
-        <!-- CARTE AVEC TIMER POUR LES VISITEURS NON CONNECTÉS -->
-        <div id="access-blocked" class="chat-countdown-card">
-            <div class="chat-icon-wrapper">
-                <i class="fa-solid fa-comments"></i>
-            </div>
-            <h2 style="font-size: 1.8rem; margin: 0 0 0.5rem 0; color: var(--text);">Espace Chat d'Émission</h2>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
-                Le salon de discussion ouvrira ses portes en direct très bientôt !
-            </p>
-
-            <div class="date-badge">
-                <i class="fa-regular fa-calendar-check"></i> Ouverture : Jeudi 1er octobre à 12h45
+        <!-- CONTENU DU CHAT PUBLIC (OUVERT POUR LES TESTES) -->
+        <div class="chat-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin: 0; font-size: 1.4rem;"><i class="fa-solid fa-comments" style="color: var(--accent);"></i> Salon de Discussion en Direct</h2>
+                <span id="chat-status-badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                    🟢 Mode Test Ouvert
+                </span>
             </div>
 
-            <!-- BLOCS DU COMPTE À REBOURS -->
-            <div class="countdown-grid">
-                <div class="time-block">
-                    <div id="cd-days" class="time-number">00</div>
-                    <div class="time-label">Jours</div>
-                </div>
-                <div class="time-block">
-                    <div id="cd-hours" class="time-number">00</div>
-                    <div class="time-label">Heures</div>
-                </div>
-                <div class="time-block">
-                    <div id="cd-minutes" class="time-number">00</div>
-                    <div class="time-label">Min</div>
-                </div>
-                <div class="time-block">
-                    <div id="cd-seconds" class="time-number">00</div>
-                    <div class="time-label">Sec</div>
+            <div id="chat-box" class="chat-messages">
+                <div style="text-align: center; color: var(--text-muted); margin-top: 3rem;">
+                    <i class="fa-solid fa-comments" style="font-size: 2.2rem; margin-bottom: 0.8rem; color: var(--accent);"></i>
+                    <p style="margin: 0;">Bienvenue ! Le chat est actuellement ouvert pour les tests.</p>
                 </div>
             </div>
 
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
-                Connectez-vous en tant qu'administrateur pour accéder au panneau d'aperçu.
-            </p>
-        </div>
-
-        <!-- CONTENU DU CHAT -->
-        <div id="access-granted" class="hidden">
-            <div class="chat-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2 style="margin: 0; font-size: 1.4rem;"><i class="fa-solid fa-comments" style="color: var(--accent);"></i> Salon de Discussion en Direct</h2>
-                    <span id="chat-status-badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
-                        🟢 En ligne
-                    </span>
+            <form id="chat-form">
+                <!-- Saisie de l'identité (Prénom, Nom, Classe) -->
+                <div id="identity-box" class="user-info-inputs">
+                    <input type="text" id="user-prenom" placeholder="Prénom *" required>
+                    <input type="text" id="user-nom" placeholder="Nom *" required>
+                    <input type="text" id="user-classe" placeholder="Classe (ex: 2nde C) *" required>
                 </div>
 
-                <div id="chat-box" class="chat-messages">
-                    <div style="text-align: center; color: var(--text-muted); margin-top: 3rem;">
-                        <i class="fa-solid fa-lock-open" style="font-size: 2.2rem; margin-bottom: 0.8rem; color: var(--accent);"></i>
-                        <p style="margin: 0;">Bienvenue dans le salon de discussion !</p>
-                    </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="chat-input" placeholder="Écrivez votre message..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: var(--bg-color); color: var(--text);" required>
+                    <button type="submit" class="btn-admin-action" style="padding: 0 1.5rem; align-self: stretch;">Envoyer</button>
                 </div>
-
-                <form id="chat-form">
-                    <!-- Saisie de l'identité (Prénom, Nom, Classe) -->
-                    <div id="identity-box" class="user-info-inputs">
-                        <input type="text" id="user-prenom" placeholder="Prénom *" required>
-                        <input type="text" id="user-nom" placeholder="Nom *" required>
-                        <input type="text" id="user-classe" placeholder="Classe (ex: 2nde C) *" required>
-                    </div>
-
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="chat-input" placeholder="Écrivez votre message..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: var(--bg-color); color: var(--text);" required>
-                        <button type="submit" class="btn-admin-action" style="padding: 0 1.5rem; align-self: stretch;">Envoyer</button>
-                    </div>
-                </form>
-            </div>
+            </form>
         </div>
     </main>
 
@@ -250,73 +137,27 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // 1. Détection Admin
             const isAdmin = sessionStorage.getItem('adminMode') === 'true';
-            const blockedDiv = document.getElementById('access-blocked');
-            const grantedDiv = document.getElementById('access-granted');
 
+            // Masquer le formulaire d'identité pour les admins
             if (isAdmin) {
-                if (blockedDiv) blockedDiv.classList.add('hidden');
-                if (grantedDiv) grantedDiv.classList.remove('hidden');
-                // Masquer le formulaire d'identité pour les admins
                 const idBox = document.getElementById('identity-box');
                 if (idBox) idBox.style.display = 'none';
-            }
-
-            // Pré-remplir les champs identité si déjà connus dans le navigateur
-            if (!isAdmin) {
+            } else {
+                // Pré-remplir les champs identité si déjà enregistrés
                 document.getElementById('user-prenom').value = localStorage.getItem('chat_prenom') || '';
                 document.getElementById('user-nom').value = localStorage.getItem('chat_nom') || '';
                 document.getElementById('user-classe').value = localStorage.getItem('chat_classe') || '';
             }
 
-            // 2. Compte à rebours dynamique
-            const targetDate = new Date();
-            targetDate.setFullYear(2026, 9, 1); // 1er Octobre 2026
-            targetDate.setHours(12, 45, 0, 0);
-
-            function updateCountdown() {
-                const now = new Date();
-                const diff = targetDate - now;
-
-                if (diff <= 0) {
-                    if (blockedDiv && !isAdmin) {
-                        blockedDiv.classList.add('hidden');
-                        grantedDiv.classList.remove('hidden');
-                    }
-                    return;
-                }
-
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const minutes = Math.floor((diff / (1000 * 60)) % 60);
-                const seconds = Math.floor((diff / 1000) % 60);
-
-                const pad = (n) => String(n).padStart(2, '0');
-
-                const elDays = document.getElementById('cd-days');
-                const elHours = document.getElementById('cd-hours');
-                const elMin = document.getElementById('cd-minutes');
-                const elSec = document.getElementById('cd-seconds');
-
-                if (elDays) elDays.textContent = pad(days);
-                if (elHours) elHours.textContent = pad(hours);
-                if (elMin) elMin.textContent = pad(minutes);
-                if (elSec) elSec.textContent = pad(seconds);
-            }
-
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
-
-            // 3. Connexion Chat Supabase
+            // Connexion Chat Supabase
             if (typeof db !== 'undefined') {
                 const chatBox = document.getElementById('chat-box');
                 const chatForm = document.getElementById('chat-form');
                 const chatInput = document.getElementById('chat-input');
 
-                // Fonction pour insérer ou mettre à jour un message dans l'affichage
                 function renderMessage(msg) {
-                    const placeholder = chatBox.querySelector('i.fa-lock-open');
+                    const placeholder = chatBox.querySelector('i.fa-comments');
                     if (placeholder) chatBox.innerHTML = '';
 
                     let existingDiv = document.getElementById(`msg-${msg.id}`);
@@ -331,7 +172,6 @@
                     const dateObj = new Date(msg.created_at);
                     const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                    // Si le message est marqué comme supprimé
                     if (msg.is_deleted) {
                         existingDiv.innerHTML = `
                             <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
@@ -370,7 +210,7 @@
                     }
                 };
 
-                // Charger l'historique
+                // Charger l'historique des messages
                 const { data: messages } = await db
                     .from('messages')
                     .select('*')
@@ -382,7 +222,7 @@
                     messages.forEach(msg => renderMessage(msg));
                 }
 
-                // Écouter les NOUVEAUX messages et les MODIFICATIONS en direct
+                // Écouter les messages en temps réel
                 db.channel('public:messages')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
                         renderMessage(payload.new);
@@ -407,7 +247,6 @@
                             return;
                         }
 
-                        // Sauvegarder dans le navigateur
                         localStorage.setItem('chat_prenom', prenom);
                         localStorage.setItem('chat_nom', nom);
                         localStorage.setItem('chat_classe', classe);
