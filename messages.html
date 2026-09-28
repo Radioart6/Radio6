@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* STYLES DU CHAT & COMPTE À REBOURS */
         .chat-countdown-card {
             background: linear-gradient(135deg, rgba(40, 23, 17, 0.9) 0%, rgba(24, 13, 10, 0.95) 100%);
             border: 1px solid rgba(245, 158, 11, 0.4);
@@ -91,13 +90,46 @@
         }
 
         .chat-messages {
-            height: 350px;
+            height: 380px;
             overflow-y: auto;
             background: rgba(0, 0, 0, 0.25);
             border-radius: 12px;
             padding: 1rem;
             margin-bottom: 1rem;
             border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-delete-msg {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .btn-delete-msg:hover {
+            opacity: 1;
+        }
+
+        .user-info-inputs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .user-info-inputs input {
+            flex: 1;
+            min-width: 110px;
+            padding: 0.6rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.3);
+            color: var(--text);
+            font-size: 0.85rem;
         }
     </style>
 </head>
@@ -176,26 +208,35 @@
             </p>
         </div>
 
-        <!-- CONTENU DU CHAT (AUTORISÉ UNIQUEMENT SI CONNECTÉ) -->
+        <!-- CONTENU DU CHAT -->
         <div id="access-granted" class="hidden">
             <div class="chat-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <h2 style="margin: 0; font-size: 1.4rem;"><i class="fa-solid fa-comments" style="color: var(--accent);"></i> Salon de Discussion en Direct</h2>
-                    <span style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
-                        🟢 Aperçu Admin
+                    <span id="chat-status-badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                        🟢 En ligne
                     </span>
                 </div>
 
                 <div id="chat-box" class="chat-messages">
                     <div style="text-align: center; color: var(--text-muted); margin-top: 3rem;">
                         <i class="fa-solid fa-lock-open" style="font-size: 2.2rem; margin-bottom: 0.8rem; color: var(--accent);"></i>
-                        <p style="margin: 0;">Bienvenue dans le salon de discussion ! Les messages des auditeurs s'afficheront ici lors du direct.</p>
+                        <p style="margin: 0;">Bienvenue dans le salon de discussion !</p>
                     </div>
                 </div>
 
-                <form id="chat-form" style="display: flex; gap: 10px;">
-                    <input type="text" id="chat-input" placeholder="Écrivez un message..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: var(--bg-color); color: var(--text);" required>
-                    <button type="submit" class="btn-admin-action" style="padding: 0 1.5rem; align-self: stretch;">Envoyer</button>
+                <form id="chat-form">
+                    <!-- Saisie de l'identité (Prénom, Nom, Classe) -->
+                    <div id="identity-box" class="user-info-inputs">
+                        <input type="text" id="user-prenom" placeholder="Prénom *" required>
+                        <input type="text" id="user-nom" placeholder="Nom *" required>
+                        <input type="text" id="user-classe" placeholder="Classe (ex: 2nde C) *" required>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="chat-input" placeholder="Écrivez votre message..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: var(--bg-color); color: var(--text);" required>
+                        <button type="submit" class="btn-admin-action" style="padding: 0 1.5rem; align-self: stretch;">Envoyer</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -209,7 +250,7 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // 1. Détection du rôle Admin
+            // 1. Détection Admin
             const isAdmin = sessionStorage.getItem('adminMode') === 'true';
             const blockedDiv = document.getElementById('access-blocked');
             const grantedDiv = document.getElementById('access-granted');
@@ -217,11 +258,21 @@
             if (isAdmin) {
                 if (blockedDiv) blockedDiv.classList.add('hidden');
                 if (grantedDiv) grantedDiv.classList.remove('hidden');
+                // Masquer le formulaire d'identité pour les admins
+                const idBox = document.getElementById('identity-box');
+                if (idBox) idBox.style.display = 'none';
             }
 
-            // 2. Compte à rebours dynamique (Jeudi 1er octobre à 12h45)
+            // Pré-remplir les champs identité si déjà connus dans le navigateur
+            if (!isAdmin) {
+                document.getElementById('user-prenom').value = localStorage.getItem('chat_prenom') || '';
+                document.getElementById('user-nom').value = localStorage.getItem('chat_nom') || '';
+                document.getElementById('user-classe').value = localStorage.getItem('chat_classe') || '';
+            }
+
+            // 2. Compte à rebours dynamique
             const targetDate = new Date();
-            targetDate.setFullYear(2026, 9, 1); // 9 = Octobre
+            targetDate.setFullYear(2026, 9, 1); // 1er Octobre 2026
             targetDate.setHours(12, 45, 0, 0);
 
             function updateCountdown() {
@@ -229,12 +280,9 @@
                 const diff = targetDate - now;
 
                 if (diff <= 0) {
-                    if (blockedDiv) {
-                        blockedDiv.innerHTML = `
-                            <div class="chat-icon-wrapper"><i class="fa-solid fa-door-open"></i></div>
-                            <h2 style="color: var(--text);">Le Chat est ouvert !</h2>
-                            <p style="color: var(--text-muted);">Rechargez la page pour accéder à la discussion.</p>
-                        `;
+                    if (blockedDiv && !isAdmin) {
+                        blockedDiv.classList.add('hidden');
+                        grantedDiv.classList.remove('hidden');
                     }
                     return;
                 }
@@ -260,35 +308,69 @@
             updateCountdown();
             setInterval(updateCountdown, 1000);
 
-            // 3. Connexion Chat Supabase en temps réel
+            // 3. Connexion Chat Supabase
             if (typeof db !== 'undefined') {
                 const chatBox = document.getElementById('chat-box');
                 const chatForm = document.getElementById('chat-form');
                 const chatInput = document.getElementById('chat-input');
 
-                // Fonction d'affichage d'un message
-                function appendMessage(msg) {
+                // Fonction pour insérer ou mettre à jour un message dans l'affichage
+                function renderMessage(msg) {
                     const placeholder = chatBox.querySelector('i.fa-lock-open');
                     if (placeholder) chatBox.innerHTML = '';
 
-                    const msgDiv = document.createElement('div');
-                    msgDiv.style.cssText = 'margin-bottom: 0.8rem; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);';
-                    
+                    let existingDiv = document.getElementById(`msg-${msg.id}`);
+
+                    if (!existingDiv) {
+                        existingDiv = document.createElement('div');
+                        existingDiv.id = `msg-${msg.id}`;
+                        existingDiv.style.cssText = 'margin-bottom: 0.8rem; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); position: relative;';
+                        chatBox.appendChild(existingDiv);
+                    }
+
                     const dateObj = new Date(msg.created_at);
                     const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    
-                    msgDiv.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                            <strong style="color: var(--accent); font-size: 0.85rem;">${msg.pseudo || 'Auditeur'}</strong>
-                            <small style="color: var(--text-muted); font-size: 0.75rem;">${time}</small>
-                        </div>
-                        <p style="margin: 0; color: var(--text); font-size: 0.95rem;">${msg.content}</p>
-                    `;
-                    chatBox.appendChild(msgDiv);
+
+                    // Si le message est marqué comme supprimé
+                    if (msg.is_deleted) {
+                        existingDiv.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                                <strong style="color: var(--text-muted); font-size: 0.85rem;">${msg.pseudo}</strong>
+                                <small style="color: var(--text-muted); font-size: 0.75rem;">${time}</small>
+                            </div>
+                            <p style="margin: 0; color: #ef4444; font-style: italic; font-size: 0.85rem;">
+                                <i class="fa-solid fa-ban"></i> Ce message a été supprimé par l'admin.
+                            </p>
+                        `;
+                    } else {
+                        let deleteBtnHTML = '';
+                        if (isAdmin) {
+                            deleteBtnHTML = `<button class="btn-delete-msg" onclick="deleteMessage(${msg.id})" title="Supprimer ce message"><i class="fa-solid fa-trash"></i></button>`;
+                        }
+
+                        existingDiv.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                                <strong style="color: var(--accent); font-size: 0.85rem;">${msg.pseudo}</strong>
+                                <div>
+                                    <small style="color: var(--text-muted); font-size: 0.75rem; margin-right: 6px;">${time}</small>
+                                    ${deleteBtnHTML}
+                                </div>
+                            </div>
+                            <p style="margin: 0; color: var(--text); font-size: 0.95rem;">${msg.content}</p>
+                        `;
+                    }
+
                     chatBox.scrollTop = chatBox.scrollHeight;
                 }
 
-                // Charger les derniers messages enregistrés
+                // Supprimer un message (Admin)
+                window.deleteMessage = async (id) => {
+                    if (confirm("Voulez-vous vraiment supprimer ce message ?")) {
+                        await db.from('messages').update({ is_deleted: true }).eq('id', id);
+                    }
+                };
+
+                // Charger l'historique
                 const { data: messages } = await db
                     .from('messages')
                     .select('*')
@@ -297,30 +379,48 @@
 
                 if (messages && messages.length > 0) {
                     chatBox.innerHTML = '';
-                    messages.forEach(msg => appendMessage(msg));
+                    messages.forEach(msg => renderMessage(msg));
                 }
 
-                // Écouter l'arrivée des NOUVEAUX messages en direct
+                // Écouter les NOUVEAUX messages et les MODIFICATIONS en direct
                 db.channel('public:messages')
-                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-                        appendMessage(payload.new);
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
+                        renderMessage(payload.new);
                     })
                     .subscribe();
 
-                // Gestion de l'envoi du formulaire
+                // Soumission du message
                 chatForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const text = chatInput.value.trim();
                     if (!text) return;
 
-                    const userPseudo = isAdmin ? 'Animateur Radio 6 🎙️' : 'Auditeur';
+                    let pseudoFinal = 'Animateur Radio 6 🎙️';
+
+                    if (!isAdmin) {
+                        const prenom = document.getElementById('user-prenom').value.trim();
+                        const nom = document.getElementById('user-nom').value.trim();
+                        const classe = document.getElementById('user-classe').value.trim();
+
+                        if (!prenom || !nom || !classe) {
+                            alert("Merci de remplir votre prénom, nom et classe.");
+                            return;
+                        }
+
+                        // Sauvegarder dans le navigateur
+                        localStorage.setItem('chat_prenom', prenom);
+                        localStorage.setItem('chat_nom', nom);
+                        localStorage.setItem('chat_classe', classe);
+
+                        pseudoFinal = `${prenom} ${nom} (${classe})`;
+                    }
 
                     const { error } = await db
                         .from('messages')
-                        .insert([{ content: text, pseudo: userPseudo }]);
+                        .insert([{ content: text, pseudo: pseudoFinal, is_deleted: false }]);
 
                     if (error) {
-                        alert("Erreur d'envoi du message.");
+                        alert("Erreur lors de l'envoi du message.");
                     } else {
                         chatInput.value = '';
                     }
