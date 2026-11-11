@@ -9,11 +9,11 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://radioart6.github.io/Radio6/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="LogoEmission.jpg">
+    <link rel="icon" type="image/png" href="logo.png">
     <title>Radio 6 - La Radio d'Art 6</title>
     
     <!-- Paramètre anti-cache CSS -->
-    <link rel="stylesheet" href="style.css?v=1.7">
+    <link rel="stylesheet" href="style.css?v=1.6">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -80,7 +80,7 @@
         }
         .clickable-calendar:hover {
             transform: scale(1.01);
-            border-color: #3b82f6 !important;
+            border-color: #a855f7 !important;
         }
 
         .search-container input {
@@ -108,8 +108,8 @@
         }
 
         .banner-recrutement {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.2));
-            border: 1px solid rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.2), rgba(245, 158, 11, 0.2));
+            border: 1px solid rgba(245, 158, 11, 0.4);
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 2rem;
@@ -143,7 +143,7 @@
             font-size: 0.95rem;
             white-space: nowrap;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
         }
         .btn-join-banner:hover {
             background: var(--accent);
@@ -151,7 +151,7 @@
             transform: translateY(-2px);
         }
 
-        /* --- BANNIÈRE ÉMISSION & COMPTE À REBOURS --- */
+        /* --- NOUVEAU DESIGN AMÉLIORÉ DE LA BANNIÈRE ÉMISSION & COMPTE À REBOURS --- */
         .banner-event-octobre {
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
             border: 2px solid rgba(59, 130, 246, 0.6);
@@ -272,7 +272,7 @@
     <div id="splash-screen" class="splash-container">
         <div class="splash-content">
             <div class="logo-wrapper">
-                <img src="LogoEmission.jpg" alt="Logo Radio 6 Émission Spéciale" class="splash-logo">
+                <img src="logo.png" alt="Logo Radio 6" class="splash-logo">
             </div>
             <h1>RADIO 6</h1>
             <p class="splash-subtitle">La Radio d'Art 6 • Lycée Arcisse de Caumont</p>
@@ -284,7 +284,7 @@
     <div id="main-content" class="hidden">
         <header>
             <div class="logo-area">
-                <img src="LogoEmission.jpg" alt="Radio 6" class="header-logo">
+                <img src="logo.png" alt="Radio 6" class="header-logo">
                 <div>
                     <strong class="site-title">RADIO 6</strong><br>
                     <small class="site-subtitle">Lycée Arcisse de Caumont</small>
@@ -345,7 +345,7 @@
                 <a href="rejoindre.html" class="btn-join-banner">S'inscrire à Radio 6 ➔</a>
             </section>
 
-            <!-- Bannière Émission Spéciale du 26 novembre 2026 -->
+            <!-- Bannière Émission Spéciale du 26 novembre 2026 (Refondue & avec Compte à rebours) -->
             <div class="banner-event-octobre">
                 <span class="event-badge"><i class="fa-solid fa-tower-broadcast"></i> Émission en direct</span>
                 <h2>🎙️ Émission Spéciale Radio 6</h2>
@@ -550,15 +550,16 @@
                 <div class="update-box last">
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
-                        <li>Remplacement complet du mode saison par le <strong>Mode Émission</strong> et intégration du nouveau visuel.</li>
-                        <li>Recherche dynamique instantanée et application web (PWA) prête.</li>
+                        <li>Recherche dynamique instantanée sans avoir besoin d'ouvrir les dossiers.</li>
+                        <li>Ajout d'un bouton interactif pour activer les notifications de direct.</li>
+                        <li>Application web (PWA) prête à être installée.</li>
                     </ul>
                 </div>
 
                 <div class="update-box next">
                     <h4>🚀 Prochaine mise à jour</h4>
                     <ul>
-                        <li>Améliorations en cours de réflexion.</li>
+                        <li>En cour de réflexion.</li>
                     </ul>
                 </div>
             </div>
@@ -595,7 +596,7 @@
                     <option value="et">Eesti</option>
                     <option value="en">English</option>
                     <option value="es">Español</option>
-                    <option value="fr" selected>Français</option>
+                    <option value="fr">Français</option>
                     <option value="ga">Gaeilge</option>
                     <option value="hr">Hrvatski</option>
                     <option value="it">Italiano</option>
@@ -618,9 +619,9 @@
             <div class="param-row">
                 <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
                 <select id="param-media">
-                    <option value="season" selected>Mode Émission (par défaut)</option>
+                    <option value="season" selected>Mode Saison (par défaut)</option>
                     <option value="dark">Mode Sombre</option>
-                    <option value="light">Mode Clair</option>
+                    <option value="light">Mode clair</option>
                 </select>
             </div>
 
@@ -663,14 +664,15 @@
 
     <!-- Scripts Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="translate-pages.js?v=1.7"></script>
-    <script src="script.js?v=1.7"></script>
+    <script src="translate-pages.js?v=1.6"></script>
+    <script src="script.js?v=1.6"></script>
     <script>
         // --- SCRIPT DU COMPTE À REBOURS POUR L'ÉMISSION DU 26 NOVEMBRE 2026 À 12H45 ---
         function updateEventCountdown() {
             const timerEl = document.getElementById('event-countdown-timer');
             if (!timerEl) return;
 
+            // Date cible : 26 novembre 2026 à 12h45
             const targetDate = new Date('2026-11-26T12:45:00').getTime();
             const now = new Date().getTime();
             const distance = targetDate - now;
@@ -693,6 +695,7 @@
         updateEventCountdown();
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Gestion de la sourdine
             const audioPlayer = document.getElementById('main-audio-player');
             const muteBtn = document.getElementById('custom-mute-btn');
             const muteIcon = document.getElementById('mute-icon');
@@ -710,6 +713,7 @@
                 });
             }
 
+            // Tri dynamique des grilles
             document.querySelectorAll('.sort-select').forEach(select => {
                 select.addEventListener('change', (e) => {
                     const gridId = e.target.getAttribute('data-grid');
