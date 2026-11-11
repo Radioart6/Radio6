@@ -1,10 +1,10 @@
-const CACHE_NAME = 'radio6-v1.8';
+const CACHE_NAME = 'radio6-v1.9';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './script.js',
-  './LogoArt6automne.png'
+  './LogoÉmission.jpg'
 ];
 
 // Installation et mise en cache immédiate
