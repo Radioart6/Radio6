@@ -485,6 +485,12 @@
                         status.innerText = 'Émission le midi';
                         cell.appendChild(status);
                     }
+                        else if (currentMoisData.year === 2026 && currentMoisData.index === 10 && day === 26) {
+                        cell.classList.add('special-orange');
+                        const status = document.createElement('span');
+                        status.className = 'status-text';
+                        status.innerText = 'Émission spéciale le midi';
+                        cell.appendChild(status);
                     else {
                         let raisonJaune = '';
 
