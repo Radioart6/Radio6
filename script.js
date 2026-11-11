@@ -258,12 +258,59 @@ document.addEventListener('DOMContentLoaded', () => {
         return dict[lang] || dict['fr'] || {};
     }
 
-    // --- APPLICATION ET GESTION DES THÈMES VISUELS (MODE ÉMISSION) ---
-    const savedTheme = localStorage.getItem('siteTheme') || 'emission';
+    // --- EFFETS ET ANIMATIONS DU MODE SAISON (AMÉLIORÉ) ---
+    function applySeasonEffects() {
+        let container = document.getElementById('season-effects');
+        
+        if (!document.body.classList.contains('season-mode')) {
+            if (container) container.remove();
+            return;
+        }
+
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'season-effects';
+            document.body.appendChild(container);
+        }
+        container.innerHTML = '';
+
+        const month = new Date().getMonth();
+        let particles = ['🍂', '🍁'];
+
+        if (month >= 8 && month <= 10) {
+            particles = ['🍂', '🍁', '🌰'];
+        } else if (month === 11 || month <= 1) {
+            particles = ['❄️', '❅', '❆'];
+        } else if (month >= 2 && month <= 4) {
+            particles = ['🌸', '💮'];
+        } else {
+            particles = ['✨', '🫧'];
+        }
+
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('span');
+            p.className = 'season-particle';
+            p.textContent = particles[Math.floor(Math.random() * particles.length)];
+            
+            p.style.left = Math.random() * 100 + 'vw';
+            
+            const fallDuration = Math.random() * 9 + 7;
+            p.style.animationDuration = `${fallDuration}s`;
+            p.style.animationDelay = `${Math.random() * 6}s`;
+            
+            p.style.fontSize = (Math.random() * 1.1 + 0.7) + 'rem';
+            p.style.opacity = (Math.random() * 0.55 + 0.25);
+            
+            container.appendChild(p);
+        }
+    }
+
+    // --- APPLICATION ET GESTION DES THÈMES VISUELS ---
+    const savedTheme = localStorage.getItem('siteTheme') || 'season';
     applyTheme(savedTheme);
 
     function applyTheme(theme) {
-        document.body.classList.remove('light-mode', 'dark-mode', 'emission-mode');
+        document.body.classList.remove('light-mode', 'dark-mode', 'season-mode');
         
         const splashLogo = document.querySelector('.splash-logo');
         const headerLogo = document.querySelector('.header-logo');
@@ -277,10 +324,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (splashLogo) splashLogo.src = 'logo.png';
             if (headerLogo) headerLogo.src = 'logo.png';
         } else {
-            document.body.classList.add('emission-mode');
-            if (splashLogo) splashLogo.src = 'LogoEmission.jpg';
-            if (headerLogo) headerLogo.src = 'LogoEmission.jpg';
+            document.body.classList.add('season-mode');
+            if (splashLogo) splashLogo.src = 'LogoArt6automne.png';
+            if (headerLogo) headerLogo.src = 'LogoArt6automne.png';
         }
+
+        applySeasonEffects();
     }
 
     const savedSize = localStorage.getItem('siteFontSize') || 'medium';
@@ -454,7 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 settingsLabels[2].innerHTML = `<i class="fa-solid fa-font"></i> ${t.settingsFont || "Taille de la police :"}`;
             }
             if (selectTheme && selectTheme.options.length >= 3) {
-                selectTheme.options[0].text = t.settingsMediaSsn || "Mode Émission";
+                selectTheme.options[0].text = t.settingsMediaSsn || "Mode Saison";
                 selectTheme.options[1].text = t.settingsMediaDft || "Mode Sombre";
                 selectTheme.options[2].text = t.settingsMediaEar || "Mode clair";
             }
@@ -609,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.className = 'podcast-card';
 
                 const editBtnHtml = isAdmin 
-                    ? `<button class="btn-edit" data-id="${pod.id}" style="background-color: #3b82f6; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-weight: bold; font-size: 0.85rem; transition: transform 0.2s;">✏️ Modifier</button>` 
+                    ? `<button class="btn-edit" data-id="${pod.id}" style="background-color: #f59e0b; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-weight: bold; font-size: 0.85rem; transition: transform 0.2s;">✏️ Modifier</button>` 
                     : '';
 
                 card.innerHTML = `
@@ -648,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const btnSubmit = document.getElementById('btn-submit-podcast');
                 if (btnSubmit) {
                     btnSubmit.innerText = "💾 Enregistrer les modifications";
-                    btnSubmit.style.backgroundColor = "#3b82f6";
+                    btnSubmit.style.backgroundColor = "#f59e0b";
                 }
 
                 const adminCard = document.getElementById('admin-panel');
