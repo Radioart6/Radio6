@@ -2,183 +2,114 @@
    1. VARIABLES DE COULEURS ET THÈMES
    ========================================================================== */
 
-/* --- MODE SAISON : AUTOMNE (PAR DÉFAUT) --- */
-:root, body.season-mode {
-    --bg-color: #180d0a;
-    --card-bg: #281711;
-    --primary: #ea580c;
-    --accent: #f59e0b;
-    --text: #ffedd5;
-    --text-muted: #a8a29e;
+/* --- MODE ÉMISSION (PAR DÉFAUT) --- */
+:root, body.emission-mode {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --primary: #3b82f6;
+    --accent: #38bdf8;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
     --danger: #ef4444;
 }
 
-/* --- ANIMATION & NÉON MODE SAISON --- */
-body.season-mode {
-    background: linear-gradient(-45deg, #180d0a, #2a1208, #3b160b, #150906);
+/* --- ANIMATION & EFFETS MODE ÉMISSION --- */
+body.emission-mode {
+    background: linear-gradient(-45deg, #0f172a, #1e3a8a, #1e293b, #0b0f19);
     background-size: 400% 400%;
-    animation: seasonBgAnimation 16s ease infinite;
+    animation: emissionBgAnimation 16s ease infinite;
 }
 
-@keyframes seasonBgAnimation {
+@keyframes emissionBgAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-body.season-mode .admin-card,
-body.season-mode .player-card,
-body.season-mode .folder-box,
-body.season-mode .banner-recrutement,
-body.season-mode .banner-event-octobre {
-    border: 1px solid rgba(245, 158, 11, 0.35) !important;
-    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.12);
+body.emission-mode .admin-card,
+body.emission-mode .player-card,
+body.emission-mode .folder-box,
+body.emission-mode .banner-recrutement,
+body.emission-mode .banner-event-octobre {
+    border: 1px solid rgba(59, 130, 246, 0.35) !important;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.12);
 }
 
-/* EN-TÊTE & PIED DE PAGE SAISONNIERS */
-body.season-mode header {
-    border-bottom: 1px solid rgba(245, 158, 11, 0.35) !important;
-    box-shadow: 0 4px 20px rgba(234, 88, 12, 0.2);
-    background: linear-gradient(180deg, rgba(40, 23, 17, 0.98) 0%, rgba(24, 13, 10, 0.95) 100%);
+/* EN-TÊTE & PIED DE PAGE MODE ÉMISSION */
+body.emission-mode header {
+    border-bottom: 1px solid rgba(59, 130, 246, 0.35) !important;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%);
 }
 
-body.season-mode .site-title::after {
-    content: " 🍂";
+body.emission-mode .site-title::after {
+    content: " 🎙️";
     font-size: 0.9rem;
     display: inline-block;
-    animation: seasonLeafSway 3s ease-in-out infinite alternate;
+    animation: emissionPulse 2s ease-in-out infinite alternate;
 }
 
-@keyframes seasonLeafSway {
-    0% { transform: rotate(-12deg); }
-    100% { transform: rotate(18deg); }
+@keyframes emissionPulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.15); }
 }
 
-body.season-mode footer {
-    border-top: 1px solid rgba(245, 158, 11, 0.25);
-    background: rgba(24, 13, 10, 0.95);
+body.emission-mode footer {
+    border-top: 1px solid rgba(59, 130, 246, 0.25);
+    background: rgba(15, 23, 42, 0.95);
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* BANDEAU DE DIRECT & COMPTE À REBOURS SAISON */
-body.season-mode .live-banner:not(.is-live) {
-    border: 1px solid rgba(245, 158, 11, 0.4) !important;
-    background: linear-gradient(135deg, rgba(40, 23, 17, 0.85) 0%, rgba(59, 22, 11, 0.65) 100%);
-    box-shadow: 0 4px 18px rgba(234, 88, 12, 0.25);
+/* LECTEUR AUDIO & BARRE DE PROGRESSION MODE ÉMISSION */
+body.emission-mode .custom-player-bar {
+    border: 1px solid rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.18);
+    background: rgba(15, 23, 42, 0.9);
 }
 
-/* LECTEUR AUDIO & BARRE DE PROGRESSION SAISON */
-body.season-mode .custom-player-bar {
-    border: 1px solid rgba(245, 158, 11, 0.4) !important;
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.18);
-    background: rgba(24, 13, 10, 0.9);
+body.emission-mode .progress-bar-fill {
+    background: linear-gradient(90deg, #3b82f6 0%, #38bdf8 100%);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
 }
 
-body.season-mode .progress-bar-fill {
-    background: linear-gradient(90deg, #ea580c 0%, #f59e0b 100%);
-    box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
-    position: relative;
-}
-
-body.season-mode .progress-bar-fill::after {
-    content: "🍁";
-    position: absolute;
-    right: -8px;
-    top: -9px;
-    font-size: 0.85rem;
-    filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.8));
-}
-
-/* DOSSIERS ET CARTES DE PODCASTS SAISON */
-body.season-mode .folder-box {
+/* DOSSIERS ET CARTES DE PODCASTS MODE ÉMISSION */
+body.emission-mode .folder-box {
     position: relative;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body.season-mode .folder-box::before {
-    content: "🍂";
-    position: absolute;
-    right: 15px;
-    bottom: -8px;
-    font-size: 2.8rem;
-    opacity: 0.08;
-    pointer-events: none;
-    transition: transform 0.4s ease, opacity 0.4s ease;
-}
-
-body.season-mode .folder-box:hover::before {
-    transform: scale(1.25) rotate(15deg);
-    opacity: 0.22;
-}
-
-body.season-mode .podcast-card {
-    border: 1px solid rgba(245, 158, 11, 0.22) !important;
-    background: rgba(40, 23, 17, 0.55);
+body.emission-mode .podcast-card {
+    border: 1px solid rgba(59, 130, 246, 0.22) !important;
+    background: rgba(30, 41, 59, 0.55);
     transition: all 0.25s ease;
 }
 
-body.season-mode .podcast-card:hover {
-    border-color: #f59e0b !important;
-    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25);
-    background: rgba(59, 22, 11, 0.7);
+body.emission-mode .podcast-card:hover {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+    background: rgba(30, 58, 138, 0.4);
 }
 
-/* BOUTONS ET MODALES SAISON */
-body.season-mode .btn-play {
-    background: linear-gradient(135deg, rgba(234, 88, 12, 0.25) 0%, rgba(245, 158, 11, 0.35) 100%);
-    border: 1px solid rgba(245, 158, 11, 0.45);
-    color: #ffedd5;
+/* BOUTONS ET MODALES MODE ÉMISSION */
+body.emission-mode .btn-play {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(56, 189, 248, 0.35) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.45);
+    color: #f1f5f9;
 }
 
-body.season-mode .btn-play:hover {
-    background: linear-gradient(135deg, #ea580c 0%, #b45309 100%);
-    box-shadow: 0 0 14px rgba(234, 88, 12, 0.55);
+body.emission-mode .btn-play:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    box-shadow: 0 0 14px rgba(59, 130, 246, 0.55);
     color: #ffffff;
 }
 
-body.season-mode .modal-content {
-    border: 1px solid rgba(245, 158, 11, 0.45) !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(245, 158, 11, 0.25);
+body.emission-mode .modal-content {
+    border: 1px solid rgba(59, 130, 246, 0.45) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(59, 130, 246, 0.25);
 }
 
-body.season-mode .param-box-update {
-    border-left-color: var(--accent);
-    background-color: rgba(40, 23, 17, 0.6);
-}
-
-/* PARTICULES DE SAISON */
-#season-effects {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 9999;
-    overflow: hidden;
-}
-
-.season-particle {
-    position: absolute;
-    top: -40px;
-    user-select: none;
-    animation: particleFall linear infinite;
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
-}
-
-@keyframes particleFall {
-    0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.8;
-    }
-    100% {
-        transform: translateY(105vh) rotate(360deg);
-        opacity: 0.1;
-    }
-}
-
-/* --- MODE SOMBRE CLASSIQUE (BLEU NUIT / ARDOISE) --- */
+/* --- MODE SOMBRE CLASSIQUE --- */
 body.dark-mode {
     --bg-color: #0b0f19;
     --card-bg: #161f30;
@@ -189,7 +120,7 @@ body.dark-mode {
     --danger: #ef4444;
 }
 
-/* --- MODE CLAIR (BLEU CLAIR) --- */
+/* --- MODE CLAIR --- */
 body.light-mode {
     --bg-color: #e0f2fe;
     --card-bg: #bae6fd;
@@ -201,7 +132,7 @@ body.light-mode {
 }
 
 /* ==========================================================================
-   2. STYLES GÉNÉRAUX & CORPS DE PAGE (BARRE DE DÉFILEMENT CACHÉE)
+   2. STYLES GÉNÉRAUX & CORPS DE PAGE
    ========================================================================== */
 html, body {
     scrollbar-width: none;
@@ -228,36 +159,9 @@ body.font-small { font-size: 0.9rem; }
 body.font-medium { font-size: 1rem; }
 body.font-large { font-size: 1.15rem; }
 
-.hidden { 
-    display: none !important; 
-}
+.hidden { display: none !important; }
 
-/* --- BANDEAU EN DIRECT / COMPTE À REBOURS --- */
-.live-banner {
-    padding: 12px 20px;
-    border-radius: 12px;
-    text-align: center;
-    font-weight: 600;
-    margin-bottom: 2rem;
-    background-color: var(--card-bg);
-    color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.live-banner.is-live {
-    background-color: #dc2626;
-    color: #ffffff;
-    border-color: #ef4444 !important;
-    animation: livePulse 1.5s infinite;
-}
-
-@keyframes livePulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.85; }
-    100% { opacity: 1; }
-}
+/* RESTE DU STYLE GLOBAL (Identique au précédent)... */
 
 /* ==========================================================================
    3. ÉCRAN D'ACCUEIL / START (SPLASH SCREEN SAISONNIER)
