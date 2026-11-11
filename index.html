@@ -151,7 +151,7 @@
             transform: translateY(-2px);
         }
 
-        /* --- NOUVEAU DESIGN AMÉLIORÉ DE LA BANNIÈRE ÉMISSION & COMPTE À REBOURS --- */
+        /* --- BANNIÈRE ÉMISSION & COMPTE À REBOURS --- */
         .banner-event-octobre {
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
             border: 2px solid rgba(59, 130, 246, 0.6);
@@ -345,7 +345,7 @@
                 <a href="rejoindre.html" class="btn-join-banner">S'inscrire à Radio 6 ➔</a>
             </section>
 
-            <!-- Bannière Émission Spéciale du 26 novembre 2026 (Refondue & avec Compte à rebours) -->
+            <!-- Bannière Émission Spéciale du 26 novembre 2026 -->
             <div class="banner-event-octobre">
                 <span class="event-badge"><i class="fa-solid fa-tower-broadcast"></i> Émission en direct</span>
                 <h2>🎙️ Émission Spéciale Radio 6</h2>
@@ -551,7 +551,7 @@
                     <h4>✅ Dernière mise à jour</h4>
                     <ul>
                         <li>Recherche dynamique instantanée sans avoir besoin d'ouvrir les dossiers.</li>
-                        <li>Ajout d'un bouton interactif pour activer les notifications de direct.</li>
+                        <li>Intégration du thème et du logo de l'émission spéciale.</li>
                         <li>Application web (PWA) prête à être installée.</li>
                     </ul>
                 </div>
@@ -559,7 +559,7 @@
                 <div class="update-box next">
                     <h4>🚀 Prochaine mise à jour</h4>
                     <ul>
-                        <li>En cour de réflexion.</li>
+                        <li>En cours de réflexion.</li>
                     </ul>
                 </div>
             </div>
@@ -619,9 +619,9 @@
             <div class="param-row">
                 <label><i class="fa-solid fa-palette"></i> Thème Visuel :</label>
                 <select id="param-media">
-                    <option value="season" selected>Mode Saison (par défaut)</option>
+                    <option value="season" selected>Mode Émission (par défaut)</option>
                     <option value="dark">Mode Sombre</option>
-                    <option value="light">Mode clair</option>
+                    <option value="light">Mode Clair</option>
                 </select>
             </div>
 
@@ -672,7 +672,6 @@
             const timerEl = document.getElementById('event-countdown-timer');
             if (!timerEl) return;
 
-            // Date cible : 26 novembre 2026 à 12h45
             const targetDate = new Date('2026-11-26T12:45:00').getTime();
             const now = new Date().getTime();
             const distance = targetDate - now;
@@ -695,7 +694,6 @@
         updateEventCountdown();
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Gestion de la sourdine
             const audioPlayer = document.getElementById('main-audio-player');
             const muteBtn = document.getElementById('custom-mute-btn');
             const muteIcon = document.getElementById('mute-icon');
@@ -713,7 +711,6 @@
                 });
             }
 
-            // Tri dynamique des grilles
             document.querySelectorAll('.sort-select').forEach(select => {
                 select.addEventListener('change', (e) => {
                     const gridId = e.target.getAttribute('data-grid');
