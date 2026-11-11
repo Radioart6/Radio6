@@ -151,120 +151,118 @@
             transform: translateY(-2px);
         }
 
+        /* --- NOUVEAU DESIGN AMÉLIORÉ DE LA BANNIÈRE ÉMISSION & COMPTE À REBOURS --- */
         .banner-event-octobre {
-            background: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(180, 83, 9, 0.35) 50%, rgba(40, 23, 17, 0.5) 100%);
-            border: 2px solid #f97316;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.6);
             border-radius: 16px;
-            padding: 1.8rem;
+            padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.25);
+            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.25);
             position: relative;
             overflow: hidden;
             text-align: left;
         }
         .banner-event-octobre::before {
-            content: "🍂";
+            content: "🎙️";
             position: absolute;
-            right: 20px;
-            top: 15px;
-            font-size: 5rem;
-            opacity: 0.15;
+            right: 25px;
+            top: 20px;
+            font-size: 5.5rem;
+            opacity: 0.12;
             pointer-events: none;
         }
         .event-badge {
             display: inline-block;
-            background-color: #f97316;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: #ffffff;
             font-size: 0.8rem;
             font-weight: bold;
             text-transform: uppercase;
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
             margin-bottom: 0.8rem;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
         }
         .banner-event-octobre h2 {
-            color: #ffedd5;
+            color: #ffffff;
             margin: 0 0 0.5rem 0;
-            font-size: 1.6rem;
+            font-size: 1.75rem;
+            letter-spacing: 0.5px;
         }
         .event-datetime {
-            color: #fbbf24;
-            font-size: 1.05rem;
+            color: #60a5fa;
+            font-size: 1.1rem;
+            font-weight: 600;
             margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .event-location {
             color: var(--text-muted);
             font-size: 0.95rem;
             margin: 0 0 1.2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .event-program {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(249, 115, 22, 0.3);
+        
+        /* Style du Compte à rebours */
+        .event-countdown-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 10px;
-            padding: 1rem 1.2rem;
-            margin-bottom: 1.5rem;
+            padding: 10px 15px;
+            margin-bottom: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .event-countdown-box span {
+            color: #38bdf8;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.05rem;
+        }
+
+        .event-program {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 10px;
+            padding: 1.2rem 1.4rem;
+            margin-bottom: 0.5rem;
         }
         .event-program h4 {
-            color: #f97316;
-            margin: 0 0 0.6rem 0;
-            font-size: 1rem;
+            color: #93c5fd;
+            margin: 0 0 0.8rem 0;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .event-program ul {
             margin: 0;
             padding-left: 0;
             list-style: none;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.6rem;
         }
         .event-program li {
             color: var(--text);
             font-size: 0.9rem;
             display: flex;
             align-items: center;
-            gap: 6px;
-        }
-        .event-actions {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .btn-event-insta {
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            color: white;
-            text-decoration: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
             gap: 8px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .btn-event-insta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(220, 39, 67, 0.4);
-        }
-        .btn-event-cal {
-            background: rgba(168, 85, 247, 0.2);
-            border: 1px solid #a855f7;
-            color: #e9d5ff;
-            text-decoration: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s ease, transform 0.2s ease;
-        }
-        .btn-event-cal:hover {
-            background: #a855f7;
-            color: white;
-            transform: translateY(-2px);
+        .event-program li i {
+            color: #3b82f6;
+            font-size: 0.85rem;
         }
     </style>
 </head>
@@ -346,15 +344,20 @@
                 </div>
                 <a href="rejoindre.html" class="btn-join-banner">S'inscrire à Radio 6 ➔</a>
             </section>
-<!-- Bannière Émission Spéciale du 26 novembre 2026 -->
-            <div class="banner-event-octobre" style="border-color: #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 58, 138, 0.3) 100%);">
-                <span class="event-badge" style="background-color: #3b82f6;">Émission en direct</span>
+
+            <!-- Bannière Émission Spéciale du 26 novembre 2026 (Refondue & avec Compte à rebours) -->
+            <div class="banner-event-octobre">
+                <span class="event-badge"><i class="fa-solid fa-tower-broadcast"></i> Émission en direct</span>
                 <h2>🎙️ Émission Spéciale Radio 6</h2>
                 <div class="event-datetime"><i class="fa-regular fa-calendar-days"></i> Jeudi 26 novembre 2026 à 12h45</div>
                 <div class="event-location"><i class="fa-solid fa-location-dot"></i> Lycée Arcisse de Caumont</div>
                 
-                <div class="event-program" style="border-color: rgba(59, 130, 246, 0.4);">
-                    <h4 style="color: #60a5fa;">Au programme :</h4>
+                <div class="event-countdown-box">
+                    <i class="fa-regular fa-clock" style="color: #38bdf8;"></i> Début du direct dans : <span id="event-countdown-timer">Calcul en cours...</span>
+                </div>
+
+                <div class="event-program">
+                    <h4><i class="fa-solid fa-list-check"></i> Au programme :</h4>
                     <ul>
                         <li><i class="fa-solid fa-users"></i> Concertations lycéennes</li>
                         <li><i class="fa-solid fa-trophy"></i> Prix Bayeux des reporters de guerre</li>
@@ -365,6 +368,7 @@
                     </ul>
                 </div>
             </div>
+
             <!-- Panneau Admin -->
             <section id="admin-panel" class="admin-card hidden">
                 <h3>🛠️ Panneau de Gestion (Propriétaire)</h3>
@@ -663,6 +667,33 @@
     <script src="translate-pages.js?v=1.6"></script>
     <script src="script.js?v=1.6"></script>
     <script>
+        // --- SCRIPT DU COMPTE À REBOURS POUR L'ÉMISSION DU 26 NOVEMBRE 2026 À 12H45 ---
+        function updateEventCountdown() {
+            const timerEl = document.getElementById('event-countdown-timer');
+            if (!timerEl) return;
+
+            // Date cible : 26 novembre 2026 à 12h45
+            const targetDate = new Date('2026-11-26T12:45:00').getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                timerEl.textContent = "🔴 C'est le moment du direct !";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const pad = (n) => String(n).padStart(2, '0');
+            timerEl.textContent = `${days}j ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+        }
+
+        setInterval(updateEventCountdown, 1000);
+        updateEventCountdown();
+
         document.addEventListener('DOMContentLoaded', () => {
             // Gestion de la sourdine
             const audioPlayer = document.getElementById('main-audio-player');
